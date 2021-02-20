@@ -1,0 +1,41 @@
+[tool.poetry]
+name = "isabelle-client"
+version = "0.0.1"
+description = "A client to Isabelle proof assistant server"
+authors = ["Boris Shminke <boris@shminke.ml>"]
+license = "Apache 2.0"
+repository = "https://github.com/inpefess/isabelle-client"
+readme = "README.md"
+classifiers=[
+	"Programming Language :: Python :: 3.9",
+	"License :: OSI Approved :: Apache Software License",
+	"Operating System :: OS Independent",
+	"Intended Audience :: Science/Research",
+	"Development Status :: 1 - Planning",
+	"Environment :: Console",
+	"Natural Language :: English",
+	"Topic :: Scientific/Engineering :: Artificial Intelligence",
+	"Typing :: Typed"
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+[tool.poetry.dev-dependencies]
+pycodestyle = "*"
+pylint = "*"
+mypy = "*"
+pytest = "*"
+pytest-cov = "*"
+pre-commit = "*"
+black = "*"
+jedi = "0.17.2"
+rope = "*"
+flake8 = "*"
+
+[tool.black]
+line-length=79
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

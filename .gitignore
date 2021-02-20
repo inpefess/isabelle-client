@@ -1,0 +1,7 @@
+.coverage
+dist/
+test-results/
+venv/
+__pycache__/
+.*~
+*~
