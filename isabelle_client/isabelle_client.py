@@ -17,76 +17,9 @@ import io
 import json
 import re
 import socket
-from dataclasses import dataclass
 from typing import List, Optional, Set, cast
 
-
-def get_delimited_message(
-    tcp_socket: socket.socket,
-    delimiter: str = "\n",
-    encoding: str = "utf-8",
-) -> str:
-    """
-    get a delimited (not fixed-length)response from a TCP socket
-
-    :param tcp_socket: a TCP socket to receive data from
-    :param response_end_char: a character which marks the end of response
-    :param encoding: a socket encoding
-    :returns: decoded string response
-    """
-    response = " "
-    while response[-1] != delimiter:
-        response += tcp_socket.recv(1).decode(encoding)
-    return response[1:]
-
-
-def get_fixed_length_message(
-    tcp_socket: socket.socket,
-    message_length: int,
-    chunk_size: int = 8196,
-    encoding: str = "utf-8",
-) -> str:
-    """
-    get a response of a fixed length from a TCP socket
-
-    :param tcp_socket: a TCP socket to receive data from
-    :param message_length: a number of bytes to read as a message
-    :param chunk_size: the maximal number of bytes to get at one time
-    :param encoding: a socket encoding
-    :returns: decoded string response
-    """
-    response = b""
-    read_length = 0
-    while read_length < message_length:
-        response += tcp_socket.recv(
-            min(chunk_size, message_length - read_length)
-        )
-        read_length = len(response)
-    return response.decode(encoding)
-
-
-def get_response_from_isabelle(tcp_socket: socket.socket) -> str:
-    """
-    get a response of a fixed length from a TCP socket
-
-    :param tcp_socket: a TCP socket to receive data from
-    :returns: decoded string response
-    """
-    response = get_delimited_message(tcp_socket)
-    match = re.compile(r"(\d+)\n").match(response)
-    if match is not None:
-        response += get_fixed_length_message(tcp_socket, int(match.group(1)))
-    return response
-
-
-@dataclass
-class IsabelleResponse:
-    """ a response from an ``isabelle`` server """
-
-    response_type: str  # an all capitals word like ``FINISHED`` or ``ERROR``
-    response_body: str  # a JSON-formatted response
-    # pylint: disable=unsubscriptable-object
-    response_length: Optional[int] = None  # a length of JSON response
+from isabelle_client.utils import IsabelleResponse, get_response_from_isabelle
 
 
 class IsabelleClient:
