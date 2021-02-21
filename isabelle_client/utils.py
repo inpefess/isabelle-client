@@ -79,7 +79,13 @@ def get_response_from_isabelle(tcp_socket: socket.socket) -> str:
 
 @dataclass
 class IsabelleResponse:
-    """ a response from an ``isabelle`` server """
+    """
+    a response from an ``isabelle`` server
+
+    >>> print(IsabelleResponse("OK", '{"ok": "true"}').response_length)
+    None
+
+    """
 
     response_type: str  # an all capitals word like ``FINISHED`` or ``ERROR``
     response_body: str  # a JSON-formatted response
