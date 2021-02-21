@@ -5,15 +5,53 @@ orbs:
 
 jobs:
   build-and-test:
-    executor: python/default
+    docker:
+      - image: circleci/python:3.9.1
+    working_directory: ~/repo
     steps:
       - checkout
-      - python/load-cache
-      - python/install-deps
-      - python/save-cache
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "poetry.lock" }}
+            - v1-dependencies-
       - run:
-          command: ./manage.py test
-          name: Test
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -U pip poetry
+            poetry install
+      - save_cache:
+          paths:
+            - ./venv
+          key: v1-dependencies-{{ checksum "poetry.lock" }}
+      - run:
+          name: run tests
+          command: |
+            . venv/bin/activate
+            pytest --cov isabelle_client --cov-report xml --cov-fail-under=33\
+                   --junit-xml test-results/isabelle-client.xml\
+                   --doctest-modules isabelle_client tests
+      - run:
+          name: run linters
+          command: |
+            . venv/bin/activate
+            pycodestyle --max-doc-length 160 --ignore E203,E501,W503\
+                        isabelle_client tests
+            pylint --rcfile=.pylintrc isabelle_client
+      - run:
+          name: run type checks
+          command: |
+            . venv/bin/activate
+            mypy --config-file mypy.ini isabelle_client tests
+      - run:
+          name: upload data to codecov
+          command: |
+            bash <(curl -s https://codecov.io/bash) -X gcov -X coveragepy
+      - store_artifacts:
+          path: build
+      - store_test_results:
+          path: test-results
 
 workflows:
   main:

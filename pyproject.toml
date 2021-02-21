@@ -1,9 +1,9 @@
 [tool.poetry]
 name = "isabelle-client"
-version = "0.0.1"
+version = "0.0.2"
 description = "A client to Isabelle proof assistant server"
 authors = ["Boris Shminke <boris@shminke.ml>"]
-license = "Apache 2.0"
+license = "Apache-2.0"
 repository = "https://github.com/inpefess/isabelle-client"
 readme = "README.md"
 classifiers=[
@@ -17,6 +17,7 @@ classifiers=[
 	"Topic :: Scientific/Engineering :: Artificial Intelligence",
 	"Typing :: Typed"
 ]
+include = ["isabelle_client/py.typed"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
