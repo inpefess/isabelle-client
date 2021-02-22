@@ -33,6 +33,9 @@ black = "*"
 jedi = "0.17.2"
 rope = "*"
 flake8 = "*"
+Sphinx = "*"
+sphinx-rtd-theme = "*"
+sphinx-autodoc-typehints = "*"
 
 [tool.black]
 line-length=79
