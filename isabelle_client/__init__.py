@@ -14,3 +14,4 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from isabelle_client.isabelle_client import IsabelleClient
+from isabelle_client.utils import IsabelleResponse

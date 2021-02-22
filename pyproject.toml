@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "isabelle-client"
-version = "0.0.3"
+version = "0.0.4"
 description = "A client to Isabelle proof assistant server"
 authors = ["Boris Shminke <boris@shminke.ml>"]
 license = "Apache-2.0"
@@ -33,6 +33,9 @@ black = "*"
 jedi = "0.17.2"
 rope = "*"
 flake8 = "*"
+Sphinx = "*"
+sphinx-rtd-theme = "*"
+sphinx-autodoc-typehints = "*"
 
 [tool.black]
 line-length=79

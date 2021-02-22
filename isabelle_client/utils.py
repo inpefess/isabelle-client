@@ -85,9 +85,12 @@ class IsabelleResponse:
     >>> print(IsabelleResponse("OK", '{"ok": "true"}').response_length)
     None
 
+    :param response_type: an all capitals word like ``FINISHED`` or ``ERROR``
+    :param response_body: a JSON-formatted response
+    :param response_length: a length of JSON response
     """
 
-    response_type: str  # an all capitals word like ``FINISHED`` or ``ERROR``
-    response_body: str  # a JSON-formatted response
+    response_type: str
+    response_body: str
     # pylint: disable=unsubscriptable-object
-    response_length: Optional[int] = None  # a length of JSON response
+    response_length: Optional[int] = None
