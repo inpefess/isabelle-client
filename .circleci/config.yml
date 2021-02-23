@@ -29,7 +29,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            pytest --cov isabelle_client --cov-report xml --cov-fail-under=33\
+            pytest --cov isabelle_client --cov-report xml --cov-fail-under=99\
                    --junit-xml test-results/isabelle-client.xml\
                    --doctest-modules isabelle_client tests
       - run:

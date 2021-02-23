@@ -1,7 +1,7 @@
 Welcome to Isabelle client documentation!
 ===========================================
 
-A client for [Isabelle](https://isabelle.in.tum.de) server. For more information about the server see part 4 of [the Isabelle system manual](https://isabelle.in.tum.de/dist/Isabelle2021/doc/system.pdf).
+A client for `Isabelle`_ server. For more information about the server see part 4 of `the Isabelle system manual`_.
 
 Basic use-case:
 
@@ -21,3 +21,6 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+.. _Isabelle: https://isabelle.in.tum.de
+.. _the Isabelle system manual: https://isabelle.in.tum.de/dist/Isabelle2021/doc/system.pdf
