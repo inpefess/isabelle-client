@@ -53,6 +53,37 @@ class IsabelleClient:
         log_file: Optional[io.TextIOWrapper] = None,
     ) -> List[str]:
         """
+        gets responses from ``isabelle`` server until a message of specified
+        'final' type arrives
+
+        >>> from unittest.mock import Mock
+        >>> isabelle_client = IsabelleClient("test", "localhost", 1000, "test")
+        >>> tcp_socket = Mock()
+        >>> tcp_socket.recv = Mock(
+        ...    side_effect=[
+        ...        b"4",
+        ...        b"2",
+        ...        b"\\n",
+        ...        b'FINISHED {"session_id": "session_id__42"}\\n',
+        ...    ]
+        ... )
+        >>> log_file = Mock()
+        >>> log_file.write = Mock()
+        >>> print(isabelle_client.get_all_responses(
+        ...     tcp_socket, {"FINISHED"}, log_file)
+        ... )
+        ['42', 'FINISHED', '{"session_id": "session_id__42"}']
+        >>> print(log_file.write.mock_calls)
+        [call('42\\nFINISHED {"session_id": "session_id__42"}\\n')]
+        >>> tcp_socket.recv = Mock(
+        ...     side_effect=[b"5", b"\\n", b"wrong"]
+        ... )
+        >>> print(isabelle_client.get_all_responses(tcp_socket, {"FINISHED"}))
+        Traceback (most recent call last):
+            ...
+        ValueError: Unexpected response from Isabelle: 5
+        wrong
+
         :param tcp_socket:  a TCP socket to ``isabelle`` server
         :param final_message: a set of possible final message types
         :param log_file: a file for writing a copy of all messages
@@ -80,6 +111,33 @@ class IsabelleClient:
     ) -> IsabelleResponse:
         """
         executes an (asynchronous) command and waits for results
+
+        >>> from unittest.mock import Mock, patch, mock_open
+        >>> isabelle_client = IsabelleClient("test", "localhost", 1000, "test")
+        >>> isabelle_client.get_all_responses = Mock(
+        ...    side_effect=[
+        ...         ["42", "FINISHED", '{"session_id": "session_id__42"}']
+        ...     ]
+        ... )
+        >>> connect = Mock()
+        >>> send = Mock()
+        >>> open_mock = mock_open()
+        >>> with patch("socket.socket.connect", connect), patch(
+        ...    "socket.socket.send", send
+        ... ), patch("builtins.open", open_mock):
+        ...    response = isabelle_client.execute_command("test", "test")
+        >>> print(response.response_type)
+        FINISHED
+        >>> print(response.response_body)
+        {"session_id": "session_id__42"}
+        >>> print(response.response_length)
+        42
+        >>> print(connect.mock_calls)
+        [call(('localhost', 1000))]
+        >>> print(send.mock_calls)
+        [call(b'test\\ntest\\n')]
+        >>> print(open_mock.mock_calls)
+        [call('test', 'w'), call().close()]
 
         :param command: a full text of a command to ``isabelle``
         :param log_filename: a file for saving a copy of all data received from
@@ -113,7 +171,25 @@ class IsabelleClient:
         )
 
     def session_start(self, session_image: str = "HOL") -> str:
-        """start a new session
+        """
+        start a new session
+
+        >>> from unittest.mock import Mock
+        >>> isabelle_client = IsabelleClient("test", "localhost", 1000, "test")
+        >>> isabelle_client.execute_command = Mock(
+        ...     return_value=IsabelleResponse(
+        ...     "FINISHED", '{"session_id": "test"}'
+        ...     )
+        ... )
+        >>> print(isabelle_client.session_start())
+        test
+        >>> isabelle_client.execute_command = Mock(
+        ...     return_value=IsabelleResponse("OK", "OK")
+        ... )
+        >>> print(isabelle_client.session_start())
+        Traceback (most recent call last):
+            ...
+        ValueError: Unexpected response type: OK
 
         :param session: a name of a session image
         :returns: a ``session_id``
@@ -122,10 +198,20 @@ class IsabelleClient:
         response = self.execute_command(f"session_start {arguments}")
         if response.response_type == "FINISHED":
             return json.loads(response.response_body)["session_id"]
-        raise ValueError(response)
+        raise ValueError(f"Unexpected response type: {response.response_type}")
 
     def session_stop(self, session_id: str) -> IsabelleResponse:
-        """stop session with given ID
+        """
+        stop session with given ID
+
+        >>> from unittest.mock import Mock
+        >>> isabelle_client = IsabelleClient("test", "localhost", 1000, "test")
+        >>> isabelle_client.execute_command = Mock(
+        ...     return_value=IsabelleResponse("FAILED", "")
+        ... )
+        >>> response = isabelle_client.session_stop("test")
+        >>> print(response.response_type)
+        FAILED
 
         :param session_id: a string ID of a session
         :returns: ``isabelle`` server response
@@ -141,7 +227,21 @@ class IsabelleClient:
         master_dir: Optional[str] = None,
         log_filename: Optional[str] = None,
     ) -> IsabelleResponse:
-        """run the engine on theory files
+        """
+        run the engine on theory files
+
+        >>> from unittest.mock import Mock
+        >>> isabelle_client = IsabelleClient("test", "localhost", 1000, "test")
+        >>> isabelle_client.execute_command = Mock(
+        ...     return_value=IsabelleResponse(
+        ...         "FINISHED", '{"session_id": "test"}'
+        ...     )
+        ... )
+        >>> response = isabelle_client.use_theories(
+        ...     ["test"], master_dir="test"
+        ... )
+        >>> print(response.response_type)
+        FINISHED
 
         :param theories: names of theory files (without extensions!)
         :param session_id: an ID of a session; if ``None``, a new session is
