@@ -27,8 +27,14 @@ def get_delimited_message(
     """
     get a delimited (not fixed-length)response from a TCP socket
 
+    >>> from unittest.mock import Mock
+    >>> tcp_socket = Mock()
+    >>> tcp_socket.recv = Mock(side_effect=[b"4", b"2" b"\\n"])
+    >>> print(get_delimited_message(tcp_socket))
+    42
+
     :param tcp_socket: a TCP socket to receive data from
-    :param response_end_char: a character which marks the end of response
+    :param delimiter: a character which marks the end of response
     :param encoding: a socket encoding
     :returns: decoded string response
     """
@@ -46,6 +52,14 @@ def get_fixed_length_message(
 ) -> str:
     """
     get a response of a fixed length from a TCP socket
+
+    >>> from unittest.mock import Mock
+    >>> tcp_socket = Mock()
+    >>> tcp_socket.recv = Mock(
+    ...     side_effect=[b'FINISHED {"session_id": "session_id__42"}\\n']
+    ... )
+    >>> print(get_fixed_length_message(tcp_socket, 42))
+    FINISHED {"session_id": "session_id__42"}
 
     :param tcp_socket: a TCP socket to receive data from
     :param message_length: a number of bytes to read as a message
@@ -66,6 +80,20 @@ def get_fixed_length_message(
 def get_response_from_isabelle(tcp_socket: socket.socket) -> str:
     """
     get a response of a fixed length from a TCP socket
+
+    >>> from unittest.mock import Mock
+    >>> tcp_socket = Mock()
+    >>> tcp_socket.recv = Mock(
+    ...     side_effect=[
+    ...         b"4",
+    ...         b"2",
+    ...         b"\\n",
+    ...         b'FINISHED {"session_id": "session_id__42"}\\n',
+    ...     ]
+    ... )
+    >>> print(get_response_from_isabelle(tcp_socket))
+    42
+    FINISHED {"session_id": "session_id__42"}
 
     :param tcp_socket: a TCP socket to receive data from
     :returns: decoded string response
