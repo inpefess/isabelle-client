@@ -247,7 +247,7 @@ class IsabelleClient:
         :param session_id: an ID of a session; if ``None``, a new session is
             created and then destroyed after trying to process theories
         :param master_dir: where to look for theory files; if ``None``, uses a
-            temp folder of then session
+            temp folder of the session
         :param log_filename: a file for a copy of all server messages
         :returns: ``isabelle`` server response
         """
