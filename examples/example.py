@@ -13,8 +13,22 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from isabelle_client.isabelle_client import (
-    IsabelleClient,
-    get_isabelle_client_from_server_info,
-)
-from isabelle_client.utils import IsabelleResponse
+from isabelle_client import get_isabelle_client_from_server_info
+
+
+def main():
+    """ using ``isabelle`` client """
+    # first, run Isabelle server in the same directory as this script:
+    # isabelle server > server.pid
+    isabelle = get_isabelle_client_from_server_info("server.pid")
+    # now we can send a theory file from this directory to the server
+    # and get a response
+    print(
+        isabelle.use_theories(
+            theories=["dummy"], master_dir=".", log_filename="out.log"
+        )
+    )
+
+
+if __name__ == "__main__":
+    main()

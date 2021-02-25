@@ -15,6 +15,7 @@ limitations under the License.
 """
 import io
 import json
+import re
 import socket
 from typing import List, Optional, cast
 
@@ -142,7 +143,9 @@ class IsabelleClient:
             return json.loads(response.response_body)["session_id"]
         raise ValueError(f"Unexpected response type: {response.response_type}")
 
-    def session_stop(self, session_id: str) -> IsabelleResponse:
+    def session_stop(
+        self, session_id: str, log_filename: Optional[str] = None
+    ) -> IsabelleResponse:
         """
         stop session with given ID
 
@@ -156,10 +159,12 @@ class IsabelleClient:
         FAILED
 
         :param session_id: a string ID of a session
+        :param log_filename: a file for saving a copy of all data received from
+            the server
         :returns: ``isabelle`` server response
         """
         arguments = json.dumps({"session_id": session_id})
-        return self.execute_command(f"session_stop {arguments}")
+        return self.execute_command(f"session_stop {arguments}", log_filename)
 
     def use_theories(
         self,
@@ -193,7 +198,9 @@ class IsabelleClient:
         :returns: ``isabelle`` server response
         """
         new_session_id = (
-            self.session_start() if session_id is None else session_id
+            self.session_start(log_filename=log_filename)
+            if session_id is None
+            else session_id
         )
         try:
             arguments = {"session_id": new_session_id, "theories": theories}
@@ -204,7 +211,7 @@ class IsabelleClient:
             )
         finally:
             if session_id is None:
-                self.session_stop(new_session_id)
+                self.session_stop(new_session_id, log_filename)
         return response
 
     def echo(self, message: str) -> IsabelleResponse:
@@ -276,3 +283,36 @@ class IsabelleClient:
             f"purge_theories {json.dumps(arguments)}", asynchronous=False
         )
         return response
+
+
+def get_isabelle_client_from_server_info(server_file: str) -> IsabelleClient:
+    """
+    get an instance of ``IsabelleClient`` from a server info file
+
+    >>> from unittest.mock import mock_open, patch
+    >>> with patch("builtins.open", mock_open(read_data="wrong")):
+    ...     print(get_isabelle_client_from_server_info("test"))
+    Traceback (most recent call last):
+        ...
+    ValueError: Unexpected server info: wrong
+    >>> server_info = 'server "test" = 127.0.0.1:10000 (password "pass")'
+    >>> with patch("builtins.open", mock_open(read_data=server_info)):
+    ...     print(get_isabelle_client_from_server_info("test").server_port)
+    10000
+
+    :param server_file: a file with server info (a line returned by a server
+    on start)
+    :returns: an ``isabelle`` client
+    """
+    with open(server_file, "r") as server_info_file:
+        server_info = server_info_file.read()
+    match = re.compile(
+        r"server \"(.*)\" = (.*):(.*) \(password \"(.*)\"\)"
+    ).match(server_info)
+    if match is None:
+        raise ValueError(f"Unexpected server info: {server_info}")
+    server_name, server_ip, server_port, server_password = match.groups()
+    isabelle_client = IsabelleClient(
+        server_name, server_ip, int(server_port), server_password
+    )
+    return isabelle_client

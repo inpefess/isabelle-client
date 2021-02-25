@@ -154,8 +154,8 @@ def get_final_message(
     >>> tcp_socket.recv = Mock(
     ...    side_effect=[
     ...        b"O", b"K", b" ", b"i", b"\\n",
-    ...        b"4", b"2", b"\\n",
-    ...        b'FINISHED {"session_id": "session_id__42"}\\n'
+    ...        b"4", b"0", b"\\n",
+    ...        b'FINISHED {"session_id": "test_session"}\\n'
     ...    ]
     ... )
     >>> log_file = Mock()
@@ -163,10 +163,10 @@ def get_final_message(
     >>> print(str(get_final_message(
     ...     tcp_socket, {"FINISHED"}, log_file
     ... )))
-    42
-    FINISHED {"session_id": "session_id__42"}
+    40
+    FINISHED {"session_id": "test_session"}
     >>> print(log_file.write.mock_calls)
-    [call('OK i'), call('42\\nFINISHED {"session_id": "session_id__42"}')]
+    [call('OK i\\n'), call('40\\nFINISHED {"session_id": "test_session"}\\n')]
     >>> tcp_socket.recv = Mock(
     ...     side_effect=[b"5", b"\\n", b"wrong"]
     ... )
@@ -189,5 +189,5 @@ def get_final_message(
             password_ok_received = True
         response = get_response_from_isabelle(tcp_socket)
         if log_file is not None:
-            log_file.write(str(response))
+            log_file.write(str(response) + "\n")
     return response
