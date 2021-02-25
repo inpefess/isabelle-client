@@ -13,10 +13,38 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+import io
 import re
 import socket
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Set
+
+
+@dataclass
+class IsabelleResponse:
+    """
+    a response from an ``isabelle`` server
+
+    :param response_type: an all capitals word like ``FINISHED`` or ``ERROR``
+    :param response_body: a JSON-formatted response
+    :param response_length: a length of JSON response
+    """
+
+    response_type: str
+    response_body: str
+    response_length: Optional[int] = None
+
+    def __str__(self):
+        return (
+            (
+                f"{self.response_length}\n"
+                if self.response_length is not None
+                else ""
+            )
+            + self.response_type
+            + " "
+            + self.response_body
+        )
 
 
 def get_delimited_message(
@@ -77,9 +105,12 @@ def get_fixed_length_message(
     return response.decode(encoding)
 
 
-def get_response_from_isabelle(tcp_socket: socket.socket) -> str:
+def get_response_from_isabelle(tcp_socket: socket.socket) -> IsabelleResponse:
     """
-    get a response of a fixed length from a TCP socket
+    get a response from ``isabelle`` server:
+    * a carriage-return delimited message or
+    * a fixed length message after a carriage-return delimited message with
+    only one integer number denoting length
 
     >>> from unittest.mock import Mock
     >>> tcp_socket = Mock()
@@ -91,34 +122,72 @@ def get_response_from_isabelle(tcp_socket: socket.socket) -> str:
     ...         b'FINISHED {"session_id": "session_id__42"}\\n',
     ...     ]
     ... )
-    >>> print(get_response_from_isabelle(tcp_socket))
+    >>> print(str(get_response_from_isabelle(tcp_socket)))
     42
     FINISHED {"session_id": "session_id__42"}
 
     :param tcp_socket: a TCP socket to receive data from
-    :returns: decoded string response
+    :returns: a response from ``isabelle``
     """
     response = get_delimited_message(tcp_socket)
     match = re.compile(r"(\d+)\n").match(response)
-    if match is not None:
-        response += get_fixed_length_message(tcp_socket, int(match.group(1)))
+    length = int(match.group(1)) if match is not None else None
+    if length is not None:
+        response = get_fixed_length_message(tcp_socket, length)
+    match = re.compile(r"(\w+) (.*)").match(response)
+    if match is None:
+        raise ValueError(f"Unexpected response from Isabelle: {response}")
+    return IsabelleResponse(match.group(1), match.group(2), length)
+
+
+def get_final_message(
+    tcp_socket: socket.socket,
+    final_message: Set[str],
+    log_file: Optional[io.TextIOWrapper] = None,
+) -> IsabelleResponse:
+    """
+    gets responses from ``isabelle`` server until a message of specified
+    'final' type arrives
+
+    >>> from unittest.mock import Mock
+    >>> tcp_socket = Mock()
+    >>> tcp_socket.recv = Mock(
+    ...    side_effect=[
+    ...        b"O", b"K", b" ", b"i", b"\\n",
+    ...        b"4", b"2", b"\\n",
+    ...        b'FINISHED {"session_id": "session_id__42"}\\n'
+    ...    ]
+    ... )
+    >>> log_file = Mock()
+    >>> log_file.write = Mock()
+    >>> print(str(get_final_message(
+    ...     tcp_socket, {"FINISHED"}, log_file
+    ... )))
+    42
+    FINISHED {"session_id": "session_id__42"}
+    >>> print(log_file.write.mock_calls)
+    [call('OK i'), call('42\\nFINISHED {"session_id": "session_id__42"}')]
+    >>> tcp_socket.recv = Mock(
+    ...     side_effect=[b"5", b"\\n", b"wrong"]
+    ... )
+    >>> print(get_final_message(tcp_socket, {"FINISHED"}))
+    Traceback (most recent call last):
+        ...
+    ValueError: Unexpected response from Isabelle: wrong
+
+    :param tcp_socket:  a TCP socket to ``isabelle`` server
+    :param final_message: a set of possible final message types
+    :param log_file: a file for writing a copy of all messages
+    :returns: the final response from ``isabelle`` server
+    """
+    response = IsabelleResponse("", "")
+    password_ok_received = False
+    while (
+        response.response_type not in final_message or not password_ok_received
+    ):
+        if response.response_type == "OK":
+            password_ok_received = True
+        response = get_response_from_isabelle(tcp_socket)
+        if log_file is not None:
+            log_file.write(str(response))
     return response
-
-
-@dataclass
-class IsabelleResponse:
-    """
-    a response from an ``isabelle`` server
-
-    >>> print(IsabelleResponse("OK", '{"ok": "true"}').response_length)
-    None
-
-    :param response_type: an all capitals word like ``FINISHED`` or ``ERROR``
-    :param response_body: a JSON-formatted response
-    :param response_length: a length of JSON response
-    """
-
-    response_type: str
-    response_body: str
-    # pylint: disable=unsubscriptable-object
-    response_length: Optional[int] = None
