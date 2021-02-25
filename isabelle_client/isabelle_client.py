@@ -16,6 +16,7 @@ limitations under the License.
 import json
 import re
 import socket
+from logging import Logger
 from typing import List, Optional
 
 from isabelle_client.utils import IsabelleResponse, get_final_message
@@ -26,21 +27,20 @@ class IsabelleClient:
 
     def __init__(
         self,
-        server_name: str,
-        server_address: str,
-        server_port: int,
-        server_password: str,
+        address: str,
+        port: int,
+        password: str,
+        logger: Optional[Logger] = None,
     ):
         """
-        :param server_name: a human-readable name of the server
-        :param server_address: IP or a domain name
-        :param server_port: a port number on which the server listens
-        :param server_password: a password to access the server through TCP
+        :param address: IP or a domain name
+        :param port: a port number on which the server listens
+        :param password: a password to access the server through TCP
         """
-        self.server_name = server_name
-        self.server_address = server_address
-        self.server_port = server_port
-        self.server_password = server_password
+        self.address = address
+        self.port = port
+        self.password = password
+        self.logger = logger
 
     def execute_command(
         self,
@@ -51,7 +51,7 @@ class IsabelleClient:
         executes an (asynchronous) command and waits for results
 
         >>> from unittest.mock import Mock, patch
-        >>> isabelle_client = IsabelleClient("test", "localhost", 1000, "test")
+        >>> isabelle_client = IsabelleClient("localhost", 1000, "test")
         >>> res = Mock(return_value=IsabelleResponse(
         ...    "FINISHED", '{"session_id": "session_id__42"}', 42
         ... ))
@@ -85,11 +85,11 @@ class IsabelleClient:
             else {"OK", "ERROR"}
         )
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as tcp_socket:
-            tcp_socket.connect((self.server_address, self.server_port))
-            tcp_socket.send(
-                f"{self.server_password}\n{command}\n".encode("utf-8")
+            tcp_socket.connect((self.address, self.port))
+            tcp_socket.send(f"{self.password}\n{command}\n".encode("utf-8"))
+            response = get_final_message(
+                tcp_socket, final_message, self.logger
             )
-            response = get_final_message(tcp_socket, final_message)
         return response
 
     def session_start(self, session_image: str = "HOL") -> str:
@@ -97,7 +97,7 @@ class IsabelleClient:
         start a new session
 
         >>> from unittest.mock import Mock
-        >>> isabelle_client = IsabelleClient("test", "localhost", 1000, "test")
+        >>> isabelle_client = IsabelleClient("localhost", 1000, "test")
         >>> isabelle_client.execute_command = Mock(
         ...     return_value=IsabelleResponse(
         ...     "FINISHED", '{"session_id": "test_session"}', None
@@ -127,7 +127,7 @@ class IsabelleClient:
         stop session with given ID
 
         >>> from unittest.mock import Mock
-        >>> isabelle_client = IsabelleClient("test", "localhost", 1000, "test")
+        >>> isabelle_client = IsabelleClient("localhost", 1000, "test")
         >>> isabelle_client.execute_command = Mock(
         ...     return_value=IsabelleResponse("FAILED", "")
         ... )
@@ -151,7 +151,7 @@ class IsabelleClient:
         run the engine on theory files
 
         >>> from unittest.mock import Mock
-        >>> isabelle_client = IsabelleClient("test", "localhost", 1000, "test")
+        >>> isabelle_client = IsabelleClient("localhost", 1000, "test")
         >>> isabelle_client.execute_command = Mock(
         ...     return_value=IsabelleResponse(
         ...         "FINISHED", '{"session_id": "test"}'
@@ -190,7 +190,7 @@ class IsabelleClient:
         asks a server to echo a message
 
         >>> from unittest.mock import Mock
-        >>> isabelle_client = IsabelleClient("test", "localhost", 1000, "test")
+        >>> isabelle_client = IsabelleClient("localhost", 1000, "test")
         >>> isabelle_client.execute_command = Mock(
         ...     return_value=IsabelleResponse(
         ...         "OK", json.dumps("test message")
@@ -213,7 +213,7 @@ class IsabelleClient:
         asks a server to display the list of available commands
 
         >>> from unittest.mock import Mock
-        >>> isabelle_client = IsabelleClient("test", "localhost", 1000, "test")
+        >>> isabelle_client = IsabelleClient("localhost", 1000, "test")
         >>> isabelle_client.execute_command = Mock(
         ...     return_value=IsabelleResponse(
         ...         "OK", json.dumps(["help", "echo"])
@@ -235,7 +235,7 @@ class IsabelleClient:
         asks a server to purge listed theories from it
 
         >>> from unittest.mock import Mock
-        >>> isabelle_client = IsabelleClient("test", "localhost", 1000, "test")
+        >>> isabelle_client = IsabelleClient("localhost", 1000, "test")
         >>> isabelle_client.execute_command = Mock(
         ...     return_value=IsabelleResponse(
         ...         "OK", json.dumps({"purged": [], "retained": []})
@@ -268,7 +268,7 @@ def get_isabelle_client_from_server_info(server_file: str) -> IsabelleClient:
     ValueError: Unexpected server info: wrong
     >>> server_info = 'server "test" = 127.0.0.1:10000 (password "pass")'
     >>> with patch("builtins.open", mock_open(read_data=server_info)):
-    ...     print(get_isabelle_client_from_server_info("test").server_port)
+    ...     print(get_isabelle_client_from_server_info("test").port)
     10000
 
     :param server_file: a file with server info (a line returned by a server
@@ -282,8 +282,6 @@ def get_isabelle_client_from_server_info(server_file: str) -> IsabelleClient:
     ).match(server_info)
     if match is None:
         raise ValueError(f"Unexpected server info: {server_info}")
-    server_name, server_ip, server_port, server_password = match.groups()
-    isabelle_client = IsabelleClient(
-        server_name, server_ip, int(server_port), server_password
-    )
+    _, address, port, password = match.groups()
+    isabelle_client = IsabelleClient(address, int(port), password)
     return isabelle_client

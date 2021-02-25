@@ -13,10 +13,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-import io
 import re
 import socket
 from dataclasses import dataclass
+from logging import Logger
 from typing import Optional, Set
 
 
@@ -143,7 +143,7 @@ def get_response_from_isabelle(tcp_socket: socket.socket) -> IsabelleResponse:
 def get_final_message(
     tcp_socket: socket.socket,
     final_message: Set[str],
-    log_file: Optional[io.TextIOWrapper] = None,
+    logger: Optional[Logger] = None,
 ) -> IsabelleResponse:
     """
     gets responses from ``isabelle`` server until a message of specified
@@ -158,15 +158,15 @@ def get_final_message(
     ...        b'FINISHED {"session_id": "test_session"}\\n'
     ...    ]
     ... )
-    >>> log_file = Mock()
-    >>> log_file.write = Mock()
+    >>> logger = Mock()
+    >>> logger.info = Mock()
     >>> print(str(get_final_message(
-    ...     tcp_socket, {"FINISHED"}, log_file
+    ...     tcp_socket, {"FINISHED"}, logger
     ... )))
     40
     FINISHED {"session_id": "test_session"}
-    >>> print(log_file.write.mock_calls)
-    [call('OK i\\n'), call('40\\nFINISHED {"session_id": "test_session"}\\n')]
+    >>> print(logger.info.mock_calls)
+    [call('OK i'), call('40\\nFINISHED {"session_id": "test_session"}')]
     >>> tcp_socket.recv = Mock(
     ...     side_effect=[b"5", b"\\n", b"wrong"]
     ... )
@@ -177,7 +177,7 @@ def get_final_message(
 
     :param tcp_socket:  a TCP socket to ``isabelle`` server
     :param final_message: a set of possible final message types
-    :param log_file: a file for writing a copy of all messages
+    :param logger: a logger where to send all server replies
     :returns: the final response from ``isabelle`` server
     """
     response = IsabelleResponse("", "")
@@ -188,6 +188,6 @@ def get_final_message(
         if response.response_type == "OK":
             password_ok_received = True
         response = get_response_from_isabelle(tcp_socket)
-        if log_file is not None:
-            log_file.write(str(response) + "\n")
+        if logger is not None:
+            logger.info(str(response))
     return response
