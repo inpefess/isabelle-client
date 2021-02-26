@@ -31,12 +31,9 @@ Now we can get an instance of Isabelle client to talk to this server from Python
 It might be useful to log all replies from the server somewhere, e.g.::
 
     import logging
-    import sys
-
-    logger = logging.getLogger()
-    logger.addHandler(logging.StreamHandler(sys.stdout))
-    logger.setLevel(logging.INFO)
-    isabelle.logger = logger
+    
+    logging.basicConfig(filename="out.log")
+    isabelle.logger = logging.getLogger()
 
 This client has several methods implemented to communicate with the server Python-style, e.g.::
 
