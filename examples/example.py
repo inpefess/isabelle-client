@@ -32,6 +32,7 @@ def main():
     # now we can send a theory file from this directory to the server
     # and get a response
     isabelle.use_theories(theories=["dummy"], master_dir=".")
+    isabelle.execute_command("echo 42", asynchronous=False)
 
 
 if __name__ == "__main__":
