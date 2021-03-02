@@ -62,12 +62,12 @@ class IsabelleClient:
         ...     patch("socket.socket.send", send),
         ...     patch("isabelle_client.isabelle_client.get_final_message", res)
         ... ):
-        ...    response = isabelle_client.execute_command("test", "test")
-        >>> print(response.response_type)
+        ...    test_response = isabelle_client.execute_command("test")
+        >>> print(test_response.response_type)
         FINISHED
-        >>> print(response.response_body)
+        >>> print(test_response.response_body)
         {"session_id": "session_id__42"}
-        >>> print(response.response_length)
+        >>> print(test_response.response_length)
         42
         >>> print(connect.mock_calls)
         [call(('localhost', 1000))]
@@ -113,7 +113,7 @@ class IsabelleClient:
             ...
         ValueError: Unexpected response type: OK
 
-        :param session: a name of a session image
+        :param session_image: a name of a session image
         :returns: a ``session_id``
         """
         arguments = json.dumps({"session": session_image})
@@ -131,15 +131,16 @@ class IsabelleClient:
         >>> isabelle_client.execute_command = Mock(
         ...     return_value=IsabelleResponse("FAILED", "")
         ... )
-        >>> response = isabelle_client.session_stop("test")
-        >>> print(response.response_type)
+        >>> test_response = isabelle_client.session_stop("test")
+        >>> print(test_response.response_type)
         FAILED
 
         :param session_id: a string ID of a session
         :returns: ``isabelle`` server response
         """
         arguments = json.dumps({"session_id": session_id})
-        return self.execute_command(f"session_stop {arguments}")
+        response = self.execute_command(f"session_stop {arguments}")
+        return response
 
     def use_theories(
         self,
@@ -157,10 +158,10 @@ class IsabelleClient:
         ...         "FINISHED", '{"session_id": "test"}'
         ...     )
         ... )
-        >>> response = isabelle_client.use_theories(
+        >>> test_response = isabelle_client.use_theories(
         ...     ["test"], master_dir="test"
         ... )
-        >>> print(response.response_type)
+        >>> print(test_response.response_type)
         FINISHED
 
         :param theories: names of theory files (without extensions!)
@@ -196,8 +197,8 @@ class IsabelleClient:
         ...         "OK", json.dumps("test message")
         ...     )
         ... )
-        >>> response = isabelle_client.echo("test_message")
-        >>> print(response.response_body)
+        >>> test_response = isabelle_client.echo("test_message")
+        >>> print(test_response.response_body)
         "test message"
 
         :param message: any text
@@ -219,8 +220,8 @@ class IsabelleClient:
         ...         "OK", json.dumps(["help", "echo"])
         ...     )
         ... )
-        >>> response = isabelle_client.help()
-        >>> print(response.response_body)
+        >>> test_response = isabelle_client.help()
+        >>> print(test_response.response_body)
         ["help", "echo"]
 
         :returns: ``isabelle`` server response
@@ -241,8 +242,8 @@ class IsabelleClient:
         ...         "OK", json.dumps({"purged": [], "retained": []})
         ...     )
         ... )
-        >>> response = isabelle_client.purge_theories("test", [])
-        >>> print(response.response_body)
+        >>> test_response = isabelle_client.purge_theories("test", [])
+        >>> print(test_response.response_body)
         {"purged": [], "retained": []}
 
         :param session_id: an ID of the session from which to purge theories
@@ -253,6 +254,50 @@ class IsabelleClient:
         response = self.execute_command(
             f"purge_theories {json.dumps(arguments)}", asynchronous=False
         )
+        return response
+
+    def cancel(self, task: str) -> IsabelleResponse:
+        """
+        asks a server to try to cancel a task with a given ID
+
+        >>> from unittest.mock import Mock
+        >>> isabelle_client = IsabelleClient("localhost", 1000, "test")
+        >>> isabelle_client.execute_command = Mock(
+        ...     return_value=IsabelleResponse(
+        ...         "OK", ""
+        ...     )
+        ... )
+        >>> test_response = isabelle_client.cancel("test_task")
+        >>> print(test_response.response_body)
+        <BLANKLINE>
+
+        :param task: a task ID
+        :returns: ``isabelle`` server response
+        """
+        arguments = {"task": task}
+        response = self.execute_command(
+            f"cancel {json.dumps(arguments)}", asynchronous=False
+        )
+        return response
+
+    def shutdown(self) -> IsabelleResponse:
+        """
+        asks a server to shutdown immediately
+
+        >>> from unittest.mock import Mock
+        >>> isabelle_client = IsabelleClient("localhost", 1000, "test")
+        >>> isabelle_client.execute_command = Mock(
+        ...     return_value=IsabelleResponse(
+        ...         "OK", ""
+        ...     )
+        ... )
+        >>> test_response = isabelle_client.shutdown()
+        >>> print(test_response.response_body)
+        <BLANKLINE>
+
+        :returns: ``isabelle`` server response
+        """
+        response = self.execute_command("shutdown", asynchronous=False)
         return response
 
 
@@ -266,8 +311,8 @@ def get_isabelle_client_from_server_info(server_file: str) -> IsabelleClient:
     Traceback (most recent call last):
         ...
     ValueError: Unexpected server info: wrong
-    >>> server_info = 'server "test" = 127.0.0.1:10000 (password "pass")'
-    >>> with patch("builtins.open", mock_open(read_data=server_info)):
+    >>> server_inf = 'server "test" = 127.0.0.1:10000 (password "pass")'
+    >>> with patch("builtins.open", mock_open(read_data=server_inf)):
     ...     print(get_isabelle_client_from_server_info("test").port)
     10000
 
