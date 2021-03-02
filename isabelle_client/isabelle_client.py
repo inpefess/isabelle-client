@@ -255,6 +255,50 @@ class IsabelleClient:
         )
         return response
 
+    def cancel(self, task: str) -> IsabelleResponse:
+        """
+        asks a server to try to cancel a task with a given ID
+
+        >>> from unittest.mock import Mock
+        >>> isabelle_client = IsabelleClient("localhost", 1000, "test")
+        >>> isabelle_client.execute_command = Mock(
+        ...     return_value=IsabelleResponse(
+        ...         "OK", ""
+        ...     )
+        ... )
+        >>> response = isabelle_client.cancel("test_task")
+        >>> print(response.response_body)
+        <BLANKLINE>
+
+        :param task: a task ID
+        :returns: ``isabelle`` server response
+        """
+        arguments = {"task": task}
+        response = self.execute_command(
+            f"cancel {json.dumps(arguments)}", asynchronous=False
+        )
+        return response
+
+    def shutdown(self) -> IsabelleResponse:
+        """
+        asks a server to shutdown immediately
+
+        >>> from unittest.mock import Mock
+        >>> isabelle_client = IsabelleClient("localhost", 1000, "test")
+        >>> isabelle_client.execute_command = Mock(
+        ...     return_value=IsabelleResponse(
+        ...         "OK", ""
+        ...     )
+        ... )
+        >>> response = isabelle_client.shutdown()
+        >>> print(response.response_body)
+        <BLANKLINE>
+
+        :returns: ``isabelle`` server response
+        """
+        response = self.execute_command("shutdown", asynchronous=False)
+        return response
+
 
 def get_isabelle_client_from_server_info(server_file: str) -> IsabelleClient:
     """
