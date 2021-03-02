@@ -42,7 +42,7 @@ class IsabelleResponse:
                 else ""
             )
             + self.response_type
-            + " "
+            + (" " if self.response_body != "" else "")
             + self.response_body
         )
 
@@ -134,7 +134,7 @@ def get_response_from_isabelle(tcp_socket: socket.socket) -> IsabelleResponse:
     length = int(match.group(1)) if match is not None else None
     if length is not None:
         response = get_fixed_length_message(tcp_socket, length)
-    match = re.compile(r"(\w+) (.*)").match(response)
+    match = re.compile(r"(\w+) ?(.*)").match(response)
     if match is None:
         raise ValueError(f"Unexpected response from Isabelle: {response}")
     return IsabelleResponse(match.group(1), match.group(2), length)
@@ -153,7 +153,7 @@ def get_final_message(
     >>> tcp_socket = Mock()
     >>> tcp_socket.recv = Mock(
     ...    side_effect=[
-    ...        b"O", b"K", b" ", b"i", b"\\n",
+    ...        b"O", b"K", b"\\n",
     ...        b"4", b"0", b"\\n",
     ...        b'FINISHED {"session_id": "test_session"}\\n'
     ...    ]
@@ -166,14 +166,7 @@ def get_final_message(
     40
     FINISHED {"session_id": "test_session"}
     >>> print(logger.info.mock_calls)
-    [call('OK i'), call('40\\nFINISHED {"session_id": "test_session"}')]
-    >>> tcp_socket.recv = Mock(
-    ...     side_effect=[b"5", b"\\n", b"wrong"]
-    ... )
-    >>> print(get_final_message(tcp_socket, {"FINISHED"}))
-    Traceback (most recent call last):
-        ...
-    ValueError: Unexpected response from Isabelle: wrong
+    [call('OK'), call('40\\nFINISHED {"session_id": "test_session"}')]
 
     :param tcp_socket:  a TCP socket to ``isabelle`` server
     :param final_message: a set of possible final message types
