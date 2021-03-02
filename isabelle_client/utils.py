@@ -56,9 +56,9 @@ def get_delimited_message(
     get a delimited (not fixed-length)response from a TCP socket
 
     >>> from unittest.mock import Mock
-    >>> tcp_socket = Mock()
-    >>> tcp_socket.recv = Mock(side_effect=[b"4", b"2" b"\\n"])
-    >>> print(get_delimited_message(tcp_socket))
+    >>> test_socket = Mock()
+    >>> test_socket.recv = Mock(side_effect=[b"4", b"2" b"\\n"])
+    >>> print(get_delimited_message(test_socket))
     42
 
     :param tcp_socket: a TCP socket to receive data from
@@ -82,11 +82,11 @@ def get_fixed_length_message(
     get a response of a fixed length from a TCP socket
 
     >>> from unittest.mock import Mock
-    >>> tcp_socket = Mock()
-    >>> tcp_socket.recv = Mock(
+    >>> test_socket = Mock()
+    >>> test_socket.recv = Mock(
     ...     side_effect=[b'FINISHED {"session_id": "session_id__42"}\\n']
     ... )
-    >>> print(get_fixed_length_message(tcp_socket, 42))
+    >>> print(get_fixed_length_message(test_socket, 42))
     FINISHED {"session_id": "session_id__42"}
 
     :param tcp_socket: a TCP socket to receive data from
@@ -113,8 +113,8 @@ def get_response_from_isabelle(tcp_socket: socket.socket) -> IsabelleResponse:
     only one integer number denoting length
 
     >>> from unittest.mock import Mock
-    >>> tcp_socket = Mock()
-    >>> tcp_socket.recv = Mock(
+    >>> test_socket = Mock()
+    >>> test_socket.recv = Mock(
     ...     side_effect=[
     ...         b"4",
     ...         b"2",
@@ -122,7 +122,7 @@ def get_response_from_isabelle(tcp_socket: socket.socket) -> IsabelleResponse:
     ...         b'FINISHED {"session_id": "session_id__42"}\\n',
     ...     ]
     ... )
-    >>> print(str(get_response_from_isabelle(tcp_socket)))
+    >>> print(str(get_response_from_isabelle(test_socket)))
     42
     FINISHED {"session_id": "session_id__42"}
 
@@ -150,22 +150,22 @@ def get_final_message(
     'final' type arrives
 
     >>> from unittest.mock import Mock
-    >>> tcp_socket = Mock()
-    >>> tcp_socket.recv = Mock(
+    >>> test_socket = Mock()
+    >>> test_socket.recv = Mock(
     ...    side_effect=[
     ...        b"O", b"K", b"\\n",
     ...        b"4", b"0", b"\\n",
     ...        b'FINISHED {"session_id": "test_session"}\\n'
     ...    ]
     ... )
-    >>> logger = Mock()
-    >>> logger.info = Mock()
+    >>> test_logger = Mock()
+    >>> test_logger.info = Mock()
     >>> print(str(get_final_message(
-    ...     tcp_socket, {"FINISHED"}, logger
+    ...     test_socket, {"FINISHED"}, test_logger
     ... )))
     40
     FINISHED {"session_id": "test_session"}
-    >>> print(logger.info.mock_calls)
+    >>> print(test_logger.info.mock_calls)
     [call('OK'), call('40\\nFINISHED {"session_id": "test_session"}')]
 
     :param tcp_socket:  a TCP socket to ``isabelle`` server
