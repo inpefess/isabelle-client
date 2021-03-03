@@ -136,7 +136,6 @@ class IsabelleClient:
         >>> isabelle_client = IsabelleClient("localhost", 1000, "test")
         >>> isabelle_client.execute_command = Mock(
         ...     return_value=IsabelleResponse(
-
         ...     "FINISHED", '{"session_id": "test_session"}', None
         ...     )
         ... )
