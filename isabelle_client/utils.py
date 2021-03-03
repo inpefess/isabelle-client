@@ -13,185 +13,62 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+import asyncio
 import re
-import socket
-from dataclasses import dataclass
-from logging import Logger
-from typing import Optional, Set
+from typing import Tuple
+
+from isabelle_client.isabelle__client import IsabelleClient
 
 
-@dataclass
-class IsabelleResponse:
+def get_isabelle_client(server_info: str) -> IsabelleClient:
     """
-    a response from an ``isabelle`` server
+    get an instance of ``IsabelleClient`` from server info
 
-    :param response_type: an all capitals word like ``FINISHED`` or ``ERROR``
-    :param response_body: a JSON-formatted response
-    :param response_length: a length of JSON response
-    """
-
-    response_type: str
-    response_body: str
-    response_length: Optional[int] = None
-
-    def __str__(self):
-        return (
-            (
-                f"{self.response_length}\n"
-                if self.response_length is not None
-                else ""
-            )
-            + self.response_type
-            + (" " if self.response_body != "" else "")
-            + self.response_body
-        )
-
-
-def get_delimited_message(
-    tcp_socket: socket.socket,
-    delimiter: str = "\n",
-    encoding: str = "utf-8",
-) -> str:
-    """
-    get a delimited (not fixed-length)response from a TCP socket
-
-    >>> from unittest.mock import Mock
-    >>> test_socket = Mock()
-    >>> test_socket.recv = Mock(side_effect=[b"4", b"2" b"\\n"])
-    >>> print(get_delimited_message(test_socket))
-    42
-
-    :param tcp_socket: a TCP socket to receive data from
-    :param delimiter: a character which marks the end of response
-    :param encoding: a socket encoding
-    :returns: decoded string response
-    """
-    response = " "
-    while response[-1] != delimiter:
-        response += tcp_socket.recv(1).decode(encoding)
-    return response[1:]
-
-
-def get_fixed_length_message(
-    tcp_socket: socket.socket,
-    message_length: int,
-    chunk_size: int = 8196,
-    encoding: str = "utf-8",
-) -> str:
-    """
-    get a response of a fixed length from a TCP socket
-
-    >>> from unittest.mock import Mock
-    >>> test_socket = Mock()
-    >>> test_socket.recv = Mock(
-    ...     side_effect=[b'FINISHED {"session_id": "session_id__42"}\\n']
-    ... )
-    >>> print(get_fixed_length_message(test_socket, 42))
-    FINISHED {"session_id": "session_id__42"}
-
-    :param tcp_socket: a TCP socket to receive data from
-    :param message_length: a number of bytes to read as a message
-    :param chunk_size: the maximal number of bytes to get at one time
-    :param encoding: a socket encoding
-    :returns: decoded string response
-    """
-    response = b""
-    read_length = 0
-    while read_length < message_length:
-        response += tcp_socket.recv(
-            min(chunk_size, message_length - read_length)
-        )
-        read_length = len(response)
-    return response.decode(encoding)
-
-
-def get_response_from_isabelle(tcp_socket: socket.socket) -> IsabelleResponse:
-    """
-    get a response from ``isabelle`` server:
-    * a carriage-return delimited message or
-    * a fixed length message after a carriage-return delimited message with
-    only one integer number denoting length
-
-    >>> from unittest.mock import Mock
-    >>> test_socket = Mock()
-    >>> test_socket.recv = Mock(
-    ...     side_effect=[
-    ...         b"4",
-    ...         b"2",
-    ...         b"\\n",
-    ...         b'FINISHED {"session_id": "session_id__42"}\\n',
-    ...     ]
-    ... )
-    >>> print(str(get_response_from_isabelle(test_socket)))
-    42
-    FINISHED {"session_id": "session_id__42"}
-    >>> test_socket.recv = Mock(
-    ...     side_effect=[
-    ...         b"7",
-    ...         b"\\n",
-    ...         b'# wrong',
-    ...     ]
-    ... )
-    >>> print(str(get_response_from_isabelle(test_socket)))
+    >>> server_inf = 'server "test" = 127.0.0.1:10000 (password "pass")'
+    >>> print(get_isabelle_client(server_inf).port)
+    10000
+    >>> get_isabelle_client("wrong")
     Traceback (most recent call last):
-      ...
-    ValueError: Unexpected response from Isabelle: # wrong
+        ...
+    ValueError: Unexpected server info: wrong
 
-    :param tcp_socket: a TCP socket to receive data from
-    :returns: a response from ``isabelle``
+    :param server_info: a line returned by a server on start
+    :returns: an ``isabelle`` client
     """
-    response = get_delimited_message(tcp_socket)
-    match = re.compile(r"(\d+)\n").match(response)
-    length = int(match.group(1)) if match is not None else None
-    if length is not None:
-        response = get_fixed_length_message(tcp_socket, length)
-    match = re.compile(r"(\w+) ?(.*)").match(response)
+    match = re.compile(
+        r"server \"(.*)\" = .*:(.*) \(password \"(.*)\"\)"
+    ).match(server_info)
     if match is None:
-        raise ValueError(f"Unexpected response from Isabelle: {response}")
-    return IsabelleResponse(match.group(1), match.group(2), length)
+        raise ValueError(f"Unexpected server info: {server_info}")
+    address, port, password = match.groups()
+    isabelle_client = IsabelleClient(address, int(port), password)
+    return isabelle_client
 
 
-def get_final_message(
-    tcp_socket: socket.socket,
-    final_message: Set[str],
-    logger: Optional[Logger] = None,
-) -> IsabelleResponse:
+async def async_start_isabelle_server() -> Tuple[
+    str, asyncio.subprocess.Process
+]:
     """
-    gets responses from ``isabelle`` server until a message of specified
-    'final' type arrives
+    a technical function
 
-    >>> from unittest.mock import Mock
-    >>> test_socket = Mock()
-    >>> test_socket.recv = Mock(
-    ...    side_effect=[
-    ...        b"O", b"K", b"\\n",
-    ...        b"4", b"0", b"\\n",
-    ...        b'FINISHED {"session_id": "test_session"}\\n'
-    ...    ]
-    ... )
-    >>> test_logger = Mock()
-    >>> test_logger.info = Mock()
-    >>> print(str(get_final_message(
-    ...     test_socket, {"FINISHED"}, test_logger
-    ... )))
-    40
-    FINISHED {"session_id": "test_session"}
-    >>> print(test_logger.info.mock_calls)
-    [call('OK'), call('40\\nFINISHED {"session_id": "test_session"}')]
-
-    :param tcp_socket:  a TCP socket to ``isabelle`` server
-    :param final_message: a set of possible final message types
-    :param logger: a logger where to send all server replies
-    :returns: the final response from ``isabelle`` server
+    >>> from unittest.mock import patch, AsyncMock
+    >>> mock = AsyncMock()
+    >>> with patch("asyncio.create_subprocess_exec", mock):
+    ...     asyncio.run(async_start_isabelle_server())
     """
-    response = IsabelleResponse("", "")
-    password_ok_received = False
-    while (
-        response.response_type not in final_message or not password_ok_received
-    ):
-        if response.response_type == "OK":
-            password_ok_received = True
-        response = get_response_from_isabelle(tcp_socket)
-        if logger is not None:
-            logger.info(str(response))
-    return response
+    isabelle_server = await asyncio.create_subprocess_exec(
+        "isabelle", "server", stdout=asyncio.subprocess.PIPE
+    )
+    if isabelle_server.stdout is None:
+        raise ValueError("Failed to start server")
+    server_info = (await isabelle_server.stdout.readline()).decode("utf-8")
+    return (server_info, isabelle_server)
+
+
+def start_isabelle_server() -> Tuple[str, asyncio.subprocess.Process]:
+    """
+    start ``isabelle`` server
+
+    :return: a line of server info and server process
+    """
+    return asyncio.run(async_start_isabelle_server())

@@ -30,12 +30,21 @@ Isabelle Client
    :special-members: __init__
    :members:
 
-utils
------
-.. currentmodule:: isabelle_client.utils
+socket_communication
+--------------------
+.. currentmodule:: isabelle_client.socket_communication
 
-A collection of different functions used by other modules.
+A collection of functions for TCP communication.
 
 .. autofunction:: get_delimited_message
 .. autofunction:: get_fixed_length_message
 .. autofunction:: get_response_from_isabelle
+
+utils
+-----
+.. currentmodule:: isabelle_client.utils
+
+A collection of different useful functhions.
+
+.. autofunction:: start_isabelle_server
+.. autofunction:: get_isabelle_client

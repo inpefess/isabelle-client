@@ -14,12 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 import json
-import re
 import socket
 from logging import Logger
 from typing import Dict, List, Optional, Union
 
-from isabelle_client.utils import IsabelleResponse, get_final_message
+from isabelle_client.socket_communication import (
+    IsabelleResponse,
+    get_final_message,
+)
 
 
 class IsabelleClient:
@@ -60,7 +62,10 @@ class IsabelleClient:
         >>> with (
         ...     patch("socket.socket.connect", connect),
         ...     patch("socket.socket.send", send),
-        ...     patch("isabelle_client.isabelle_client.get_final_message", res)
+        ...     patch(
+        ...         "isabelle_client.isabelle__client.get_final_message",
+        ...         res
+        ...     )
         ... ):
         ...    test_response = isabelle_client.execute_command("test")
         >>> print(test_response.response_type)
@@ -335,34 +340,3 @@ class IsabelleClient:
         """
         response = self.execute_command("shutdown", asynchronous=False)
         return response
-
-
-def get_isabelle_client_from_server_info(server_file: str) -> IsabelleClient:
-    """
-    get an instance of ``IsabelleClient`` from a server info file
-
-    >>> from unittest.mock import mock_open, patch
-    >>> with patch("builtins.open", mock_open(read_data="wrong")):
-    ...     print(get_isabelle_client_from_server_info("test"))
-    Traceback (most recent call last):
-        ...
-    ValueError: Unexpected server info: wrong
-    >>> server_inf = 'server "test" = 127.0.0.1:10000 (password "pass")'
-    >>> with patch("builtins.open", mock_open(read_data=server_inf)):
-    ...     print(get_isabelle_client_from_server_info("test").port)
-    10000
-
-    :param server_file: a file with server info (a line returned by a server
-    on start)
-    :returns: an ``isabelle`` client
-    """
-    with open(server_file, "r") as server_info_file:
-        server_info = server_info_file.read()
-    match = re.compile(
-        r"server \"(.*)\" = (.*):(.*) \(password \"(.*)\"\)"
-    ).match(server_info)
-    if match is None:
-        raise ValueError(f"Unexpected server info: {server_info}")
-    _, address, port, password = match.groups()
-    isabelle_client = IsabelleClient(address, int(port), password)
-    return isabelle_client
