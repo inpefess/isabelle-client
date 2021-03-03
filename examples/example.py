@@ -29,7 +29,10 @@ def main():
     isabelle.logger.setLevel(logging.INFO)
     # now we can send a theory file from this directory to the server
     # and get a response
-    isabelle.use_theories(theories=["dummy"], master_dir=".")
+    # isabelle.use_theories(theories=["Dummy"], master_dir=".")
+    # or we can build a session document using ROOT and root.tex files from it
+    isabelle.session_build(dirs=["."], session="examples")
+    # or we can issue a free-text command through TCP
     isabelle.execute_command("echo 42", asynchronous=False)
 
 

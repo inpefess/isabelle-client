@@ -17,7 +17,7 @@ import json
 import re
 import socket
 from logging import Logger
-from typing import List, Optional
+from typing import Dict, List, Optional, Union
 
 from isabelle_client.utils import IsabelleResponse, get_final_message
 
@@ -92,6 +92,42 @@ class IsabelleClient:
             )
         return response
 
+    def session_build(
+        self,
+        session: str,
+        dirs: List[str] = None,
+        options: List[str] = None,
+    ) -> IsabelleResponse:
+        """
+        build a session from ROOT file
+
+        >>> from unittest.mock import Mock
+        >>> isabelle_client = IsabelleClient("localhost", 1000, "test")
+        >>> isabelle_client.execute_command = Mock(
+        ...     return_value=IsabelleResponse(
+        ...     "FINISHED", '{"ok": true}', None
+        ...     )
+        ... )
+        >>> print(isabelle_client.session_build(
+        ...     session="test_session", dirs=["."], options=[]
+        ... ))
+        FINISHED {"ok": true}
+
+        :param session: a name of the session from ROOT file
+        :param dirs: where to look for ROOT files
+        :param options: additional options
+        :returns: an ``isabelle`` response
+        """
+        arguments: Dict[str, Union[str, List[str]]] = {"session": session}
+        if dirs is not None:
+            arguments["dirs"] = dirs
+        if options is not None:
+            arguments["options"] = options
+        response = self.execute_command(
+            f"session_build {json.dumps(arguments)}"
+        )
+        return response
+
     def session_start(self, session_image: str = "HOL") -> str:
         """
         start a new session
@@ -100,6 +136,7 @@ class IsabelleClient:
         >>> isabelle_client = IsabelleClient("localhost", 1000, "test")
         >>> isabelle_client.execute_command = Mock(
         ...     return_value=IsabelleResponse(
+
         ...     "FINISHED", '{"session_id": "test_session"}', None
         ...     )
         ... )
