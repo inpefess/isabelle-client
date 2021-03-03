@@ -125,6 +125,17 @@ def get_response_from_isabelle(tcp_socket: socket.socket) -> IsabelleResponse:
     >>> print(str(get_response_from_isabelle(test_socket)))
     42
     FINISHED {"session_id": "session_id__42"}
+    >>> test_socket.recv = Mock(
+    ...     side_effect=[
+    ...         b"7",
+    ...         b"\\n",
+    ...         b'# wrong',
+    ...     ]
+    ... )
+    >>> print(str(get_response_from_isabelle(test_socket)))
+    Traceback (most recent call last):
+      ...
+    ValueError: Unexpected response from Isabelle: # wrong
 
     :param tcp_socket: a TCP socket to receive data from
     :returns: a response from ``isabelle``
