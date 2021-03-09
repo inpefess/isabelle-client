@@ -15,18 +15,18 @@ limitations under the License.
 """
 import logging
 
-from isabelle_client import get_isabelle_client_from_server_info
+from isabelle_client.utils import get_isabelle_client, start_isabelle_server
 
 
 def main():
     """ using ``isabelle`` client """
-    # first, run Isabelle server in the same directory as this script:
-    # isabelle server > server.info
-    isabelle = get_isabelle_client_from_server_info("server.info")
+    # first, we start Isabelle server
+    server_info, _ = start_isabelle_server()
+    isabelle = get_isabelle_client(server_info)
     # we will log all the messages from the server to stdout
-    logging.basicConfig(filename="out.log")
     isabelle.logger = logging.getLogger()
     isabelle.logger.setLevel(logging.INFO)
+    isabelle.logger.addHandler(logging.FileHandler("out.log"))
     # now we can send a theory file from this directory to the server
     # and get a response
     # isabelle.use_theories(theories=["Dummy"], master_dir=".")
@@ -34,6 +34,7 @@ def main():
     isabelle.session_build(dirs=["."], session="examples")
     # or we can issue a free-text command through TCP
     isabelle.execute_command("echo 42", asynchronous=False)
+    isabelle.shutdown()
 
 
 if __name__ == "__main__":
