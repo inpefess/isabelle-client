@@ -188,6 +188,7 @@ class IsabelleClient:
         theories: List[str],
         session_id: Optional[str] = None,
         master_dir: Optional[str] = None,
+        watchdog_timeout: Optional[int] = None,
     ) -> IsabelleResponse:
         """
         run the engine on theory files
@@ -200,7 +201,7 @@ class IsabelleClient:
         ...     )
         ... )
         >>> test_response = isabelle_client.use_theories(
-        ...     ["test"], master_dir="test"
+        ...     ["test"], master_dir="test", watchdog_timeout=0
         ... )
         >>> print(test_response.response_type)
         FINISHED
@@ -210,21 +211,25 @@ class IsabelleClient:
             created and then destroyed after trying to process theories
         :param master_dir: where to look for theory files; if ``None``, uses a
             temp folder of the session
+        :param watchdog_timeout: for how long to wait a response from server
         :returns: ``isabelle`` server response
         """
         new_session_id = (
             self.session_start() if session_id is None else session_id
         )
-        try:
-            arguments = {"session_id": new_session_id, "theories": theories}
-            if master_dir is not None:
-                arguments["master_dir"] = master_dir
-            response = self.execute_command(
-                f"use_theories {json.dumps(arguments)}"
-            )
-        finally:
-            if session_id is None:
-                self.session_stop(new_session_id)
+        arguments: Dict[str, Union[List[str], int, str]] = {
+            "session_id": new_session_id,
+            "theories": theories,
+        }
+        if watchdog_timeout is not None:
+            arguments["watchdog_timeout"] = watchdog_timeout
+        if master_dir is not None:
+            arguments["master_dir"] = master_dir
+        response = self.execute_command(
+            f"use_theories {json.dumps(arguments)}"
+        )
+        if session_id is None:
+            self.session_stop(new_session_id)
         return response
 
     def echo(self, message: str) -> IsabelleResponse:
