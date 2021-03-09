@@ -36,7 +36,7 @@ def get_isabelle_client(server_info: str) -> IsabelleClient:
     :returns: an ``isabelle`` client
     """
     match = re.compile(
-        r"server \"(.*)\" = .*:(.*) \(password \"(.*)\"\)"
+        r"server \".*\" = (.*):(.*) \(password \"(.*)\"\)"
     ).match(server_info)
     if match is None:
         raise ValueError(f"Unexpected server info: {server_info}")
