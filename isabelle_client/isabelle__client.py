@@ -13,8 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+import asyncio
 import json
-import socket
 from logging import Logger
 from typing import Dict, List, Optional, Union
 
@@ -44,7 +44,7 @@ class IsabelleClient:
         self.password = password
         self.logger = logger
 
-    def execute_command(
+    async def execute_command(
         self,
         command: str,
         asynchronous: bool = True,
@@ -89,12 +89,10 @@ class IsabelleClient:
             if asynchronous
             else {"OK", "ERROR"}
         )
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as tcp_socket:
-            tcp_socket.connect((self.address, self.port))
-            tcp_socket.send(f"{self.password}\n{command}\n".encode("utf-8"))
-            response = get_final_message(
-                tcp_socket, final_message, self.logger
-            )
+        reader, writer = await asyncio.open_connection(self.address, self.port)
+        writer.write(f"{self.password}\n{command}\n".encode("utf-8"))
+        await writer.drain()
+        response = await get_final_message(reader, final_message, self.logger)
         return response
 
     def session_build(
@@ -128,8 +126,8 @@ class IsabelleClient:
             arguments["dirs"] = dirs
         if options is not None:
             arguments["options"] = options
-        response = self.execute_command(
-            f"session_build {json.dumps(arguments)}"
+        response = asyncio.run(
+            self.execute_command(f"session_build {json.dumps(arguments)}")
         )
         return response
 
@@ -158,7 +156,9 @@ class IsabelleClient:
         :returns: a ``session_id``
         """
         arguments = json.dumps({"session": session_image})
-        response = self.execute_command(f"session_start {arguments}")
+        response = asyncio.run(
+            self.execute_command(f"session_start {arguments}")
+        )
         if response.response_type == "FINISHED":
             return json.loads(response.response_body)["session_id"]
         raise ValueError(f"Unexpected response type: {response.response_type}")
@@ -180,7 +180,9 @@ class IsabelleClient:
         :returns: ``isabelle`` server response
         """
         arguments = json.dumps({"session_id": session_id})
-        response = self.execute_command(f"session_stop {arguments}")
+        response = asyncio.run(
+            self.execute_command(f"session_stop {arguments}")
+        )
         return response
 
     def use_theories(
@@ -225,8 +227,8 @@ class IsabelleClient:
             arguments["watchdog_timeout"] = watchdog_timeout
         if master_dir is not None:
             arguments["master_dir"] = master_dir
-        response = self.execute_command(
-            f"use_theories {json.dumps(arguments)}"
+        response = asyncio.run(
+            self.execute_command(f"use_theories {json.dumps(arguments)}")
         )
         if session_id is None:
             self.session_stop(new_session_id)
@@ -250,8 +252,10 @@ class IsabelleClient:
         :param message: any text
         :returns: ``isabelle`` server response
         """
-        response = self.execute_command(
-            f"echo {json. dumps(message)}", asynchronous=False
+        response = asyncio.run(
+            self.execute_command(
+                f"echo {json. dumps(message)}", asynchronous=False
+            )
         )
         return response
 
@@ -272,7 +276,9 @@ class IsabelleClient:
 
         :returns: ``isabelle`` server response
         """
-        response = self.execute_command("help", asynchronous=False)
+        response = asyncio.run(
+            self.execute_command("help", asynchronous=False)
+        )
         return response
 
     def purge_theories(
@@ -297,8 +303,10 @@ class IsabelleClient:
         :returns: ``isabelle`` server response
         """
         arguments = {"session_id": session_id, "theories": theories}
-        response = self.execute_command(
-            f"purge_theories {json.dumps(arguments)}", asynchronous=False
+        response = asyncio.run(
+            self.execute_command(
+                f"purge_theories {json.dumps(arguments)}", asynchronous=False
+            )
         )
         return response
 
@@ -321,8 +329,10 @@ class IsabelleClient:
         :returns: ``isabelle`` server response
         """
         arguments = {"task": task}
-        response = self.execute_command(
-            f"cancel {json.dumps(arguments)}", asynchronous=False
+        response = asyncio.run(
+            self.execute_command(
+                f"cancel {json.dumps(arguments)}", asynchronous=False
+            )
         )
         return response
 
@@ -343,5 +353,7 @@ class IsabelleClient:
 
         :returns: ``isabelle`` server response
         """
-        response = self.execute_command("shutdown", asynchronous=False)
+        response = asyncio.run(
+            self.execute_command("shutdown", asynchronous=False)
+        )
         return response

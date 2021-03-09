@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+import asyncio
 import logging
 
 from isabelle_client.utils import get_isabelle_client, start_isabelle_server
@@ -29,11 +30,13 @@ def main():
     isabelle.logger.addHandler(logging.FileHandler("out.log"))
     # now we can send a theory file from this directory to the server
     # and get a response
-    # isabelle.use_theories(theories=["Dummy"], master_dir=".")
+    isabelle.use_theories(
+        theories=["Dummy"], master_dir=".", watchdog_timeout=0
+    )
     # or we can build a session document using ROOT and root.tex files from it
     isabelle.session_build(dirs=["."], session="examples")
     # or we can issue a free-text command through TCP
-    isabelle.execute_command("echo 42", asynchronous=False)
+    asyncio.run(isabelle.execute_command("echo 42", asynchronous=False))
     isabelle.shutdown()
 
 

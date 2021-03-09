@@ -36,9 +36,8 @@ socket_communication
 
 A collection of functions for TCP communication.
 
-.. autofunction:: get_delimited_message
-.. autofunction:: get_fixed_length_message
 .. autofunction:: get_response_from_isabelle
+.. autofunction:: get_final_message
 
 utils
 -----

@@ -13,8 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+import asyncio
 import re
-import socket
 from dataclasses import dataclass
 from logging import Logger
 from typing import Optional, Set
@@ -47,65 +47,9 @@ class IsabelleResponse:
         )
 
 
-def get_delimited_message(
-    tcp_socket: socket.socket,
-    delimiter: str = "\n",
-    encoding: str = "utf-8",
-) -> str:
-    """
-    get a delimited (not fixed-length)response from a TCP socket
-
-    >>> from unittest.mock import Mock
-    >>> test_socket = Mock()
-    >>> test_socket.recv = Mock(side_effect=[b"4", b"2" b"\\n"])
-    >>> print(get_delimited_message(test_socket))
-    42
-
-    :param tcp_socket: a TCP socket to receive data from
-    :param delimiter: a character which marks the end of response
-    :param encoding: a socket encoding
-    :returns: decoded string response
-    """
-    response = " "
-    while response[-1] != delimiter:
-        response += tcp_socket.recv(1).decode(encoding)
-    return response[1:]
-
-
-def get_fixed_length_message(
-    tcp_socket: socket.socket,
-    message_length: int,
-    chunk_size: int = 8196,
-    encoding: str = "utf-8",
-) -> str:
-    """
-    get a response of a fixed length from a TCP socket
-
-    >>> from unittest.mock import Mock
-    >>> test_socket = Mock()
-    >>> test_socket.recv = Mock(
-    ...     side_effect=[b'FINISHED {"session_id": "session_id__42"}\\n']
-    ... )
-    >>> print(get_fixed_length_message(test_socket, 42))
-    FINISHED {"session_id": "session_id__42"}
-
-    :param tcp_socket: a TCP socket to receive data from
-    :param message_length: a number of bytes to read as a message
-    :param chunk_size: the maximal number of bytes to get at one time
-    :param encoding: a socket encoding
-    :returns: decoded string response
-    """
-    response = b""
-    read_length = 0
-    while read_length < message_length:
-        response += tcp_socket.recv(
-            min(chunk_size, message_length - read_length)
-        )
-        read_length = len(response)
-    return response.decode(encoding)
-
-
-def get_response_from_isabelle(tcp_socket: socket.socket) -> IsabelleResponse:
+async def get_response_from_isabelle(
+    reader: asyncio.StreamReader,
+) -> IsabelleResponse:
     """
     get a response from ``isabelle`` server:
     * a carriage-return delimited message or
@@ -140,19 +84,19 @@ def get_response_from_isabelle(tcp_socket: socket.socket) -> IsabelleResponse:
     :param tcp_socket: a TCP socket to receive data from
     :returns: a response from ``isabelle``
     """
-    response = get_delimited_message(tcp_socket)
+    response = (await reader.readline()).decode("utf-8")
     match = re.compile(r"(\d+)\n").match(response)
     length = int(match.group(1)) if match is not None else None
     if length is not None:
-        response = get_fixed_length_message(tcp_socket, length)
+        response = (await reader.readexactly(length)).decode("utf-8")
     match = re.compile(r"(\w+) ?(.*)").match(response)
     if match is None:
         raise ValueError(f"Unexpected response from Isabelle: {response}")
     return IsabelleResponse(match.group(1), match.group(2), length)
 
 
-def get_final_message(
-    tcp_socket: socket.socket,
+async def get_final_message(
+    reader: asyncio.StreamReader,
     final_message: Set[str],
     logger: Optional[Logger] = None,
 ) -> IsabelleResponse:
@@ -191,7 +135,7 @@ def get_final_message(
     ):
         if response.response_type == "OK":
             password_ok_received = True
-        response = get_response_from_isabelle(tcp_socket)
+        response = await get_response_from_isabelle(reader)
         if logger is not None:
             logger.info(str(response))
     return response
