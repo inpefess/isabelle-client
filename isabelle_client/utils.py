@@ -51,10 +51,23 @@ async def async_start_isabelle_server() -> Tuple[
     """
     a technical function
 
-    >>> from unittest.mock import patch, AsyncMock
-    >>> mock = AsyncMock()
-    >>> with patch("asyncio.create_subprocess_exec", mock):
-    ...     asyncio.run(async_start_isabelle_server())
+    >>> from unittest.mock import patch, AsyncMock, Mock
+    >>> server = Mock()
+    >>> server.stdout = Mock()
+    >>> server.stdout.readline = AsyncMock(return_value=b"test_info")
+    >>> server_builder = AsyncMock(return_value=server)
+    >>> with patch("asyncio.create_subprocess_exec", server_builder):
+    ...     print(asyncio.run(async_start_isabelle_server())[0])
+    test_info
+    >>> server_builder.assert_awaited_once()
+    >>> server.stdout.readline.assert_awaited_once()
+    >>> server.stdout = None
+    >>> server_builder = AsyncMock(return_value=server)
+    >>> with patch("asyncio.create_subprocess_exec", server_builder):
+    ...     print(asyncio.run(async_start_isabelle_server())[0])
+    Traceback (most recent call last):
+        ...
+    ValueError: Failed to start server
     """
     isabelle_server = await asyncio.create_subprocess_exec(
         "isabelle", "server", stdout=asyncio.subprocess.PIPE
@@ -68,6 +81,14 @@ async def async_start_isabelle_server() -> Tuple[
 def start_isabelle_server() -> Tuple[str, asyncio.subprocess.Process]:
     """
     start ``isabelle`` server
+
+    >>> from unittest.mock import patch, AsyncMock
+    >>> with patch(
+    ...     "isabelle_client.utils.async_start_isabelle_server",
+    ...     AsyncMock(return_value="TestIsabelleServer")
+    ... ):
+    ...     print(start_isabelle_server())
+    TestIsabelleServer
 
     :return: a line of server info and server process
     """
