@@ -13,8 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+import asyncio
 import json
-import socket
 from logging import Logger
 from typing import Dict, List, Optional, Union
 
@@ -44,39 +44,41 @@ class IsabelleClient:
         self.password = password
         self.logger = logger
 
-    def execute_command(
+    async def execute_command(
         self,
         command: str,
         asynchronous: bool = True,
     ) -> IsabelleResponse:
         """
-        executes an (asynchronous) command and waits for results
+        executes a command and waits for results
 
-        >>> from unittest.mock import Mock, patch
+        >>> from unittest.mock import Mock, patch, AsyncMock
         >>> isabelle_client = IsabelleClient("localhost", 1000, "test")
-        >>> res = Mock(return_value=IsabelleResponse(
+        >>> res = AsyncMock(return_value=IsabelleResponse(
         ...    "FINISHED", '{"session_id": "session_id__42"}', 42
         ... ))
-        >>> connect = Mock()
-        >>> send = Mock()
+        >>> test_writer = Mock()
+        >>> test_writer.drain = AsyncMock()
+        >>> connection = AsyncMock(return_value=(Mock(), test_writer))
         >>> with (
-        ...     patch("socket.socket.connect", connect),
-        ...     patch("socket.socket.send", send),
+        ...     patch("asyncio.open_connection", connection),
         ...     patch(
         ...         "isabelle_client.isabelle__client.get_final_message",
         ...         res
         ...     )
         ... ):
-        ...    test_response = isabelle_client.execute_command("test")
+        ...    test_response = asyncio.run(
+        ...     isabelle_client.execute_command("test")
+        ... )
         >>> print(test_response.response_type)
         FINISHED
         >>> print(test_response.response_body)
         {"session_id": "session_id__42"}
         >>> print(test_response.response_length)
         42
-        >>> print(connect.mock_calls)
-        [call(('localhost', 1000))]
-        >>> print(send.mock_calls)
+        >>> print(connection.mock_calls)
+        [call('localhost', 1000)]
+        >>> print(test_writer.write.mock_calls)
         [call(b'test\\ntest\\n')]
 
         :param command: a full text of a command to ``isabelle``
@@ -89,12 +91,10 @@ class IsabelleClient:
             if asynchronous
             else {"OK", "ERROR"}
         )
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as tcp_socket:
-            tcp_socket.connect((self.address, self.port))
-            tcp_socket.send(f"{self.password}\n{command}\n".encode("utf-8"))
-            response = get_final_message(
-                tcp_socket, final_message, self.logger
-            )
+        reader, writer = await asyncio.open_connection(self.address, self.port)
+        writer.write(f"{self.password}\n{command}\n".encode("utf-8"))
+        await writer.drain()
+        response = await get_final_message(reader, final_message, self.logger)
         return response
 
     def session_build(
@@ -106,9 +106,9 @@ class IsabelleClient:
         """
         build a session from ROOT file
 
-        >>> from unittest.mock import Mock
+        >>> from unittest.mock import AsyncMock
         >>> isabelle_client = IsabelleClient("localhost", 1000, "test")
-        >>> isabelle_client.execute_command = Mock(
+        >>> isabelle_client.execute_command = AsyncMock(
         ...     return_value=IsabelleResponse(
         ...     "FINISHED", '{"ok": true}', None
         ...     )
@@ -128,8 +128,8 @@ class IsabelleClient:
             arguments["dirs"] = dirs
         if options is not None:
             arguments["options"] = options
-        response = self.execute_command(
-            f"session_build {json.dumps(arguments)}"
+        response = asyncio.run(
+            self.execute_command(f"session_build {json.dumps(arguments)}")
         )
         return response
 
@@ -137,16 +137,16 @@ class IsabelleClient:
         """
         start a new session
 
-        >>> from unittest.mock import Mock
+        >>> from unittest.mock import AsyncMock
         >>> isabelle_client = IsabelleClient("localhost", 1000, "test")
-        >>> isabelle_client.execute_command = Mock(
+        >>> isabelle_client.execute_command = AsyncMock(
         ...     return_value=IsabelleResponse(
         ...     "FINISHED", '{"session_id": "test_session"}', None
         ...     )
         ... )
         >>> print(isabelle_client.session_start())
         test_session
-        >>> isabelle_client.execute_command = Mock(
+        >>> isabelle_client.execute_command = AsyncMock(
         ...     return_value=IsabelleResponse("OK", "OK")
         ... )
         >>> print(isabelle_client.session_start())
@@ -158,7 +158,9 @@ class IsabelleClient:
         :returns: a ``session_id``
         """
         arguments = json.dumps({"session": session_image})
-        response = self.execute_command(f"session_start {arguments}")
+        response = asyncio.run(
+            self.execute_command(f"session_start {arguments}")
+        )
         if response.response_type == "FINISHED":
             return json.loads(response.response_body)["session_id"]
         raise ValueError(f"Unexpected response type: {response.response_type}")
@@ -167,9 +169,9 @@ class IsabelleClient:
         """
         stop session with given ID
 
-        >>> from unittest.mock import Mock
+        >>> from unittest.mock import AsyncMock
         >>> isabelle_client = IsabelleClient("localhost", 1000, "test")
-        >>> isabelle_client.execute_command = Mock(
+        >>> isabelle_client.execute_command = AsyncMock(
         ...     return_value=IsabelleResponse("FAILED", "")
         ... )
         >>> test_response = isabelle_client.session_stop("test")
@@ -180,7 +182,9 @@ class IsabelleClient:
         :returns: ``isabelle`` server response
         """
         arguments = json.dumps({"session_id": session_id})
-        response = self.execute_command(f"session_stop {arguments}")
+        response = asyncio.run(
+            self.execute_command(f"session_stop {arguments}")
+        )
         return response
 
     def use_theories(
@@ -193,9 +197,9 @@ class IsabelleClient:
         """
         run the engine on theory files
 
-        >>> from unittest.mock import Mock
+        >>> from unittest.mock import AsyncMock
         >>> isabelle_client = IsabelleClient("localhost", 1000, "test")
-        >>> isabelle_client.execute_command = Mock(
+        >>> isabelle_client.execute_command = AsyncMock(
         ...     return_value=IsabelleResponse(
         ...         "FINISHED", '{"session_id": "test"}'
         ...     )
@@ -225,8 +229,8 @@ class IsabelleClient:
             arguments["watchdog_timeout"] = watchdog_timeout
         if master_dir is not None:
             arguments["master_dir"] = master_dir
-        response = self.execute_command(
-            f"use_theories {json.dumps(arguments)}"
+        response = asyncio.run(
+            self.execute_command(f"use_theories {json.dumps(arguments)}")
         )
         if session_id is None:
             self.session_stop(new_session_id)
@@ -236,9 +240,9 @@ class IsabelleClient:
         """
         asks a server to echo a message
 
-        >>> from unittest.mock import Mock
+        >>> from unittest.mock import AsyncMock
         >>> isabelle_client = IsabelleClient("localhost", 1000, "test")
-        >>> isabelle_client.execute_command = Mock(
+        >>> isabelle_client.execute_command = AsyncMock(
         ...     return_value=IsabelleResponse(
         ...         "OK", json.dumps("test message")
         ...     )
@@ -250,8 +254,10 @@ class IsabelleClient:
         :param message: any text
         :returns: ``isabelle`` server response
         """
-        response = self.execute_command(
-            f"echo {json. dumps(message)}", asynchronous=False
+        response = asyncio.run(
+            self.execute_command(
+                f"echo {json. dumps(message)}", asynchronous=False
+            )
         )
         return response
 
@@ -259,9 +265,9 @@ class IsabelleClient:
         """
         asks a server to display the list of available commands
 
-        >>> from unittest.mock import Mock
+        >>> from unittest.mock import AsyncMock
         >>> isabelle_client = IsabelleClient("localhost", 1000, "test")
-        >>> isabelle_client.execute_command = Mock(
+        >>> isabelle_client.execute_command = AsyncMock(
         ...     return_value=IsabelleResponse(
         ...         "OK", json.dumps(["help", "echo"])
         ...     )
@@ -272,7 +278,9 @@ class IsabelleClient:
 
         :returns: ``isabelle`` server response
         """
-        response = self.execute_command("help", asynchronous=False)
+        response = asyncio.run(
+            self.execute_command("help", asynchronous=False)
+        )
         return response
 
     def purge_theories(
@@ -281,9 +289,9 @@ class IsabelleClient:
         """
         asks a server to purge listed theories from it
 
-        >>> from unittest.mock import Mock
+        >>> from unittest.mock import AsyncMock
         >>> isabelle_client = IsabelleClient("localhost", 1000, "test")
-        >>> isabelle_client.execute_command = Mock(
+        >>> isabelle_client.execute_command = AsyncMock(
         ...     return_value=IsabelleResponse(
         ...         "OK", json.dumps({"purged": [], "retained": []})
         ...     )
@@ -297,8 +305,10 @@ class IsabelleClient:
         :returns: ``isabelle`` server response
         """
         arguments = {"session_id": session_id, "theories": theories}
-        response = self.execute_command(
-            f"purge_theories {json.dumps(arguments)}", asynchronous=False
+        response = asyncio.run(
+            self.execute_command(
+                f"purge_theories {json.dumps(arguments)}", asynchronous=False
+            )
         )
         return response
 
@@ -306,9 +316,9 @@ class IsabelleClient:
         """
         asks a server to try to cancel a task with a given ID
 
-        >>> from unittest.mock import Mock
+        >>> from unittest.mock import AsyncMock
         >>> isabelle_client = IsabelleClient("localhost", 1000, "test")
-        >>> isabelle_client.execute_command = Mock(
+        >>> isabelle_client.execute_command = AsyncMock(
         ...     return_value=IsabelleResponse(
         ...         "OK", ""
         ...     )
@@ -321,8 +331,10 @@ class IsabelleClient:
         :returns: ``isabelle`` server response
         """
         arguments = {"task": task}
-        response = self.execute_command(
-            f"cancel {json.dumps(arguments)}", asynchronous=False
+        response = asyncio.run(
+            self.execute_command(
+                f"cancel {json.dumps(arguments)}", asynchronous=False
+            )
         )
         return response
 
@@ -330,9 +342,9 @@ class IsabelleClient:
         """
         asks a server to shutdown immediately
 
-        >>> from unittest.mock import Mock
+        >>> from unittest.mock import AsyncMock
         >>> isabelle_client = IsabelleClient("localhost", 1000, "test")
-        >>> isabelle_client.execute_command = Mock(
+        >>> isabelle_client.execute_command = AsyncMock(
         ...     return_value=IsabelleResponse(
         ...         "OK", ""
         ...     )
@@ -343,5 +355,7 @@ class IsabelleClient:
 
         :returns: ``isabelle`` server response
         """
-        response = self.execute_command("shutdown", asynchronous=False)
+        response = asyncio.run(
+            self.execute_command("shutdown", asynchronous=False)
+        )
         return response

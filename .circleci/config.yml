@@ -37,13 +37,13 @@ jobs:
           command: |
             . venv/bin/activate
             pycodestyle --max-doc-length 160 --ignore E203,E501,W503\
-                        isabelle_client tests
-            pylint --rcfile=.pylintrc isabelle_client
+                        isabelle_client tests examples
+            pylint --rcfile=.pylintrc isabelle_client examples
       - run:
           name: run type checks
           command: |
             . venv/bin/activate
-            mypy --config-file mypy.ini isabelle_client tests
+            mypy --config-file mypy.ini isabelle_client tests examples
       - run:
           name: upload data to codecov
           command: |

@@ -75,7 +75,7 @@ async def async_start_isabelle_server() -> Tuple[
     if isabelle_server.stdout is None:
         raise ValueError("Failed to start server")
     server_info = (await isabelle_server.stdout.readline()).decode("utf-8")
-    return (server_info, isabelle_server)
+    return server_info, isabelle_server
 
 
 def start_isabelle_server() -> Tuple[str, asyncio.subprocess.Process]:
