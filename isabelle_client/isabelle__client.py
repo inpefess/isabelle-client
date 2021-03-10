@@ -57,9 +57,9 @@ class IsabelleClient:
         >>> res = AsyncMock(return_value=IsabelleResponse(
         ...    "FINISHED", '{"session_id": "session_id__42"}', 42
         ... ))
-        >>> writer = Mock()
-        >>> writer.drain = AsyncMock()
-        >>> connection = AsyncMock(return_value=(Mock(), writer))
+        >>> test_writer = Mock()
+        >>> test_writer.drain = AsyncMock()
+        >>> connection = AsyncMock(return_value=(Mock(), test_writer))
         >>> with (
         ...     patch("asyncio.open_connection", connection),
         ...     patch(
@@ -78,7 +78,7 @@ class IsabelleClient:
         42
         >>> print(connection.mock_calls)
         [call('localhost', 1000)]
-        >>> print(writer.write.mock_calls)
+        >>> print(test_writer.write.mock_calls)
         [call(b'test\\ntest\\n')]
 
         :param command: a full text of a command to ``isabelle``

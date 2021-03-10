@@ -57,17 +57,17 @@ async def get_response_from_isabelle(
     only one integer number denoting length
 
     >>> from unittest.mock import Mock, AsyncMock
-    >>> reader = Mock()
-    >>> reader.readline = AsyncMock(return_value=b"42\\n")
-    >>> reader.readexactly = AsyncMock(
+    >>> test_reader = Mock()
+    >>> test_reader.readline = AsyncMock(return_value=b"42\\n")
+    >>> test_reader.readexactly = AsyncMock(
     ...     return_value=b'FINISHED {"session_id": "session_id__42"}\\n'
     ... )
-    >>> print(str(asyncio.run(get_response_from_isabelle(reader))))
+    >>> print(str(asyncio.run(get_response_from_isabelle(test_reader))))
     42
     FINISHED {"session_id": "session_id__42"}
-    >>> reader.readline = AsyncMock(return_value=b"7\\n")
-    >>> reader.readexactly = AsyncMock(return_value=b'# wrong')
-    >>> print(str(asyncio.run(get_response_from_isabelle(reader))))
+    >>> test_reader.readline = AsyncMock(return_value=b"7\\n")
+    >>> test_reader.readexactly = AsyncMock(return_value=b'# wrong')
+    >>> print(str(asyncio.run(get_response_from_isabelle(test_reader))))
     Traceback (most recent call last):
       ...
     ValueError: Unexpected response from Isabelle: # wrong
@@ -96,23 +96,23 @@ async def get_final_message(
     'final' type arrives
 
     >>> from unittest.mock import Mock, AsyncMock
-    >>> reader = Mock()
-    >>> reader.readline = AsyncMock(side_effect=[b"OK\\n", b"40\\n"])
-    >>> reader.readexactly = AsyncMock(side_effect=[
+    >>> test_reader = Mock()
+    >>> test_reader.readline = AsyncMock(side_effect=[b"OK\\n", b"40\\n"])
+    >>> test_reader.readexactly = AsyncMock(side_effect=[
     ...     b'FINISHED {"session_id": "test_session"}\\n'
     ...    ]
     ... )
     >>> test_logger = Mock()
     >>> test_logger.info = Mock()
     >>> print(str(asyncio.run(get_final_message(
-    ...     reader, {"FINISHED"}, test_logger
+    ...     test_reader, {"FINISHED"}, test_logger
     ... ))))
     40
     FINISHED {"session_id": "test_session"}
     >>> print(test_logger.info.mock_calls)
     [call('OK'), call('40\\nFINISHED {"session_id": "test_session"}')]
 
-    :param tcp_socket:  a TCP socket to ``isabelle`` server
+    :param reader: a ``StreamReader`` connected to ``isabelle`` server
     :param final_message: a set of possible final message types
     :param logger: a logger where to send all server replies
     :returns: the final response from ``isabelle`` server
