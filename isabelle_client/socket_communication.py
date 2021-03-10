@@ -56,32 +56,23 @@ async def get_response_from_isabelle(
     * a fixed length message after a carriage-return delimited message with
     only one integer number denoting length
 
-    >>> from unittest.mock import Mock
-    >>> test_socket = Mock()
-    >>> test_socket.recv = Mock(
-    ...     side_effect=[
-    ...         b"4",
-    ...         b"2",
-    ...         b"\\n",
-    ...         b'FINISHED {"session_id": "session_id__42"}\\n',
-    ...     ]
+    >>> from unittest.mock import Mock, AsyncMock
+    >>> reader = Mock()
+    >>> reader.readline = AsyncMock(return_value=b"42\\n")
+    >>> reader.readexactly = AsyncMock(
+    ...     return_value=b'FINISHED {"session_id": "session_id__42"}\\n'
     ... )
-    >>> print(str(get_response_from_isabelle(test_socket)))
+    >>> print(str(asyncio.run(get_response_from_isabelle(reader))))
     42
     FINISHED {"session_id": "session_id__42"}
-    >>> test_socket.recv = Mock(
-    ...     side_effect=[
-    ...         b"7",
-    ...         b"\\n",
-    ...         b'# wrong',
-    ...     ]
-    ... )
-    >>> print(str(get_response_from_isabelle(test_socket)))
+    >>> reader.readline = AsyncMock(return_value=b"7\\n")
+    >>> reader.readexactly = AsyncMock(return_value=b'# wrong')
+    >>> print(str(asyncio.run(get_response_from_isabelle(reader))))
     Traceback (most recent call last):
       ...
     ValueError: Unexpected response from Isabelle: # wrong
 
-    :param tcp_socket: a TCP socket to receive data from
+    :param reader: a StreamReader connected to a server
     :returns: a response from ``isabelle``
     """
     response = (await reader.readline()).decode("utf-8")
@@ -104,20 +95,18 @@ async def get_final_message(
     gets responses from ``isabelle`` server until a message of specified
     'final' type arrives
 
-    >>> from unittest.mock import Mock
-    >>> test_socket = Mock()
-    >>> test_socket.recv = Mock(
-    ...    side_effect=[
-    ...        b"O", b"K", b"\\n",
-    ...        b"4", b"0", b"\\n",
-    ...        b'FINISHED {"session_id": "test_session"}\\n'
+    >>> from unittest.mock import Mock, AsyncMock
+    >>> reader = Mock()
+    >>> reader.readline = AsyncMock(side_effect=[b"OK\\n", b"40\\n"])
+    >>> reader.readexactly = AsyncMock(side_effect=[
+    ...     b'FINISHED {"session_id": "test_session"}\\n'
     ...    ]
     ... )
     >>> test_logger = Mock()
     >>> test_logger.info = Mock()
-    >>> print(str(get_final_message(
-    ...     test_socket, {"FINISHED"}, test_logger
-    ... )))
+    >>> print(str(asyncio.run(get_final_message(
+    ...     reader, {"FINISHED"}, test_logger
+    ... ))))
     40
     FINISHED {"session_id": "test_session"}
     >>> print(test_logger.info.mock_calls)
