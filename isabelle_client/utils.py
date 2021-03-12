@@ -15,7 +15,7 @@ limitations under the License.
 """
 import asyncio
 import re
-from typing import Tuple
+from typing import Optional, Tuple
 
 from isabelle_client.isabelle__client import IsabelleClient
 
@@ -45,9 +45,11 @@ def get_isabelle_client(server_info: str) -> IsabelleClient:
     return isabelle_client
 
 
-async def async_start_isabelle_server() -> Tuple[
-    str, asyncio.subprocess.Process
-]:
+async def async_start_isabelle_server(
+    log_file: Optional[str] = None,
+    name: Optional[str] = None,
+    port: Optional[int] = None,
+) -> Tuple[str, asyncio.subprocess.Process]:
     """
     a technical function
 
@@ -64,13 +66,27 @@ async def async_start_isabelle_server() -> Tuple[
     >>> server.stdout = None
     >>> server_builder = AsyncMock(return_value=server)
     >>> with patch("asyncio.create_subprocess_exec", server_builder):
-    ...     print(asyncio.run(async_start_isabelle_server())[0])
+    ...     print(asyncio.run(
+    ...     async_start_isabelle_server("out.log", "isabelle", 10000)
+    ... )[0])
     Traceback (most recent call last):
         ...
     ValueError: Failed to start server
+
+    :param log_file: a log file for exceptional output of internal server and
+        session operations
+    :param name: explicit server name (default: isabelle)
+    :param port: explicit server port
+    :returns: a line of server info and server process
     """
+    args = (
+        "server"
+        + (f" -L {log_file}" if log_file is not None else "")
+        + (f" -p {str(port)}" if port is not None else "")
+        + (f" -n {name}" if name is not None else "")
+    )
     isabelle_server = await asyncio.create_subprocess_exec(
-        "isabelle", "server", stdout=asyncio.subprocess.PIPE
+        "isabelle", *(args.split(" ")), stdout=asyncio.subprocess.PIPE
     )
     if isabelle_server.stdout is None:
         raise ValueError("Failed to start server")
@@ -78,7 +94,11 @@ async def async_start_isabelle_server() -> Tuple[
     return server_info, isabelle_server
 
 
-def start_isabelle_server() -> Tuple[str, asyncio.subprocess.Process]:
+def start_isabelle_server(
+    log_file: Optional[str] = None,
+    name: Optional[str] = None,
+    port: Optional[int] = None,
+) -> Tuple[str, asyncio.subprocess.Process]:
     """
     start ``isabelle`` server
 
@@ -90,6 +110,10 @@ def start_isabelle_server() -> Tuple[str, asyncio.subprocess.Process]:
     ...     print(start_isabelle_server())
     TestIsabelleServer
 
+    :param log_file: a log file for exceptional output of internal server and
+        session operations
+    :param name: explicit server name (default: isabelle)
+    :param port: explicit server port
     :return: a line of server info and server process
     """
-    return asyncio.run(async_start_isabelle_server())
+    return asyncio.run(async_start_isabelle_server(log_file, name, port))
