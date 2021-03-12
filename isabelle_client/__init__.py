@@ -15,4 +15,4 @@ limitations under the License.
 """
 from isabelle_client.isabelle__client import IsabelleClient
 from isabelle_client.socket_communication import IsabelleResponse
-from isabelle_client.utils import get_isabelle_client
+from isabelle_client.utils import get_isabelle_client, start_isabelle_server
