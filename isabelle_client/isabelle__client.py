@@ -16,7 +16,7 @@ limitations under the License.
 import asyncio
 import json
 from logging import Logger
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from isabelle_client.socket_communication import (
     IsabelleResponse,
@@ -101,7 +101,8 @@ class IsabelleClient:
         self,
         session: str,
         dirs: List[str] = None,
-        options: List[str] = None,
+        verbose: bool = False,
+        **kwargs,
     ) -> IsabelleResponse:
         """
         build a session from ROOT file
@@ -114,26 +115,31 @@ class IsabelleClient:
         ...     )
         ... )
         >>> print(isabelle_client.session_build(
-        ...     session="test_session", dirs=["."], options=[]
+        ...     session="test_session", dirs=["."], verbose=True, options=[]
         ... ))
         FINISHED {"ok": true}
 
         :param session: a name of the session from ROOT file
         :param dirs: where to look for ROOT files
-        :param options: additional options
+        :param verbose: set to ``True`` for extra verbosity
+        :param kwargs: additional arguments
+            (see Isabelle System manual for details)
         :returns: an ``isabelle`` response
         """
-        arguments: Dict[str, Union[str, List[str]]] = {"session": session}
+        arguments: Dict[str, Union[str, List[str], bool]] = {
+            "session": session,
+            "verbose": verbose,
+        }
         if dirs is not None:
             arguments["dirs"] = dirs
-        if options is not None:
-            arguments["options"] = options
+        for name in kwargs:
+            arguments[name] = kwargs[name]
         response = asyncio.run(
             self.execute_command(f"session_build {json.dumps(arguments)}")
         )
         return response
 
-    def session_start(self, session_image: str = "HOL") -> str:
+    def session_start(self, session: str = "HOL", **kwargs) -> str:
         """
         start a new session
 
@@ -149,17 +155,21 @@ class IsabelleClient:
         >>> isabelle_client.execute_command = AsyncMock(
         ...     return_value=IsabelleResponse("OK", "OK")
         ... )
-        >>> print(isabelle_client.session_start())
+        >>> print(isabelle_client.session_start(verbose=True))
         Traceback (most recent call last):
             ...
         ValueError: Unexpected response type: OK
 
-        :param session_image: a name of a session image
+        :param session: a name of a session to start
+        :param kwargs: additional arguments
+            (see Isabelle System manual for details)
         :returns: a ``session_id``
         """
-        arguments = json.dumps({"session": session_image})
+        arguments = {"session": session}
+        for name in kwargs:
+            arguments[name] = kwargs[name]
         response = asyncio.run(
-            self.execute_command(f"session_start {arguments}")
+            self.execute_command(f"session_start {json.dumps(arguments)}")
         )
         if response.response_type == "FINISHED":
             return json.loads(response.response_body)["session_id"]
@@ -192,7 +202,7 @@ class IsabelleClient:
         theories: List[str],
         session_id: Optional[str] = None,
         master_dir: Optional[str] = None,
-        watchdog_timeout: Optional[int] = None,
+        **kwargs,
     ) -> IsabelleResponse:
         """
         run the engine on theory files
@@ -215,7 +225,8 @@ class IsabelleClient:
             created and then destroyed after trying to process theories
         :param master_dir: where to look for theory files; if ``None``, uses a
             temp folder of the session
-        :param watchdog_timeout: for how long to wait a response from server
+        :param kwargs: additional arguments
+            (see Isabelle System manual for details)
         :returns: ``isabelle`` server response
         """
         new_session_id = (
@@ -225,8 +236,8 @@ class IsabelleClient:
             "session_id": new_session_id,
             "theories": theories,
         }
-        if watchdog_timeout is not None:
-            arguments["watchdog_timeout"] = watchdog_timeout
+        for name in kwargs:
+            arguments[name] = kwargs[name]
         if master_dir is not None:
             arguments["master_dir"] = master_dir
         response = asyncio.run(
@@ -236,7 +247,7 @@ class IsabelleClient:
             self.session_stop(new_session_id)
         return response
 
-    def echo(self, message: str) -> IsabelleResponse:
+    def echo(self, message: Any) -> IsabelleResponse:
         """
         asks a server to echo a message
 
@@ -284,7 +295,11 @@ class IsabelleClient:
         return response
 
     def purge_theories(
-        self, session_id: str, theories: List[str]
+        self,
+        session_id: str,
+        theories: List[str],
+        master_dir: Optional[str] = None,
+        purge_all: Optional[bool] = None,
     ) -> IsabelleResponse:
         """
         asks a server to purge listed theories from it
@@ -296,15 +311,27 @@ class IsabelleClient:
         ...         "OK", json.dumps({"purged": [], "retained": []})
         ...     )
         ... )
-        >>> test_response = isabelle_client.purge_theories("test", [])
+        >>> test_response = isabelle_client.purge_theories(
+        ...     "test", [], "dir", True
+        ... )
         >>> print(test_response.response_body)
         {"purged": [], "retained": []}
 
         :param session_id: an ID of the session from which to purge theories
         :param theories: a list of theory names to purge from the server
+        :param master_dir:  the master directory as in ``use_theories``
+        :param purge_all: set to ``True`` attempts to purge all presently
+            loaded theories
         :returns: ``isabelle`` server response
         """
-        arguments = {"session_id": session_id, "theories": theories}
+        arguments: Dict[str, Union[str, List[str], bool]] = {
+            "session_id": session_id,
+            "theories": theories,
+        }
+        if master_dir is not None:
+            arguments["master_dir"] = master_dir
+        if purge_all is not None:
+            arguments["all"] = purge_all
         response = asyncio.run(
             self.execute_command(
                 f"purge_theories {json.dumps(arguments)}", asynchronous=False
