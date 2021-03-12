@@ -16,7 +16,7 @@ limitations under the License.
 import asyncio
 import logging
 
-from isabelle_client.utils import get_isabelle_client, start_isabelle_server
+from isabelle_client import get_isabelle_client, start_isabelle_server
 
 
 def main():
