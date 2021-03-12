@@ -53,7 +53,9 @@ class IsabelleClient:
         executes a command and waits for results
 
         >>> from unittest.mock import Mock, patch, AsyncMock
-        >>> isabelle_client = IsabelleClient("localhost", 1000, "test")
+        >>> logger = Mock()
+        >>> logger.info = Mock()
+        >>> isabelle_client = IsabelleClient("localhost", 1000, "test", logger)
         >>> res = AsyncMock(return_value=IsabelleResponse(
         ...    "FINISHED", '{"session_id": "session_id__42"}', 42
         ... ))
@@ -80,6 +82,8 @@ class IsabelleClient:
         [call('localhost', 1000)]
         >>> print(test_writer.write.mock_calls)
         [call(b'test\\ntest\\n')]
+        >>> print(logger.info.mock_calls)
+        [call('test\\ntest\\n')]
 
         :param command: a full text of a command to ``isabelle``
         :param asynchronous: if ``False``, waits for ``OK``; else waits for
@@ -92,8 +96,11 @@ class IsabelleClient:
             else {"OK", "ERROR"}
         )
         reader, writer = await asyncio.open_connection(self.address, self.port)
-        writer.write(f"{self.password}\n{command}\n".encode("utf-8"))
+        command = f"{self.password}\n{command}\n"
+        writer.write(command.encode("utf-8"))
         await writer.drain()
+        if self.logger is not None:
+            self.logger.info(command)
         response = await get_final_message(reader, final_message, self.logger)
         return response
 
