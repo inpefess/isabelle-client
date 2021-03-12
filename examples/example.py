@@ -22,12 +22,14 @@ from isabelle_client import get_isabelle_client, start_isabelle_server
 def main():
     """ using ``isabelle`` client """
     # first, we start Isabelle server
-    server_info, _ = start_isabelle_server()
+    server_info, _ = start_isabelle_server(
+        name="test", port="9999", log_file="server.log"
+    )
     isabelle = get_isabelle_client(server_info)
-    # we will log all the messages from the server to stdout
+    # we will log all the messages from the server to a file
     isabelle.logger = logging.getLogger()
     isabelle.logger.setLevel(logging.INFO)
-    isabelle.logger.addHandler(logging.FileHandler("out.log"))
+    isabelle.logger.addHandler(logging.FileHandler("session.log"))
     # now we can send a theory file from this directory to the server
     # and get a response
     isabelle.use_theories(

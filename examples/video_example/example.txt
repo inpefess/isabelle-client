@@ -1,0 +1,36 @@
+# Hi! This is an example of using ``isabelle-client`` package
+python
+# first, we need to start an Isabelle server
+from isabelle_client import start_isabelle_server
+
+server_info, _ = start_isabelle_server(
+    name="test", port=9999, log_file="server.log"
+)
+SLEEP 1
+# we could also start the server outside this scrit and use its info
+# now let's create a client to our server
+from isabelle_client import get_isabelle_client
+
+isabelle = get_isabelle_client(server_info)
+# we will log all the messages from the server to a file
+import logging
+
+isabelle.logger = logging.getLogger()
+isabelle.logger.setLevel(logging.INFO)
+isabelle.logger.addHandler(logging.FileHandler("session.log"))
+# let's suppose that we also have another Python script which generates some
+# theory files
+# now we can build a session document using ROOT and root.tex files
+isabelle.session_build(dirs=["."], session="examples")
+SLEEP 3
+# note that the client returns only the last reply from the server
+# all other messages are saved to the log file
+# we also can issue a free-form command through TCP
+import asyncio
+
+asyncio.run(isabelle.execute_command("echo 42", asynchronous=False))
+exit()
+# our sessions was logged to the file:
+cat session.log & sleep 3
+SLEEP 3
+bye
