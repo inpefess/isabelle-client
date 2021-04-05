@@ -1,0 +1,91 @@
+"""
+Copyright 2021 Boris Shminke
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+"""
+import socketserver
+import threading
+from unittest.mock import Mock
+
+from pytest import fixture
+
+
+class BuggyTCPHandler(socketserver.BaseRequestHandler):
+    """ a dummy handler to mock bugs in Isabelle server response """
+
+    def handle(self):
+        request = self.request.recv(1024).decode("utf-8").split("\n")[0]
+        if request == "ping":
+            self.request.sendall(b"5\n")
+            self.request.sendall(b"# !!!")
+        else:
+            self.request.sendall(b'OK "connection OK"\n')
+            self.request.sendall(b"7\n")
+            self.request.sendall(b"FAILED\n")
+
+
+class DummyTCPHandler(socketserver.BaseRequestHandler):
+    """ a dummy handler to mock Isabelle server """
+
+    # pylint: disable=too-many-statements
+    def handle(self):
+        request = self.request.recv(1024).decode("utf-8").split("\n")[1]
+        command = request.split(" ")[0]
+        self.request.sendall(b'OK "connection OK"\n')
+
+        if command == "echo":
+            self.request.sendall(
+                f"OK{request.split(' ')[1]}\n".encode("utf-8")
+            )
+        elif command in {"shutdown", "cancel"}:
+            self.request.sendall(b"OK")
+        elif command == "purge_theories":
+            self.request.sendall(b'OK {"purged": [], "retained": []}')
+        elif command == "help":
+            self.request.sendall(b'OK ["echo", "help"]')
+        else:
+            self.request.sendall(b"43\n")
+            self.request.sendall(
+                b'FINISHED {"session_id": "test_session_id"}\n'
+            )
+
+
+class ReusableTCPServer(socketserver.TCPServer):
+    """ ignore TIME-WAIT during testing """
+
+    allow_reuse_address = True
+
+
+@fixture(autouse=True, scope="session")
+def tcp_servers():
+    """ a simplistic TCP server mocking Isabelle server behaviour """
+    with ReusableTCPServer(
+        ("localhost", 9999), DummyTCPHandler
+    ) as server, ReusableTCPServer(
+        ("localhost", 9998), BuggyTCPHandler
+    ) as buggy_server:
+        thread = threading.Thread(target=server.serve_forever)
+        thread.daemon = True
+        thread.start()
+        buggy_thread = threading.Thread(target=buggy_server.serve_forever)
+        buggy_thread.daemon = True
+        buggy_thread.start()
+        yield server, buggy_server
+
+
+@fixture
+def mock_logger():
+    """ a mock for logger to spy on ``info`` calls """
+    logger = Mock()
+    logger.info = Mock()
+    return logger
