@@ -7,7 +7,7 @@ server_info, _ = start_isabelle_server(
     name="test", port=9999, log_file="server.log"
 )
 SLEEP 1
-# we could also start the server outside this scrit and use its info
+# we could also start the server outside this script and use its info
 # now let's create a client to our server
 from isabelle_client import get_isabelle_client
 

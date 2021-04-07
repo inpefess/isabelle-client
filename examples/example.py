@@ -23,7 +23,7 @@ def main():
     """ using ``isabelle`` client """
     # first, we start Isabelle server
     server_info, _ = start_isabelle_server(
-        name="test", port="9999", log_file="server.log"
+        name="test", port=9999, log_file="server.log"
     )
     isabelle = get_isabelle_client(server_info)
     # we will log all the messages from the server to a file
