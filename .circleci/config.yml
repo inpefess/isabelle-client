@@ -30,8 +30,8 @@ jobs:
           command: |
             . venv/bin/activate
             pytest --cov isabelle_client --cov-report xml --cov-fail-under=99\
-                   --junit-xml test-results/isabelle-client.xml\
-                   --doctest-modules isabelle_client tests
+                   --junit-xml test-results/isabelle-client.xml isabelle_client\
+                   tests
       - run:
           name: run linters
           command: |
