@@ -45,33 +45,19 @@ def get_isabelle_client(server_info: str) -> IsabelleClient:
     return isabelle_client
 
 
-async def async_start_isabelle_server(
+def start_isabelle_server(
     log_file: Optional[str] = None,
     name: Optional[str] = None,
     port: Optional[int] = None,
 ) -> Tuple[str, asyncio.subprocess.Process]:
     """
-    a technical function
+    start ``isabelle`` server
 
-    >>> from unittest.mock import patch, AsyncMock, Mock
-    >>> server = Mock()
-    >>> server.stdout = Mock()
-    >>> server.stdout.readline = AsyncMock(return_value=b"test_info")
-    >>> server_builder = AsyncMock(return_value=server)
-    >>> with patch("asyncio.create_subprocess_exec", server_builder):
-    ...     print(asyncio.run(async_start_isabelle_server())[0])
-    test_info
-    >>> server_builder.assert_awaited_once()
-    >>> server.stdout.readline.assert_awaited_once()
-    >>> server.stdout = None
-    >>> server_builder = AsyncMock(return_value=server)
-    >>> with patch("asyncio.create_subprocess_exec", server_builder):
-    ...     print(asyncio.run(
-    ...     async_start_isabelle_server("out.log", "isabelle", 10000)
-    ... )[0])
-    Traceback (most recent call last):
-        ...
-    ValueError: Failed to start server
+    >>> import os
+    >>> os.environ["PATH"] = "tests:$PATH"
+    >>> print(start_isabelle_server()[0])
+    server "isabelle" = 127.0.0.1:9999 (password "test_password")
+    <BLANKLINE>
 
     :param log_file: a log file for exceptional output of internal server and
         session operations
@@ -85,35 +71,13 @@ async def async_start_isabelle_server(
         + (f" -p {str(port)}" if port is not None else "")
         + (f" -n {name}" if name is not None else "")
     )
-    isabelle_server = await asyncio.create_subprocess_exec(
-        "isabelle", *(args.split(" ")), stdout=asyncio.subprocess.PIPE
-    )
-    if isabelle_server.stdout is None:
-        raise ValueError("Failed to start server")
-    server_info = (await isabelle_server.stdout.readline()).decode("utf-8")
-    return server_info, isabelle_server
 
+    async def async_call():
+        isabelle_server = await asyncio.create_subprocess_exec(
+            "isabelle", *(args.split(" ")), stdout=asyncio.subprocess.PIPE
+        )
+        return (await isabelle_server.stdout.readline()).decode(
+            "utf-8"
+        ), isabelle_server
 
-def start_isabelle_server(
-    log_file: Optional[str] = None,
-    name: Optional[str] = None,
-    port: Optional[int] = None,
-) -> Tuple[str, asyncio.subprocess.Process]:
-    """
-    start ``isabelle`` server
-
-    >>> from unittest.mock import patch, AsyncMock
-    >>> with patch(
-    ...     "isabelle_client.utils.async_start_isabelle_server",
-    ...     AsyncMock(return_value="TestIsabelleServer")
-    ... ):
-    ...     print(start_isabelle_server())
-    TestIsabelleServer
-
-    :param log_file: a log file for exceptional output of internal server and
-        session operations
-    :param name: explicit server name (default: isabelle)
-    :param port: explicit server port
-    :return: a line of server info and server process
-    """
-    return asyncio.run(async_start_isabelle_server(log_file, name, port))
+    return asyncio.run(async_call())

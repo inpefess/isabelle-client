@@ -56,21 +56,28 @@ async def get_response_from_isabelle(
     * a fixed length message after a carriage-return delimited message with
     only one integer number denoting length
 
-    >>> from unittest.mock import Mock, AsyncMock
-    >>> test_reader = Mock()
-    >>> test_reader.readline = AsyncMock(return_value=b"42\\n")
-    >>> test_reader.readexactly = AsyncMock(
-    ...     return_value=b'FINISHED {"session_id": "session_id__42"}\\n'
+    >>> async def awaiter():
+    ...     test_reader, test_writer = await asyncio.open_connection(
+    ...     "localhost", 9999
     ... )
-    >>> print(str(asyncio.run(get_response_from_isabelle(test_reader))))
-    42
-    FINISHED {"session_id": "session_id__42"}
-    >>> test_reader.readline = AsyncMock(return_value=b"7\\n")
-    >>> test_reader.readexactly = AsyncMock(return_value=b'# wrong')
-    >>> print(str(asyncio.run(get_response_from_isabelle(test_reader))))
+    ...     test_writer.write(b"ping\\n")
+    ...     result = [str(await get_response_from_isabelle(test_reader))]
+    ...     result += [str(await get_response_from_isabelle(test_reader))]
+    ...     return result
+    >>> print(asyncio.run(awaiter()))
+    ['OK "connection OK"', '43\\nFINISHED {"session_id": "test_session_id"}']
+    >>> async def awaiter():
+    ...     test_reader, test_writer = await asyncio.open_connection(
+    ...     "localhost", 9998
+    ... )
+    ...     test_writer.write(b"ping\\n")
+    ...     result = [str(await get_response_from_isabelle(test_reader))]
+    ...     result += [str(await get_response_from_isabelle(test_reader))]
+    ...     return result
+    >>> print(asyncio.run(awaiter()))
     Traceback (most recent call last):
       ...
-    ValueError: Unexpected response from Isabelle: # wrong
+    ValueError: Unexpected response from Isabelle: # !!!
 
     :param reader: a StreamReader connected to a server
     :returns: a response from ``isabelle``
@@ -95,22 +102,22 @@ async def get_final_message(
     gets responses from ``isabelle`` server until a message of specified
     'final' type arrives
 
-    >>> from unittest.mock import Mock, AsyncMock
-    >>> test_reader = Mock()
-    >>> test_reader.readline = AsyncMock(side_effect=[b"OK\\n", b"40\\n"])
-    >>> test_reader.readexactly = AsyncMock(side_effect=[
-    ...     b'FINISHED {"session_id": "test_session"}\\n'
-    ...    ]
+    >>> test_logger = getfixture("mock_logger")
+    >>> async def awaiter():
+    ...     test_reader, test_writer = await asyncio.open_connection(
+    ...     "localhost", 9999
     ... )
-    >>> test_logger = Mock()
-    >>> test_logger.info = Mock()
-    >>> print(str(asyncio.run(get_final_message(
-    ...     test_reader, {"FINISHED"}, test_logger
-    ... ))))
-    40
-    FINISHED {"session_id": "test_session"}
+    ...     test_writer.write(b"ping\\n")
+    ...     result = str(await get_final_message(
+    ...         test_reader, {"FINISHED"}, test_logger
+    ...     ))
+    ...     return result
+    >>> print(asyncio.run(awaiter()))
+    43
+    FINISHED {"session_id": "test_session_id"}
     >>> print(test_logger.info.mock_calls)
-    [call('OK'), call('40\\nFINISHED {"session_id": "test_session"}')]
+    [call('OK "connection OK"'),
+    call('43\\nFINISHED {"session_id": "test_session_id"}')]
 
     :param reader: a ``StreamReader`` connected to ``isabelle`` server
     :param final_message: a set of possible final message types
