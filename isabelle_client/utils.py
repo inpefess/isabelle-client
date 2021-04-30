@@ -17,6 +17,7 @@ import asyncio
 import re
 from typing import Optional, Tuple
 
+from isabelle_client.compatibility_helper import async_run
 from isabelle_client.isabelle__client import IsabelleClient
 
 
@@ -80,4 +81,4 @@ def start_isabelle_server(
             "utf-8"
         ), isabelle_server
 
-    return asyncio.run(async_call())
+    return async_run(async_call())

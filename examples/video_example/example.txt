@@ -26,9 +26,9 @@ SLEEP 3
 # note that the client returns only the last reply from the server
 # all other messages are saved to the log file
 # we also can issue a free-form command through TCP
-import asyncio
+from isabelle_client import async_run
 
-asyncio.run(isabelle.execute_command("echo 42", asynchronous=False))
+async_run(isabelle.execute_command("echo 42", asynchronous=False))
 exit()
 # our sessions was logged to the file:
 cat session.log & sleep 3
