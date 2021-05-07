@@ -18,22 +18,29 @@
 Basic usage example
 ====================
 
-Let's suppose that Isabelle binary is on our ``PATH`` and we started an Isabelle server in working directory with the following command::
-
-    isabelle server > server.pid
-
-Now we can get an instance of Isabelle client to talk to this server from Python in a very simple way::
-
-    from isabelle_client import get_isabelle_client_from_server_info
+First, we need to start an Isabelle server::
   
-    isabelle = get_isabelle_client_from_server_info("server.pid")
+    from isabelle_client import start_isabelle_server
 
-It might be useful to log all replies from the server somewhere, e.g.::
+    server_info, _ = start_isabelle_server(
+        name="test", port=9999, log_file="server.log"
+    )
 
+We could also start the server outside this script and use its info.
+
+Now let's create a client to our server ::
+
+    from isabelle_client import get_isabelle_client
+
+    isabelle = get_isabelle_client(server_info)
+
+We will log all the messages from the server to a file ::
+  
     import logging
 
-    logging.basicConfig(filename="out.log")
     isabelle.logger = logging.getLogger()
+    isabelle.logger.setLevel(logging.INFO)
+    isabelle.logger.addHandler(logging.FileHandler("session.log"))
 
 This client has several methods implemented to communicate with the server Python-style, e.g.::
 
@@ -43,5 +50,6 @@ In this command it's supposed that we have a ``Dummy.thy`` theory file in our wo
 
 One can also issue a free-form command, e.g.::
 
-    isabelle.execute_command("echo 42", asynchronous=False)
+    from isabelle_client import async_run
 
+    async_run(isabelle.execute_command("echo 42", asynchronous=False))
