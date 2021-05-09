@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "isabelle-client"
-version = "0.2.1"
+version = "0.2.2"
 description = "A client to Isabelle proof assistant server"
 authors = ["Boris Shminke <boris@shminke.ml>"]
 license = "Apache-2.0"
@@ -8,6 +8,9 @@ repository = "https://github.com/inpefess/isabelle-client"
 readme = "README.md"
 classifiers=[
 	"Programming Language :: Python :: 3.9",
+	"Programming Language :: Python :: 3.8",
+	"Programming Language :: Python :: 3.7",	
+	"Programming Language :: Python :: 3.6",
 	"License :: OSI Approved :: Apache Software License",
 	"Operating System :: OS Independent",
 	"Intended Audience :: Science/Research",
@@ -20,7 +23,7 @@ classifiers=[
 include = ["isabelle_client/py.typed"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = ">= 3.6, < 4.0"
 
 [tool.poetry.dev-dependencies]
 pycodestyle = "*"

@@ -18,6 +18,16 @@ Welcome to Isabelle client documentation!
 
 A client for `Isabelle`_ server. For more information about the server see part 4 of `the Isabelle system manual`_.
 
+How to install
+===============
+
+The best way to install this client is to use ``pip``::
+
+    pip install isabelle-client
+
+In what case to use
+====================
+
 This client might be useful if:
 
 * you have an Isabelle server instance running
@@ -26,6 +36,23 @@ This client might be useful if:
 
 See also :ref:`usage-example`.
 
+How to contribute
+==================
+
+Pull requests on are welcome. To start::
+
+    git clone https://github.com/inpefess/isabelle-client
+    cd isabelle-client
+    # activate python virtual environment with Python 3.6+
+    pip install -U pip
+    pip install -U setuptools wheel poetry
+    poetry install
+    # recommended but not necessary
+    pre-commit install
+
+To check the code quality before creating a pull request, one might run the script ``show_report.sh``. It locally does nearly the same as the CI pipeline after the PR is created.
+
+    
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
