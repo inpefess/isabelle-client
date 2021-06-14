@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "isabelle-client"
-version = "0.2.3"
+version = "0.2.4"
 description = "A client to Isabelle proof assistant server"
 authors = ["Boris Shminke <boris@shminke.ml>"]
 license = "Apache-2.0"
@@ -24,6 +24,7 @@ include = ["isabelle_client/py.typed"]
 
 [tool.poetry.dependencies]
 python = ">= 3.6, < 4.0"
+dataclasses = {version = "*", markers = "python_version < \"3.7\""}
 
 [tool.poetry.dev-dependencies]
 pycodestyle = "*"
