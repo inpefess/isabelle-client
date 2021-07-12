@@ -39,7 +39,7 @@ See also :ref:`usage-example`.
 How to contribute
 ==================
 
-Pull requests on are welcome. To start::
+Pull requests are welcome. To start::
 
     git clone https://github.com/inpefess/isabelle-client
     cd isabelle-client
