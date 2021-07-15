@@ -58,7 +58,7 @@ Then all replies from the server will go to the file ``out.log``.
 
 # Examples
 
-An example of using this package is located in ``examples`` directory.
+For an example of using this package see the ``examples`` directory.
 
 # Video example
 

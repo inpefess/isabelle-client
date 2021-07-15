@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+    https://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -122,8 +122,7 @@ class IsabelleClient:
         }
         if dirs is not None:
             arguments["dirs"] = dirs
-        for name in kwargs:
-            arguments[name] = kwargs[name]
+        arguments.update(kwargs)
         response = async_run(
             self.execute_command(f"session_build {json.dumps(arguments)}")
         )
@@ -148,8 +147,7 @@ class IsabelleClient:
         :returns: a ``session_id``
         """
         arguments = {"session": session}
-        for name in kwargs:
-            arguments[name] = kwargs[name]
+        arguments.update(kwargs)
         response = async_run(
             self.execute_command(f"session_start {json.dumps(arguments)}")
         )
@@ -206,8 +204,7 @@ class IsabelleClient:
             "session_id": new_session_id,
             "theories": theories,
         }
-        for name in kwargs:
-            arguments[name] = kwargs[name]
+        arguments.update(kwargs)
         if master_dir is not None:
             arguments["master_dir"] = master_dir
         response = async_run(
