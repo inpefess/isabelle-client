@@ -67,3 +67,24 @@ For an example of using this package see the ``examples`` directory.
 # Contributing
 
 Issues and PRs are welcome.
+
+# How to cite
+
+If you're writing a research paper, you can cite Isabelle client in the following way:
+
+```bib
+@InProceedings{10.1007/978-3-030-81097-9_20,
+author={L{\'i}{\v{s}}ka, Martin and Lupt{\'a}k, D{\'a}vid and Novotn{\'y}, V{\'i}t and R{\r{u}}{\v{z}}i{\v{c}}ka, Michal and Shminke, Boris and Sojka, Petr and {\v{S}}tef{\'a}nik, Michal and Wenzel, Makarius},
+editor={Kamareddine, Fairouz and Sacerdoti Coen, Claudio},
+title={CICM'21 Systems Entries},
+booktitle={Intelligent Computer Mathematics},
+year={2021},
+publisher={Springer International Publishing},
+address={Cham},
+pages={245--248},
+abstract={This consolidated paper gives an overview of new tools and improvements of existing tools in the CICM domain that occurred since the last CICM conference.},
+isbn={978-3-030-81097-9},
+doi={10.1007/978-3-030-81097-9_20},
+url={https://doi.org/10.1007/978-3-030-81097-9_20}
+}
+```
