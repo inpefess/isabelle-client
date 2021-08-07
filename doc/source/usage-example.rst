@@ -16,7 +16,16 @@
 .. _usage-example:
 
 Basic usage example
+********************
+
+In what case to use
 ====================
+
+This client might be useful if:
+
+* you have an Isabelle server instance running
+* you have scripts for automatic generation of theory files in Python
+* you want to communicate with the server not using Scala and/or StandardML
 
 First, we need to start an Isabelle server::
   
@@ -26,8 +35,10 @@ First, we need to start an Isabelle server::
         name="test", port=9999, log_file="server.log"
     )
 
-We could also start the server outside this script and use its info.
+We could also start the server outside this script and use its info::
 
+    isabelle server > server.info
+    
 Now let's create a client to our server ::
 
     from isabelle_client import get_isabelle_client
