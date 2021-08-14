@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "isabelle-client"
-version = "0.2.6"
+version = "0.2.7"
 description = "A client to Isabelle proof assistant server"
 authors = ["Boris Shminke <boris@shminke.ml>"]
 license = "Apache-2.0"
