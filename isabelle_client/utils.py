@@ -34,7 +34,7 @@ def get_isabelle_client(server_info: str) -> IsabelleClient:
     ValueError: Unexpected server info: wrong
 
     :param server_info: a line returned by a server on start
-    :returns: an ``isabelle`` client
+    :returns: an Isabelle client
     """
     match = re.compile(
         r"server \".*\" = (.*):(.*) \(password \"(.*)\"\)"
@@ -52,7 +52,7 @@ def start_isabelle_server(
     port: Optional[int] = None,
 ) -> Tuple[str, asyncio.subprocess.Process]:
     """
-    start ``isabelle`` server
+    start Isabelle server
 
     >>> import os
     >>> os.environ["PATH"] = "tests:$PATH"

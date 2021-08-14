@@ -26,7 +26,7 @@ from isabelle_client.socket_communication import (
 
 
 class IsabelleClient:
-    """ a TCP client for an ``isabelle`` server """
+    """ a TCP client for an Isabelle server """
 
     def __init__(
         self,
@@ -71,10 +71,10 @@ class IsabelleClient:
         call('OK "connection OK"'),
         call('43\\nFINISHED {"session_id": "test_session_id"}')]
 
-        :param command: a full text of a command to ``isabelle``
+        :param command: a full text of a command to Isabelle
         :param asynchronous: if ``False``, waits for ``OK``; else waits for
             ``FINISHED``
-        :returns: ``isabelle`` server response
+        :returns: Isabelle server response
         """
         final_message = (
             {"FINISHED", "FAILED", "ERROR"}
@@ -114,7 +114,7 @@ class IsabelleClient:
         :param verbose: set to ``True`` for extra verbosity
         :param kwargs: additional arguments
             (see Isabelle System manual for details)
-        :returns: an ``isabelle`` response
+        :returns: an Isabelle response
         """
         arguments: Dict[str, Union[str, List[str], bool]] = {
             "session": session,
@@ -165,7 +165,7 @@ class IsabelleClient:
         FINISHED
 
         :param session_id: a string ID of a session
-        :returns: ``isabelle`` server response
+        :returns: Isabelle server response
         """
         arguments = json.dumps({"session_id": session_id})
         response = async_run(self.execute_command(f"session_stop {arguments}"))
@@ -195,7 +195,7 @@ class IsabelleClient:
             temp folder of the session
         :param kwargs: additional arguments
             (see Isabelle System manual for details)
-        :returns: ``isabelle`` server response
+        :returns: Isabelle server response
         """
         new_session_id = (
             self.session_start() if session_id is None else session_id
@@ -224,7 +224,7 @@ class IsabelleClient:
         "test_message"
 
         :param message: any text
-        :returns: ``isabelle`` server response
+        :returns: Isabelle server response
         """
         response = async_run(
             self.execute_command(
@@ -242,7 +242,7 @@ class IsabelleClient:
         >>> print(test_response.response_body)
         ["echo", "help"]
 
-        :returns: ``isabelle`` server response
+        :returns: Isabelle server response
         """
         response = async_run(self.execute_command("help", asynchronous=False))
         return response
@@ -269,7 +269,7 @@ class IsabelleClient:
         :param master_dir:  the master directory as in ``use_theories``
         :param purge_all: set to ``True`` attempts to purge all presently
             loaded theories
-        :returns: ``isabelle`` server response
+        :returns: Isabelle server response
         """
         arguments: Dict[str, Union[str, List[str], bool]] = {
             "session_id": session_id,
@@ -296,7 +296,7 @@ class IsabelleClient:
         <BLANKLINE>
 
         :param task: a task ID
-        :returns: ``isabelle`` server response
+        :returns: Isabelle server response
         """
         arguments = {"task": task}
         response = async_run(
@@ -315,7 +315,7 @@ class IsabelleClient:
         >>> print(test_response.response_body)
         <BLANKLINE>
 
-        :returns: ``isabelle`` server response
+        :returns: Isabelle server response
         """
         response = async_run(
             self.execute_command("shutdown", asynchronous=False)

@@ -15,35 +15,45 @@
 
 
 Package Documentation
-=====================
-
-Isabelle Response
------------------
-.. autoclass:: isabelle_client.IsabelleResponse
-   :special-members: __init__
-   :members:
-
+**********************
 
 Isabelle Client
----------------
+^^^^^^^^^^^^^^^^
 .. autoclass:: isabelle_client.IsabelleClient
    :special-members: __init__
    :members:
 
 socket_communication
---------------------
+^^^^^^^^^^^^^^^^^^^^^
 .. currentmodule:: isabelle_client.socket_communication
 
 A collection of functions for TCP communication.
+
+Isabelle Response
+==================
+.. autoclass:: isabelle_client.IsabelleResponse
+   :special-members: __init__
+   :members:
 
 .. autofunction:: get_response_from_isabelle
 .. autofunction:: get_final_message
 
 utils
------
+^^^^^^
 .. currentmodule:: isabelle_client.utils
 
 A collection of different useful functions.
 
 .. autofunction:: start_isabelle_server
 .. autofunction:: get_isabelle_client
+
+compatibility_helper
+^^^^^^^^^^^^^^^^^^^^^
+.. currentmodule:: isabelle_client.compatibility_helper
+
+A module helping to run `asyncio`_ in Python 3.6
+
+.. autofunction:: async_run
+
+		  
+.. _asyncio: https://docs.python.org/3/library/asyncio.html

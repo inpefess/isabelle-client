@@ -23,7 +23,7 @@ from isabelle_client import (
 
 
 def main():
-    """ using ``isabelle`` client """
+    """ using Isabelle client """
     # first, we start Isabelle server
     server_info, _ = start_isabelle_server(
         name="test", port=9999, log_file="server.log"

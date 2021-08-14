@@ -23,7 +23,7 @@ from typing import Optional, Set
 @dataclass
 class IsabelleResponse:
     """
-    a response from an ``isabelle`` server
+    a response from an Isabelle server
 
     :param response_type: an all capitals word like ``FINISHED`` or ``ERROR``
     :param response_body: a JSON-formatted response
@@ -51,7 +51,7 @@ async def get_response_from_isabelle(
     reader: asyncio.StreamReader,
 ) -> IsabelleResponse:
     """
-    get a response from ``isabelle`` server:
+    get a response from Isabelle server:
     * a carriage-return delimited message or
     * a fixed length message after a carriage-return delimited message with
     only one integer number denoting length
@@ -81,7 +81,7 @@ async def get_response_from_isabelle(
     ValueError: Unexpected response from Isabelle: # !!!
 
     :param reader: a StreamReader connected to a server
-    :returns: a response from ``isabelle``
+    :returns: a response from Isabelle
     """
     response = (await reader.readline()).decode("utf-8")
     match = re.compile(r"(\d+)\n").match(response)
@@ -100,7 +100,7 @@ async def get_final_message(
     logger: Optional[Logger] = None,
 ) -> IsabelleResponse:
     """
-    gets responses from ``isabelle`` server until a message of specified
+    gets responses from Isabelle server until a message of specified
     'final' type arrives
 
     >>> from isabelle_client.compatibility_helper import async_run
@@ -121,10 +121,10 @@ async def get_final_message(
     [call('OK "connection OK"'),
     call('43\\nFINISHED {"session_id": "test_session_id"}')]
 
-    :param reader: a ``StreamReader`` connected to ``isabelle`` server
+    :param reader: a ``StreamReader`` connected to Isabelle server
     :param final_message: a set of possible final message types
     :param logger: a logger where to send all server replies
-    :returns: the final response from ``isabelle`` server
+    :returns: the final response from Isabelle server
     """
     response = IsabelleResponse("", "")
     password_ok_received = False
