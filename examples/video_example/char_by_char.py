@@ -15,7 +15,7 @@ limitations under the License.
 """
 import time
 
-with open("video_example/example.txt", "r") as example:
+with open("video_example/example.txt", "r", encoding="utf-8") as example:
     lines = example.readlines()
 
 for line in lines:

@@ -11,4 +11,4 @@ pylint --rcfile=.pylintrc ${PACKAGE_NAME} tests examples
 mypy --config-file mypy.ini ${PACKAGE_NAME} tests examples
 pytest --cov ${PACKAGE_NAME} --cov-report term-missing --cov-fail-under=99 \
        --junit-xml test-results/isabelle-client.xml ${PACKAGE_NAME}
-cloc --include-lang Python ${PACKAGE_NAME}
+scc -i py ${PACKAGE_NAME}
