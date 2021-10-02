@@ -7,3 +7,10 @@ __pycache__/
 *~
 doc/build/
 .idea/
+*.bbl
+*.blg
+*.log
+*.pdf
+*.out
+*.aux
+*.cicmauthinsts
