@@ -36,7 +36,7 @@ def main():
     # now we can send a theory file from this directory to the server
     # and get a response
     isabelle.use_theories(
-        theories=["Dummy"], master_dir=".", watchdog_timeout=0
+        theories=["Example"], master_dir=".", watchdog_timeout=0
     )
     # or we can build a session document using ROOT and root.tex files from it
     isabelle.session_build(dirs=["."], session="examples")

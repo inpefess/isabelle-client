@@ -55,9 +55,9 @@ We will log all the messages from the server to a file ::
 
 This client has several methods implemented to communicate with the server Python-style, e.g.::
 
-    isabelle.use_theories(theories=["Dummy"], master_dir=".")
+    isabelle.use_theories(theories=["Example"], master_dir=".")
 
-In this command it's supposed that we have a ``Dummy.thy`` theory file in our working directory which we, e.g. generated with another Python script.
+In this command it's supposed that we have a ``Example.thy`` theory file in our working directory which we, e.g. generated with another Python script.
 
 One can also issue a free-form command, e.g.::
 
