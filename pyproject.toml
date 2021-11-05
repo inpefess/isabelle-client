@@ -35,13 +35,15 @@ pytest = "*"
 pytest-cov = "*"
 pre-commit = "*"
 black = "*"
-jedi = "0.17.2"
+jedi = "*"
 rope = "*"
 flake8 = "*"
 Sphinx = "*"
 sphinx-rtd-theme = "*"
 sphinx-autodoc-typehints = "*"
 types-dataclasses = "*"
+jupyterlab = "*"
+nest-asyncio = "*"
 
 [tool.black]
 line-length=79

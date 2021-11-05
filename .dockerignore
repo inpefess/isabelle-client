@@ -1,0 +1,14 @@
+Dockerfile
+venv*/
+dist/
+doc/build/
+.mypy_cache/
+.pytest_cache/
+__pycache__/
+examples/tty.gif
+examples/video_example/
+examples/output/
+examples/session.log
+examples/.mypy_cache/
+examples/.ipynb_checkpoints/
+.idea/
