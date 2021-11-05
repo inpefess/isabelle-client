@@ -14,7 +14,7 @@
   limitations under the License.
 
   
-=================================
+=================================  
 Python client for Isabelle server
 =================================
 
@@ -32,11 +32,25 @@ The best way to install this package is to use ``pip``:
 
    pip install isabelle-client
 
+One can also download and run the client together with Isabelle in a
+Docker contanier:
+
+.. code:: sh
+
+   docker build -t isabelle-client https://github.com/inpefess/isabelle-client.git
+   docker run -it --rm -p 8888:8888 isabelle-client jupyter-lab --ip=0.0.0.0 --port=8888 --no-browser
+
 How to use
 ==========
 
-Follow the :ref:`usage-example` from documentation or run the
-`script <https://github.com/inpefess/isabelle-client/blob/master/examples/example.py>`__.
+Follow the `usage
+example <https://isabelle-client.readthedocs.io/en/latest/usage-example.html#usage-example>`__
+from documentation, run the
+`script <https://github.com/inpefess/isabelle-client/blob/master/examples/example.py>`__,
+or use ``isabelle-client`` from a
+`notebook <https://github.com/inpefess/isabelle-client/blob/master/examples/example.ipynb>`__,
+e.g. with
+`Binder <https://mybinder.org/v2/gh/inpefess/isabelle-client/HEAD?labpath=example.ipynb>`__.
 
 How to Contribute
 =================
@@ -66,12 +80,6 @@ Reporting issues or problems with the software
 
 Questions and bug reports are welcome on `the
 tracker <https://github.com/inpefess/isabelle-client/issues>`__.
-
-More documentation
-==================
-
-More documentation can be found
-`here <https://isabelle-client.readthedocs.io/en/latest>`__.
 
 Video example
 =============
