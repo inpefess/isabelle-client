@@ -14,3 +14,4 @@ doc/build/
 *.out
 *.aux
 *.cicmauthinsts
+.ipynb_checkpoints/
