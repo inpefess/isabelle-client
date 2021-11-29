@@ -49,7 +49,7 @@ class IsabelleClient:
         self,
         command: str,
         asynchronous: bool = True,
-    ) -> IsabelleResponse:
+    ) -> List[IsabelleResponse]:
         """
         executes a command and waits for results
 
@@ -60,11 +60,11 @@ class IsabelleClient:
         >>> test_response = async_run(
         ...     isabelle_client.execute_command("test_command")
         ... )
-        >>> print(test_response.response_type)
+        >>> print(test_response[-1].response_type)
         FINISHED
-        >>> print(test_response.response_body)
+        >>> print(test_response[-1].response_body)
         {"session_id": "test_session_id"}
-        >>> print(test_response.response_length)
+        >>> print(test_response[-1].response_length)
         43
         >>> print(logger.info.mock_calls)
         [call('test_password\\ntest_command\\n'),
@@ -74,7 +74,7 @@ class IsabelleClient:
         :param command: a full text of a command to Isabelle
         :param asynchronous: if ``False``, waits for ``OK``; else waits for
             ``FINISHED``
-        :returns: Isabelle server response
+        :returns: a list of Isabelle server responses
         """
         final_message = (
             {"FINISHED", "FAILED", "ERROR"}
@@ -105,7 +105,7 @@ class IsabelleClient:
         ... )
         >>> print(isabelle_client.session_build(
         ...     session="test_session", dirs=["."], verbose=True, options=[]
-        ... ))
+        ... )[-1])
         43
         FINISHED {"session_id": "test_session_id"}
 
@@ -148,12 +148,14 @@ class IsabelleClient:
         """
         arguments = {"session": session}
         arguments.update(kwargs)
-        response = async_run(
+        response_list = async_run(
             self.execute_command(f"session_start {json.dumps(arguments)}")
         )
-        if response.response_type == "FINISHED":
-            return json.loads(response.response_body)["session_id"]
-        raise ValueError(f"Unexpected response type: {response.response_type}")
+        if response_list[-1].response_type == "FINISHED":
+            return json.loads(response_list[-1].response_body)["session_id"]
+        raise ValueError(
+            f"Unexpected response type: {response_list[-1].response_type}"
+        )
 
     def session_stop(self, session_id: str) -> IsabelleResponse:
         """
@@ -161,7 +163,7 @@ class IsabelleClient:
 
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
         >>> test_response = isabelle_client.session_stop("test")
-        >>> print(test_response.response_type)
+        >>> print(test_response[-1].response_type)
         FINISHED
 
         :param session_id: a string ID of a session
@@ -185,7 +187,7 @@ class IsabelleClient:
         >>> test_response = isabelle_client.use_theories(
         ...     ["test"], master_dir="test", watchdog_timeout=0
         ... )
-        >>> print(test_response.response_type)
+        >>> print(test_response[-1].response_type)
         FINISHED
 
         :param theories: names of theory files (without extensions!)
@@ -220,7 +222,7 @@ class IsabelleClient:
 
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
         >>> test_response = isabelle_client.echo("test_message")
-        >>> print(test_response.response_body)
+        >>> print(test_response[-1].response_body)
         "test_message"
 
         :param message: any text
@@ -239,7 +241,7 @@ class IsabelleClient:
 
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
         >>> test_response = isabelle_client.help()
-        >>> print(test_response.response_body)
+        >>> print(test_response[-1].response_body)
         ["echo", "help"]
 
         :returns: Isabelle server response
@@ -261,7 +263,7 @@ class IsabelleClient:
         >>> test_response = isabelle_client.purge_theories(
         ...     "test", [], "dir", True
         ... )
-        >>> print(test_response.response_body)
+        >>> print(test_response[-1].response_body)
         {"purged": [], "retained": []}
 
         :param session_id: an ID of the session from which to purge theories
@@ -292,7 +294,7 @@ class IsabelleClient:
 
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
         >>> test_response = isabelle_client.cancel("test_task")
-        >>> print(test_response.response_body)
+        >>> print(test_response[-1].response_body)
         <BLANKLINE>
 
         :param task: a task ID
@@ -312,7 +314,7 @@ class IsabelleClient:
 
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
         >>> test_response = isabelle_client.shutdown()
-        >>> print(test_response.response_body)
+        >>> print(test_response[-1].response_body)
         <BLANKLINE>
 
         :returns: Isabelle server response
