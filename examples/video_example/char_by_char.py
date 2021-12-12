@@ -24,4 +24,4 @@ for line in lines:
     else:
         for char in line:
             print(char, end="", flush=True)
-            time.sleep(60 / 600)
+            time.sleep(70 / 600)

@@ -1,11 +1,11 @@
 [tool.poetry]
 name = "isabelle-client"
-version = "0.2.10"
+version = "0.3.0"
 description = "A client to Isabelle proof assistant server"
 authors = ["Boris Shminke <boris@shminke.ml>"]
 license = "Apache-2.0"
 repository = "https://github.com/inpefess/isabelle-client"
-readme = "README.md"
+readme = "README.rst"
 classifiers=[
 	"Programming Language :: Python :: 3.10",
 	"Programming Language :: Python :: 3.9",
