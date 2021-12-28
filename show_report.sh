@@ -3,7 +3,8 @@
 set -e
 PACKAGE_NAME=isabelle_client
 cd doc
-make clean html
+make clean html coverage
+cat build/coverage/python.txt
 cd ..
 pycodestyle --max-doc-length 160 --ignore E203,E501,W503 \
 	    ${PACKAGE_NAME} tests examples
