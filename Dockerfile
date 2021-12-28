@@ -1,4 +1,4 @@
-FROM makarius/isabelle:Isabelle2021
+FROM makarius/isabelle:Isabelle2021-1
 ENV HOME=/home/isabelle
 ENV PATH=${HOME}/.local/bin:${HOME}/Isabelle/bin:${PATH}
 USER root
