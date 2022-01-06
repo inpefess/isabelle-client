@@ -35,7 +35,7 @@ from documentation, run the
 or use ``isabelle-client`` from a
 `notebook <https://github.com/inpefess/isabelle-client/blob/master/examples/example.ipynb>`__,
 e.g. with
-`Binder <https://mybinder.org/v2/gh/inpefess/isabelle-client/HEAD?labpath=example.ipynb>`__.
+`Binder <https://mybinder.org/v2/gh/inpefess/isabelle-client/HEAD?labpath=isabelle-client-examples/example.ipynb>`__.
 
 How to Contribute
 =================
@@ -93,5 +93,5 @@ DOI <https://doi.org/10.1007/978-3-030-81097-9_20>`__.
 .. |codecov| image:: https://codecov.io/gh/inpefess/isabelle-client/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/inpefess/isabelle-client
 .. |Binder| image:: https://mybinder.org/badge_logo.svg
-   :target: https://mybinder.org/v2/gh/inpefess/isabelle-client/HEAD?labpath=example.ipynb
+   :target: https://mybinder.org/v2/gh/inpefess/isabelle-client/HEAD?labpath=isabelle-client-examples/example.ipynb
 .. |video tutorial| image:: ../../examples/tty.gif
