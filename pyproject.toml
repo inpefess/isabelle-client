@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "isabelle-client"
-version = "0.3.0"
+version = "0.3.1"
 description = "A client to Isabelle proof assistant server"
 authors = ["Boris Shminke <boris@shminke.ml>"]
 license = "Apache-2.0"
@@ -28,26 +28,24 @@ python = ">= 3.6.1, < 4.0"
 dataclasses = {version = "*", markers = "python_version < \"3.7\""}
 
 [tool.poetry.dev-dependencies]
-pycodestyle = "*"
 pylint = "*"
 mypy = "*"
-pytest = "*"
 pytest-cov = "*"
 pre-commit = "*"
 black = "*"
-jedi = "*"
-rope = "*"
 flake8 = "*"
-Sphinx = "*"
 sphinx-rtd-theme = "*"
 sphinx-autodoc-typehints = "*"
 types-dataclasses = "*"
 jupyterlab = "*"
-nest-asyncio = "*"
 
 [tool.black]
 line-length=79
 
+[tool.isort]
+profile = "black"
+src_paths = ["isabelle_client"]
+
 [build-system]
-requires = ["poetry-core>=1.1.11"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

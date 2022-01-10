@@ -1,17 +1,21 @@
+# Copyright 2021-2022 Boris Shminke
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 """
-Copyright 2021 Boris Shminke
+Isabelle Client
+================
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    https://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+A Python client to `Isabelle <https://isabelle.in.tum.de>`__ server
 """
 import asyncio
 import json
@@ -26,7 +30,15 @@ from isabelle_client.socket_communication import (
 
 
 class IsabelleClient:
-    """ a TCP client for an Isabelle server """
+    """
+    a TCP client for an Isabelle server
+
+    :param address: IP or a domain name
+    :param port: a port number on which the server listens
+    :param password: a password to access the server through TCP
+    :param logger: a Python logger to store all requests to
+        and replies from the server
+    """
 
     def __init__(
         self,
@@ -35,11 +47,7 @@ class IsabelleClient:
         password: str,
         logger: Optional[Logger] = None,
     ):
-        """
-        :param address: IP or a domain name
-        :param port: a port number on which the server listens
-        :param password: a password to access the server through TCP
-        """
+        """"""
         self.address = address
         self.port = port
         self.password = password
