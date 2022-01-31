@@ -21,11 +21,27 @@ In what case to use
 
 This client might be useful if:
 
-* you have an Isabelle server instance running
+* you have a machine with Isabelle installed
 * you have scripts for automatic generation of theory files in Python
 * you want to communicate with the server not using Scala and/or StandardML
 
-First, we need to start an Isabelle server::
+In what environment to use
+==========================
+
+The client works well in scripts and in Jupyter notebooks. For the latter, one have to first enable nested event loops::
+
+
+    import nest_asyncio
+
+    nest_asyncio.apply()
+    
+.. warning::
+   When using `start_isabelle_server <package-documentation.html#isabelle_client.utils.start_isabelle_server>`__ utility function in Python REPL or terminal IPython, shutting the server down within the same session is known to cause a runtime error on exit from the session. This behavious is related to a `well known issue <https://ipython.readthedocs.io/en/stable/interactive/autoawait.html#difference-between-terminal-ipython-and-ipykernel>`__.
+
+Starting Isabelle server
+========================
+   
+First, we need to start an Isabelle server (doesn't work on Windows)::
   
     from isabelle_client import start_isabelle_server
 
@@ -33,10 +49,13 @@ First, we need to start an Isabelle server::
         name="test", port=9999, log_file="server.log"
     )
 
-We could also start the server outside this script and use its info::
+We could also start the server outside this script and use its info (on Windows, this is done in Cygwin)::
 
     isabelle server > server.info
-    
+
+Interacting with Isabelle server
+================================
+  
 Now let's create a client to our server ::
 
     from isabelle_client import get_isabelle_client
