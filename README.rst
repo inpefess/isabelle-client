@@ -56,7 +56,7 @@ are welcome. To start:
 
 To check the code quality before creating a pull request, one might run
 the script
-`show_report.sh <https://github.com/inpefess/isabelle-client/blob/master/show_report.sh>`__.
+`local-build.sh <https://github.com/inpefess/isabelle-client/blob/master/local-build.sh>`__.
 It locally does nearly the same as the CI pipeline after the PR is
 created.
 
