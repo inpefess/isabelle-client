@@ -24,7 +24,7 @@ classifiers=[
 include = ["isabelle_client/py.typed"]
 
 [tool.poetry.dependencies]
-python = ">= 3.6.1, < 4.0"
+python = ">= 3.6.2, < 4.0"
 dataclasses = {version = "*", markers = "python_version < \"3.7\""}
 
 [tool.poetry.dev-dependencies]
