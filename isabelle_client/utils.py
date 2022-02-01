@@ -59,7 +59,7 @@ def start_isabelle_server(
     start Isabelle server
 
     >>> import os
-    >>> os.environ["PATH"] = "tests:$PATH"
+    >>> os.environ["PATH"] = "isabelle_client/resources:$PATH"
     >>> print(start_isabelle_server()[0])
     server "isabelle" = 127.0.0.1:9999 (password "test_password")
     <BLANKLINE>
