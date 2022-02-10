@@ -11,7 +11,7 @@ examples/document/
 ./**/*.log
 ./**/*.*~
 ./**/*~
-show_report.sh
+local-build.sh
 ./**/.ini
 ./**/.yml
 ./**/.toml

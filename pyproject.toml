@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "isabelle-client"
-version = "0.3.1"
+version = "0.3.2"
 description = "A client to Isabelle proof assistant server"
 authors = ["Boris Shminke <boris@shminke.ml>"]
 license = "Apache-2.0"
@@ -15,7 +15,7 @@ classifiers=[
 	"License :: OSI Approved :: Apache Software License",
 	"Operating System :: OS Independent",
 	"Intended Audience :: Science/Research",
-	"Development Status :: 3 - Alpha",
+	"Development Status :: 4 - Beta",
 	"Environment :: Console",
 	"Natural Language :: English",
 	"Topic :: Scientific/Engineering :: Artificial Intelligence",
@@ -24,7 +24,7 @@ classifiers=[
 include = ["isabelle_client/py.typed"]
 
 [tool.poetry.dependencies]
-python = ">= 3.6.1, < 4.0"
+python = ">= 3.6.2, < 4.0"
 dataclasses = {version = "*", markers = "python_version < \"3.7\""}
 
 [tool.poetry.dev-dependencies]

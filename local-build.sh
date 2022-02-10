@@ -7,9 +7,9 @@ make clean html coverage
 cat build/coverage/python.txt
 cd ..
 pycodestyle --max-doc-length 160 --ignore E203,E501,W503 \
-	    ${PACKAGE_NAME} tests examples
-pylint --rcfile=.pylintrc ${PACKAGE_NAME} tests examples
-mypy --config-file mypy.ini ${PACKAGE_NAME} tests examples
+	    ${PACKAGE_NAME} examples
+pylint --rcfile=.pylintrc ${PACKAGE_NAME} examples
+mypy --config-file mypy.ini ${PACKAGE_NAME} examples
 pytest --cov ${PACKAGE_NAME} --cov-report term-missing --cov-fail-under=99 \
        --junit-xml test-results/isabelle-client.xml ${PACKAGE_NAME}
 scc -i py ${PACKAGE_NAME}

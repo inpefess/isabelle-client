@@ -20,7 +20,7 @@ from pytest import fixture
 
 
 class BuggyTCPHandler(socketserver.BaseRequestHandler):
-    """ a dummy handler to mock bugs in Isabelle server response """
+    """a dummy handler to mock bugs in Isabelle server response"""
 
     def handle(self):
         request = self.request.recv(1024).decode("utf-8").split("\n")[0]
@@ -34,7 +34,7 @@ class BuggyTCPHandler(socketserver.BaseRequestHandler):
 
 
 class DummyTCPHandler(socketserver.BaseRequestHandler):
-    """ a dummy handler to mock Isabelle server """
+    """a dummy handler to mock Isabelle server"""
 
     # pylint: disable=too-many-statements
     def handle(self):
@@ -60,14 +60,14 @@ class DummyTCPHandler(socketserver.BaseRequestHandler):
 
 
 class ReusableTCPServer(socketserver.TCPServer):
-    """ ignore TIME-WAIT during testing """
+    """ignore TIME-WAIT during testing"""
 
     allow_reuse_address = True
 
 
 @fixture(autouse=True, scope="session")
 def tcp_servers():
-    """ a simplistic TCP server mocking Isabelle server behaviour """
+    """a simplistic TCP server mocking Isabelle server behaviour"""
     with ReusableTCPServer(
         ("localhost", 9999), DummyTCPHandler
     ) as server, ReusableTCPServer(
@@ -84,7 +84,7 @@ def tcp_servers():
 
 @fixture
 def mock_logger():
-    """ a mock for logger to spy on ``info`` calls """
+    """a mock for logger to spy on ``info`` calls"""
     logger = Mock()
     logger.info = Mock()
     return logger

@@ -104,7 +104,7 @@ class IsabelleClient:
         dirs: List[str] = None,
         verbose: bool = False,
         **kwargs,
-    ) -> IsabelleResponse:
+    ) -> List[IsabelleResponse]:
         """
         build a session from ROOT file
 
@@ -165,7 +165,7 @@ class IsabelleClient:
             f"Unexpected response type: {response_list[-1].response_type}"
         )
 
-    def session_stop(self, session_id: str) -> IsabelleResponse:
+    def session_stop(self, session_id: str) -> List[IsabelleResponse]:
         """
         stop session with given ID
 
@@ -187,7 +187,7 @@ class IsabelleClient:
         session_id: Optional[str] = None,
         master_dir: Optional[str] = None,
         **kwargs,
-    ) -> IsabelleResponse:
+    ) -> List[IsabelleResponse]:
         """
         run the engine on theory files
 
@@ -224,7 +224,7 @@ class IsabelleClient:
             self.session_stop(new_session_id)
         return response
 
-    def echo(self, message: Any) -> IsabelleResponse:
+    def echo(self, message: Any) -> List[IsabelleResponse]:
         """
         asks a server to echo a message
 
@@ -243,7 +243,7 @@ class IsabelleClient:
         )
         return response
 
-    def help(self) -> IsabelleResponse:
+    def help(self) -> List[IsabelleResponse]:
         """
         asks a server to display the list of available commands
 
@@ -263,7 +263,7 @@ class IsabelleClient:
         theories: List[str],
         master_dir: Optional[str] = None,
         purge_all: Optional[bool] = None,
-    ) -> IsabelleResponse:
+    ) -> List[IsabelleResponse]:
         """
         asks a server to purge listed theories from it
 
@@ -296,7 +296,7 @@ class IsabelleClient:
         )
         return response
 
-    def cancel(self, task: str) -> IsabelleResponse:
+    def cancel(self, task: str) -> List[IsabelleResponse]:
         """
         asks a server to try to cancel a task with a given ID
 
@@ -316,7 +316,7 @@ class IsabelleClient:
         )
         return response
 
-    def shutdown(self) -> IsabelleResponse:
+    def shutdown(self) -> List[IsabelleResponse]:
         """
         asks a server to shutdown immediately
 
