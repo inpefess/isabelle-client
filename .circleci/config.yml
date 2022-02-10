@@ -26,20 +26,19 @@ jobs:
           command: |
             . venv/bin/activate
             pytest --cov isabelle_client --cov-report xml --cov-fail-under=99\
-                   --junit-xml test-results/isabelle-client.xml isabelle_client\
-                   tests
+                   --junit-xml test-results/isabelle-client.xml isabelle_client
       - run:
           name: run linters
           command: |
             . venv/bin/activate
             pycodestyle --max-doc-length 160 --ignore E203,E501,W503\
-                        isabelle_client tests examples
+                        isabelle_client examples
             pylint --rcfile=.pylintrc isabelle_client examples
       - run:
           name: run type checks
           command: |
             . venv/bin/activate
-            mypy --config-file mypy.ini isabelle_client tests examples
+            mypy --config-file mypy.ini isabelle_client examples
       - run:
           name: upload data to codecov
           command: |
