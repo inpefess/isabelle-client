@@ -1,4 +1,4 @@
-|PyPI version| |CircleCI| |Documentation Status| |codecov| |Binder|
+|PyPI version| |Anaconda version| |CircleCI| |Documentation Status| |codecov| |Binder|
 
 Python client for Isabelle server
 =================================
@@ -16,6 +16,13 @@ The best way to install this package is to use ``pip``:
 .. code:: sh
 
    pip install isabelle-client
+
+
+Another option is to use Anaconda:
+
+.. code:: sh
+	  
+   conda install -c conda-forge isabelle-client 
 
 One can also download and run the client together with Isabelle in a
 Docker contanier:
@@ -86,6 +93,8 @@ DOI <https://doi.org/10.1007/978-3-030-81097-9_20>`__.
 
 .. |PyPI version| image:: https://badge.fury.io/py/isabelle-client.svg
    :target: https://badge.fury.io/py/isabelle-client
+.. |Anaconda version| image:: https://anaconda.org/conda-forge/isabelle-client/badges/version.svg
+   :target: https://anaconda.org/conda-forge/isabelle-client
 .. |CircleCI| image:: https://circleci.com/gh/inpefess/isabelle-client.svg?style=svg
    :target: https://circleci.com/gh/inpefess/isabelle-client
 .. |Documentation Status| image:: https://readthedocs.org/projects/isabelle-client/badge/?version=latest
