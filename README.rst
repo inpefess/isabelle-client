@@ -82,7 +82,10 @@ More documentation can be found
 Video example
 =============
 
-|video tutorial|.
+.. image:: ../../examples/tty.gif
+  :alt:
+
+(if not displayed correctly on this page, please watch `here <https://isabelle-client.readthedocs.io/en/latest/#video-example>`__).
 
 How to cite
 ===========
@@ -103,4 +106,4 @@ DOI <https://doi.org/10.1007/978-3-030-81097-9_20>`__.
    :target: https://codecov.io/gh/inpefess/isabelle-client
 .. |Binder| image:: https://mybinder.org/badge_logo.svg
    :target: https://mybinder.org/v2/gh/inpefess/isabelle-client/HEAD?labpath=isabelle-client-examples/example.ipynb
-.. |video tutorial| image:: ../../examples/tty.gif
+
