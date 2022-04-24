@@ -17,3 +17,4 @@ doc/build/
 .ipynb_checkpoints/
 flycheck_*.*
 .dir-locals.el
+examples/output/

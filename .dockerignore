@@ -7,8 +7,8 @@ doc/
 ./**/*.gif
 examples/video_example/
 examples/output/
-examples/document/
 ./**/*.log
+./**/*.pdf
 ./**/*.*~
 ./**/*~
 local-build.sh
