@@ -108,7 +108,7 @@ async def get_final_message(
     'final' type arrives
 
     >>> from isabelle_client.compatibility_helper import async_run
-    >>> test_logger = getfixture("mock_logger")
+    >>> test_logger = getfixture("mock_logger")  # noqa: F821
     >>> async def awaiter():
     ...     test_reader, test_writer = await asyncio.open_connection(
     ...     "localhost", 9999

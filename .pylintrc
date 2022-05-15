@@ -1,6 +1,0 @@
-[TYPECHECK]
-
-max-line-length=79
-disable=bad-continuation
-max-statements=10
-generated-members=asyncio.subprocess.*

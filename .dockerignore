@@ -18,3 +18,4 @@ local-build.sh
 cicm2021paper/
 LICENSE
 tests/
+coverage.xml

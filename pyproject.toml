@@ -49,3 +49,26 @@ src_paths = ["isabelle_client"]
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--doctest-modules --cov isabelle_client --cov-report xml --cov-fail-under=100 --junit-xml test-results/isabelle-client.xml"
+testpaths = ["gym_saturation"]
+doctest_optionflags = "NORMALIZE_WHITESPACE"
+
+[tool.pylint.master]
+disable = "bad-continuation"
+
+[tool.pylint.format]
+max-line-length = 79
+
+[tool.pylint.typecheck]
+generated-members = ["asyncio.*"]
+
+[tool.pylint.design]
+max-statements = 10
+
+[tool.mypy]
+show_error_codes = true
+incremental = false
+disable_error_code = "no-redef"
