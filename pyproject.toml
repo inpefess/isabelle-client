@@ -26,6 +26,7 @@ include = ["isabelle_client/py.typed"]
 [tool.poetry.dependencies]
 python = ">= 3.6.2, < 4.0"
 dataclasses = {version = "*", markers = "python_version < \"3.7\""}
+importlib-resources = {version = "*", markers = "python_version < \"3.9\""}
 
 [tool.poetry.dev-dependencies]
 pylint = "*"
