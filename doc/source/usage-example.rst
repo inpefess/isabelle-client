@@ -41,7 +41,7 @@ The client works well in scripts and in Jupyter notebooks. For the latter, one h
 Starting Isabelle server
 ========================
    
-First, we need to start an Isabelle server (doesn't work on Windows)::
+First, we need to start an Isabelle server ::
   
     from isabelle_client import start_isabelle_server
 
@@ -51,7 +51,7 @@ First, we need to start an Isabelle server (doesn't work on Windows)::
 
 We could also start the server outside this script and use its info (on Windows, this is done in Cygwin)::
 
-    isabelle server > server.info
+    isabelle server
 
 Interacting with Isabelle server
 ================================

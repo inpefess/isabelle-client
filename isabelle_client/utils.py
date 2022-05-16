@@ -18,11 +18,19 @@ Utils
 A collection of different useful functions.
 """
 import asyncio
+import os
 import re
+import sys
 from typing import Optional, Tuple
 
 from isabelle_client.compatibility_helper import async_run
 from isabelle_client.isabelle__client import IsabelleClient
+
+if sys.version_info.major == 3 and sys.version_info.minor >= 9:
+    # pylint: disable=no-name-in-module, import-error
+    from importlib.resources import files  # type: ignore
+else:  # pragma: no cover
+    from importlib_resources import files  # pylint: disable=import-error
 
 
 def get_isabelle_client(server_info: str) -> IsabelleClient:
@@ -76,6 +84,8 @@ def start_isabelle_server(
         + (f" -p {str(port)}" if port is not None else "")
         + (f" -n {name}" if name is not None else "")
     )
+    if sys.platform == "win32":
+        return start_isabelle_server_win32(args)  # pragma: no cover
 
     async def async_call():
         isabelle_server = await asyncio.create_subprocess_exec(
@@ -84,5 +94,32 @@ def start_isabelle_server(
         return (await isabelle_server.stdout.readline()).decode(
             "utf-8"
         ), isabelle_server
+
+    return async_run(async_call())
+
+
+def start_isabelle_server_win32(
+    args: str,
+) -> Tuple[str, asyncio.subprocess.Process]:  # pragma: no cover
+    """start Isabelle server on Windows"""
+    # this line enables asyncio.create_subprocess_exec on Windows:
+    # https://docs.python.org/3/library/asyncio-platforms.html#asyncio-windows-subprocess
+    asyncio.set_event_loop_policy(
+        asyncio.WindowsProactorEventLoopPolicy()  # type: ignore
+    )
+
+    async def async_call():
+        isabelle_server = await asyncio.create_subprocess_exec(
+            str(
+                files("isabelle_client").joinpath(
+                    os.path.join("resources", "Cygwin-Isabelle.bat")
+                )
+            ),
+            args,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+        server_info = (await isabelle_server.stdout.readline()).decode("utf-8")
+        return server_info, isabelle_server
 
     return async_run(async_call())

@@ -72,3 +72,7 @@ max-statements = 10
 show_error_codes = true
 incremental = false
 disable_error_code = "no-redef"
+
+[[tool.mypy.overrides]]
+module = ["importlib_resources"]
+ignore_missing_imports = true
