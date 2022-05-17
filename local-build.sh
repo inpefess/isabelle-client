@@ -9,5 +9,5 @@ cd ..
 flake8 ${PACKAGE_NAME} examples
 pylint ${PACKAGE_NAME} examples
 mypy ${PACKAGE_NAME} examples
-pytest --cov-report term-missing ${PACKAGE_NAME}
+pytest ${PACKAGE_NAME}
 scc -i py ${PACKAGE_NAME}
