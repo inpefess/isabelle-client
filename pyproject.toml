@@ -59,6 +59,12 @@ addopts = """--doctest-modules --cov isabelle_client --cov-report xml
 testpaths = ["gym_saturation"]
 doctest_optionflags = "NORMALIZE_WHITESPACE"
 
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "from importlib.resources import files"
+]
+
 [tool.pylint.master]
 disable = "bad-continuation"
 

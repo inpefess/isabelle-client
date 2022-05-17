@@ -27,7 +27,7 @@ from isabelle_client.compatibility_helper import async_run
 from isabelle_client.isabelle__client import IsabelleClient
 
 if sys.version_info.major == 3 and sys.version_info.minor >= 9:
-    # pylint: disable=no-name-in-module, import-error; # pragma: no cover
+    # pylint: disable=no-name-in-module, import-error
     from importlib.resources import files  # type: ignore
 else:  # pragma: no cover
     from importlib_resources import files  # pylint: disable=import-error
