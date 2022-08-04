@@ -61,7 +61,7 @@ class IsabelleClient:
         """
         executes a command and waits for results
 
-        >>> logger = getfixture("mock_logger")
+        >>> logger = getfixture("mock_logger")  # noqa: F821
         >>> isabelle_client = IsabelleClient(
         ...     "localhost", 9999, "test_password", logger
         ... )

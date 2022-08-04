@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "isabelle-client"
-version = "0.3.5"
+version = "0.3.6"
 description = "A client to Isabelle proof assistant server"
 authors = ["Boris Shminke <boris@shminke.ml>"]
 license = "Apache-2.0"
@@ -26,6 +26,7 @@ include = ["isabelle_client/py.typed"]
 [tool.poetry.dependencies]
 python = ">= 3.6.2, < 4.0"
 dataclasses = {version = "*", markers = "python_version < \"3.7\""}
+importlib-resources = {version = "*", markers = "python_version < \"3.9\""}
 
 [tool.poetry.dev-dependencies]
 pylint = "*"
@@ -49,3 +50,38 @@ src_paths = ["isabelle_client"]
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = """--doctest-modules --cov isabelle_client --cov-report xml
+    --cov-report term-missing --cov-fail-under=100
+    --junit-xml test-results/isabelle-client.xml"""
+testpaths = ["gym_saturation"]
+doctest_optionflags = "NORMALIZE_WHITESPACE"
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "from importlib.resources import files"
+]
+
+[tool.pylint.master]
+disable = "bad-continuation"
+
+[tool.pylint.format]
+max-line-length = 79
+
+[tool.pylint.typecheck]
+generated-members = ["asyncio.*"]
+
+[tool.pylint.design]
+max-statements = 10
+
+[tool.mypy]
+show_error_codes = true
+incremental = false
+disable_error_code = "no-redef"
+
+[[tool.mypy.overrides]]
+module = ["importlib_resources"]
+ignore_missing_imports = true

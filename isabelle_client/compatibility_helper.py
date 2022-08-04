@@ -35,5 +35,7 @@ def async_run(a_coroutine: Coroutine) -> Any:
         # pylint: disable=no-member
         result = asyncio.run(a_coroutine)  # type: ignore
     else:
-        result = asyncio.get_event_loop().run_until_complete(a_coroutine)
+        result = asyncio.get_event_loop().run_until_complete(
+            a_coroutine
+        )  # pragma: no cover
     return result

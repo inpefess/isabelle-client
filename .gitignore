@@ -18,3 +18,4 @@ doc/build/
 flycheck_*.*
 .dir-locals.el
 examples/output/
+coverage.xml

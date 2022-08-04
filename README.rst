@@ -1,4 +1,4 @@
-|PyPI version| |Anaconda version| |CircleCI| |Documentation Status| |codecov| |Binder|
+|Binder|\ |PyPI version|\ |Anaconda version|\ |CircleCI|\ |Documentation Status|\ |codecov|
 
 Python client for Isabelle server
 =================================
