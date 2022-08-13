@@ -37,6 +37,7 @@ sphinx-rtd-theme = "*"
 sphinx-autodoc-typehints = "*"
 types-dataclasses = "*"
 jupyterlab = "*"
+pydocstyle = "*"
 
 [tool.black]
 line-length=79

@@ -11,7 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-""" A scipt for generating the video example """
+# noqa: D205
+"""A scipt for generating the video example."""
 import os
 import sys
 import time

@@ -11,7 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-""" An example of the client usage """
+# noqa: D205
+"""An example of the client usage."""
 import asyncio
 import logging
 
@@ -19,7 +20,7 @@ from isabelle_client import get_isabelle_client, start_isabelle_server
 
 
 def main():
-    """using Isabelle client"""
+    """Use Isabelle client."""
     # first, we start Isabelle server
     server_info, _ = start_isabelle_server(
         name="test", port=9999, log_file="server.log"

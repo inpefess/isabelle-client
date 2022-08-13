@@ -36,6 +36,7 @@ jobs:
           command: |
             . venv/bin/activate
             flake8 isabelle_client examples
+            pydocstyle isabelle_client examples
             pylint
       - run:
           name: run type checks

@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+# noqa: D205, D400
 """
 Socket Communication
 =====================
@@ -27,7 +28,7 @@ from typing import List, Optional, Set
 @dataclass
 class IsabelleResponse:
     """
-    a response from an Isabelle server
+    A response from an Isabelle server.
 
     :param response_type: an all capitals word like ``FINISHED`` or ``ERROR``
     :param response_body: a JSON-formatted response
@@ -39,6 +40,7 @@ class IsabelleResponse:
     response_length: Optional[int] = None
 
     def __str__(self):
+        """Pretty print Isabelle server response."""
         return (
             (
                 f"{self.response_length}\n"
@@ -54,27 +56,30 @@ class IsabelleResponse:
 async def get_response_from_isabelle(
     reader: asyncio.StreamReader,
 ) -> IsabelleResponse:
-    """
-    get a response from Isabelle server:
+    r"""
+    Get a response from Isabelle server.
+
+    Format:
+
     * a carriage-return delimited message or
     * a fixed length message after a carriage-return delimited message with
-    only one integer number denoting length
+      only one integer number denoting length
 
     >>> async def awaiter():
     ...     test_reader, test_writer = await asyncio.open_connection(
     ...     "localhost", 9999
     ... )
-    ...     test_writer.write(b"ping\\n")
+    ...     test_writer.write(b"ping\n")
     ...     result = [str(await get_response_from_isabelle(test_reader))]
     ...     result += [str(await get_response_from_isabelle(test_reader))]
     ...     return result
     >>> print(asyncio.run(awaiter()))
-    ['OK "connection OK"', '43\\nFINISHED {"session_id": "test_session_id"}']
+    ['OK "connection OK"', '43\nFINISHED {"session_id": "test_session_id"}']
     >>> async def awaiter():
     ...     test_reader, test_writer = await asyncio.open_connection(
     ...     "localhost", 9998
     ... )
-    ...     test_writer.write(b"ping\\n")
+    ...     test_writer.write(b"ping\n")
     ...     result = [str(await get_response_from_isabelle(test_reader))]
     ...     result += [str(await get_response_from_isabelle(test_reader))]
     ...     return result
@@ -102,16 +107,17 @@ async def get_final_message(
     final_message: Set[str],
     logger: Optional[Logger] = None,
 ) -> List[IsabelleResponse]:
-    """
-    gets responses from Isabelle server until a message of specified
-    'final' type arrives
+    r"""
+    Get responses from Isabelle server.
+
+    (until a message of specified 'final' type arrives)
 
     >>> test_logger = getfixture("mock_logger")  # noqa: F821
     >>> async def awaiter():
     ...     test_reader, test_writer = await asyncio.open_connection(
     ...     "localhost", 9999
     ... )
-    ...     test_writer.write(b"ping\\n")
+    ...     test_writer.write(b"ping\n")
     ...     result = await get_final_message(
     ...         test_reader, {"FINISHED"}, test_logger
     ...     )
@@ -123,7 +129,7 @@ async def get_final_message(
     FINISHED {"session_id": "test_session_id"}
     >>> print(test_logger.info.mock_calls)
     [call('OK "connection OK"'),
-    call('43\\nFINISHED {"session_id": "test_session_id"}')]
+    call('43\nFINISHED {"session_id": "test_session_id"}')]
 
     :param reader: a ``StreamReader`` connected to Isabelle server
     :param final_message: a set of possible final message types

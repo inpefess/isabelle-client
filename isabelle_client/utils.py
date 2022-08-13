@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+# noqa: D205, D400
 """
 Utils
 ======
@@ -34,7 +35,7 @@ else:  # pragma: no cover
 
 def get_isabelle_client(server_info: str) -> IsabelleClient:
     """
-    get an instance of ``IsabelleClient`` from server info
+    Get an instance of ``IsabelleClient`` from server info.
 
     >>> server_inf = 'server "test" = 127.0.0.1:10000 (password "pass")'
     >>> print(get_isabelle_client(server_inf).port)
@@ -63,7 +64,7 @@ def start_isabelle_server(
     port: Optional[int] = None,
 ) -> Tuple[str, asyncio.subprocess.Process]:
     """
-    start Isabelle server
+    Start Isabelle server.
 
     >>> import os
     >>> os.environ["PATH"] = "isabelle_client/resources:$PATH"
@@ -100,7 +101,7 @@ def start_isabelle_server(
 def start_isabelle_server_win32(
     args: str,
 ) -> Tuple[str, asyncio.subprocess.Process]:  # pragma: no cover
-    """start Isabelle server on Windows"""
+    """Start Isabelle server on Windows."""
     # this line enables asyncio.create_subprocess_exec on Windows:
     # https://docs.python.org/3/library/asyncio-platforms.html#asyncio-windows-subprocess
     asyncio.set_event_loop_policy(

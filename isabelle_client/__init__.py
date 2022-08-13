@@ -11,7 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-""" A Python client to `Isabelle <https://isabelle.in.tum.de>`__ server """
+# noqa: D205
+"""A Python client to `Isabelle <https://isabelle.in.tum.de>`__ server."""
 from isabelle_client.isabelle__client import IsabelleClient
 from isabelle_client.socket_communication import IsabelleResponse
 from isabelle_client.utils import get_isabelle_client, start_isabelle_server

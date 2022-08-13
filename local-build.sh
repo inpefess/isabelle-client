@@ -6,6 +6,7 @@ cd doc
 make clean html coverage
 cat build/coverage/python.txt
 cd ..
+pydocstyle ${PACKAGE_NAME} examples
 flake8 ${PACKAGE_NAME} examples
 pylint ${PACKAGE_NAME} examples
 mypy ${PACKAGE_NAME} examples
