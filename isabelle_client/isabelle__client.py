@@ -22,7 +22,6 @@ import json
 from logging import Logger
 from typing import Any, Dict, List, Optional, Union
 
-from isabelle_client.compatibility_helper import async_run
 from isabelle_client.socket_communication import (
     IsabelleResponse,
     get_final_message,
@@ -65,7 +64,7 @@ class IsabelleClient:
         >>> isabelle_client = IsabelleClient(
         ...     "localhost", 9999, "test_password", logger
         ... )
-        >>> test_response = async_run(
+        >>> test_response = asyncio.run(
         ...     isabelle_client.execute_command("test_command")
         ... )
         >>> print(test_response[-1].response_type)
@@ -131,7 +130,7 @@ class IsabelleClient:
         if dirs is not None:
             arguments["dirs"] = dirs
         arguments.update(kwargs)
-        response = async_run(
+        response = asyncio.run(
             self.execute_command(f"session_build {json.dumps(arguments)}")
         )
         return response
@@ -156,7 +155,7 @@ class IsabelleClient:
         """
         arguments = {"session": session}
         arguments.update(kwargs)
-        response_list = async_run(
+        response_list = asyncio.run(
             self.execute_command(f"session_start {json.dumps(arguments)}")
         )
         if response_list[-1].response_type == "FINISHED":
@@ -178,7 +177,9 @@ class IsabelleClient:
         :returns: Isabelle server response
         """
         arguments = json.dumps({"session_id": session_id})
-        response = async_run(self.execute_command(f"session_stop {arguments}"))
+        response = asyncio.run(
+            self.execute_command(f"session_stop {arguments}")
+        )
         return response
 
     def use_theories(
@@ -217,7 +218,7 @@ class IsabelleClient:
         arguments.update(kwargs)
         if master_dir is not None:
             arguments["master_dir"] = master_dir
-        response = async_run(
+        response = asyncio.run(
             self.execute_command(f"use_theories {json.dumps(arguments)}")
         )
         if session_id is None:
@@ -236,7 +237,7 @@ class IsabelleClient:
         :param message: any text
         :returns: Isabelle server response
         """
-        response = async_run(
+        response = asyncio.run(
             self.execute_command(
                 f"echo {json. dumps(message)}", asynchronous=False
             )
@@ -254,7 +255,9 @@ class IsabelleClient:
 
         :returns: Isabelle server response
         """
-        response = async_run(self.execute_command("help", asynchronous=False))
+        response = asyncio.run(
+            self.execute_command("help", asynchronous=False)
+        )
         return response
 
     def purge_theories(
@@ -289,7 +292,7 @@ class IsabelleClient:
             arguments["master_dir"] = master_dir
         if purge_all is not None:
             arguments["all"] = purge_all
-        response = async_run(
+        response = asyncio.run(
             self.execute_command(
                 f"purge_theories {json.dumps(arguments)}", asynchronous=False
             )
@@ -309,7 +312,7 @@ class IsabelleClient:
         :returns: Isabelle server response
         """
         arguments = {"task": task}
-        response = async_run(
+        response = asyncio.run(
             self.execute_command(
                 f"cancel {json.dumps(arguments)}", asynchronous=False
             )
@@ -327,7 +330,7 @@ class IsabelleClient:
 
         :returns: Isabelle server response
         """
-        response = async_run(
+        response = asyncio.run(
             self.execute_command("shutdown", asynchronous=False)
         )
         return response

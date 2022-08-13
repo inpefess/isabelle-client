@@ -54,7 +54,7 @@ are welcome. To start:
 
    git clone https://github.com/inpefess/isabelle-client
    cd isabelle-client
-   # activate python virtual environment with Python 3.6+
+   # activate python virtual environment with Python 3.7+
    pip install -U pip
    pip install -U setuptools wheel poetry
    poetry install

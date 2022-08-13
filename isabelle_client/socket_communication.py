@@ -60,7 +60,6 @@ async def get_response_from_isabelle(
     * a fixed length message after a carriage-return delimited message with
     only one integer number denoting length
 
-    >>> from isabelle_client.compatibility_helper import async_run
     >>> async def awaiter():
     ...     test_reader, test_writer = await asyncio.open_connection(
     ...     "localhost", 9999
@@ -69,7 +68,7 @@ async def get_response_from_isabelle(
     ...     result = [str(await get_response_from_isabelle(test_reader))]
     ...     result += [str(await get_response_from_isabelle(test_reader))]
     ...     return result
-    >>> print(async_run(awaiter()))
+    >>> print(asyncio.run(awaiter()))
     ['OK "connection OK"', '43\\nFINISHED {"session_id": "test_session_id"}']
     >>> async def awaiter():
     ...     test_reader, test_writer = await asyncio.open_connection(
@@ -79,7 +78,7 @@ async def get_response_from_isabelle(
     ...     result = [str(await get_response_from_isabelle(test_reader))]
     ...     result += [str(await get_response_from_isabelle(test_reader))]
     ...     return result
-    >>> print(async_run(awaiter()))
+    >>> print(asyncio.run(awaiter()))
     Traceback (most recent call last):
       ...
     ValueError: Unexpected response from Isabelle: # !!!
@@ -107,7 +106,6 @@ async def get_final_message(
     gets responses from Isabelle server until a message of specified
     'final' type arrives
 
-    >>> from isabelle_client.compatibility_helper import async_run
     >>> test_logger = getfixture("mock_logger")  # noqa: F821
     >>> async def awaiter():
     ...     test_reader, test_writer = await asyncio.open_connection(
@@ -118,7 +116,7 @@ async def get_final_message(
     ...         test_reader, {"FINISHED"}, test_logger
     ...     )
     ...     return result
-    >>> for response in async_run(awaiter()):
+    >>> for response in asyncio.run(awaiter()):
     ...     print(response)
     OK "connection OK"
     43

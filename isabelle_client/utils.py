@@ -23,7 +23,6 @@ import re
 import sys
 from typing import Optional, Tuple
 
-from isabelle_client.compatibility_helper import async_run
 from isabelle_client.isabelle__client import IsabelleClient
 
 if sys.version_info.major == 3 and sys.version_info.minor >= 9:
@@ -95,7 +94,7 @@ def start_isabelle_server(
             "utf-8"
         ), isabelle_server
 
-    return async_run(async_call())
+    return asyncio.run(async_call())
 
 
 def start_isabelle_server_win32(
@@ -122,4 +121,4 @@ def start_isabelle_server_win32(
         server_info = (await isabelle_server.stdout.readline()).decode("utf-8")
         return server_info, isabelle_server
 
-    return async_run(async_call())
+    return asyncio.run(async_call())
