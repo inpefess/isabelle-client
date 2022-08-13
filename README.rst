@@ -82,7 +82,7 @@ More documentation can be found
 Video example
 =============
 
-.. image:: ../../examples/tty.gif
+.. image:: ../_static/tty.gif
   :alt:
 
 (if not displayed correctly on this page, please watch `here <https://isabelle-client.readthedocs.io/en/latest/#video-example>`__).

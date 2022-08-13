@@ -12,9 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """ A scipt for generating the video example """
+import os
+import sys
 import time
 
-with open("video_example/example.txt", "r", encoding="utf-8") as example:
+if sys.version_info.major == 3 and sys.version_info.minor >= 9:
+    # pylint: disable=no-name-in-module, import-error
+    from importlib.resources import files  # type: ignore
+else:  # pragma: no cover
+    from importlib_resources import files  # pylint: disable=import-error
+
+with open(  # type: ignore
+    files("isabelle_client").joinpath(
+        os.path.join("resources", "example.txt")
+    ),
+    "r",
+    encoding="utf-8",
+) as example:
     lines = example.readlines()
 
 for line in lines:
