@@ -1,48 +1,16 @@
 version: 2.1
-
 jobs:
   build-and-test:
-    parameters:
-      python_version:
-        description: "Python version to test against"
-        default: "3.10.4"
-        type: string
     docker:
-      - image: cimg/python:<< parameters.python_version >>
-    working_directory: ~/repo
+      - image: inpefess/multipython
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - v1-dependencies-<< parameters.python_version >>-{{ checksum "poetry.lock" }}
       - run:
-          name: install dependencies
+          name: use tox
           command: |
-            python -m venv venv
-            . venv/bin/activate
-            pip install -U pip poetry
-            poetry install
-      - save_cache:
-          paths:
-            - ./venv
-          key: v1-dependencies-<< parameters.python_version >>-{{ checksum "poetry.lock" }}
-      - run:
-          name: run tests
-          command: |
-            . venv/bin/activate
-            pytest isabelle_client
-      - run:
-          name: run linters
-          command: |
-            . venv/bin/activate
-            flake8 isabelle_client examples
-            pydocstyle isabelle_client examples
-            pylint
-      - run:
-          name: run type checks
-          command: |
-            . venv/bin/activate
-            mypy isabelle_client examples
+            pip install tox
+            pyenv local 3.7.13 3.8.13 3.9.13 3.10.4
+            tox
       - run:
           name: upload data to codecov
           command: |
@@ -51,15 +19,7 @@ jobs:
           path: build
       - store_test_results:
           path: test-results
-
 workflows:
-  workflow:
+  main:
     jobs:
-      - build-and-test:
-          python_version: "3.7.13"
-      - build-and-test:
-          python_version: "3.8.13"
-      - build-and-test:
-          python_version: "3.9.12"
-      - build-and-test:
-          python_version: "3.10.4"
+      - build-and-test

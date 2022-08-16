@@ -38,6 +38,7 @@ sphinx-autodoc-typehints = "*"
 types-dataclasses = "*"
 jupyterlab = "*"
 pydocstyle = "*"
+tox = "*"
 
 [tool.black]
 line-length=79
@@ -84,3 +85,25 @@ disable_error_code = "no-redef"
 [[tool.mypy.overrides]]
 module = ["importlib_resources"]
 ignore_missing_imports = true
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+isolated_build = True
+envlist = py37,py38,py39,py310
+
+[testenv]
+deps =
+    pytest-cov
+    flake8
+    pydocstyle
+    pylint
+    mypy
+    toml
+commands =
+    pydocstyle isabelle_client examples
+    flake8 isabelle_client examples
+    pylint isabelle_client examples
+    mypy isabelle_client examples
+    pytest
+"""
