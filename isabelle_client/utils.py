@@ -13,8 +13,8 @@
 # limitations under the License.
 # noqa: D205, D400
 """
-Utils
-======
+Utilities
+==========
 
 A collection of different useful functions.
 """

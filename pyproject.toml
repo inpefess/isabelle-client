@@ -39,6 +39,7 @@ types-dataclasses = "*"
 jupyterlab = "*"
 pydocstyle = "*"
 tox = "*"
+pyenchant = "*"
 
 [tool.black]
 line-length=79
@@ -89,6 +90,10 @@ max-statements = 10
 [tool.pylint.typecheck]
 generated-members = ["asyncio"]
 
+[tool.pylint.spelling]
+spelling-dict = "en_GB"
+spelling-private-dict-file = "spelling.dict"
+
 [tool.mypy]
 show_error_codes = true
 incremental = true
@@ -112,6 +117,7 @@ deps =
     pylint
     mypy
     toml
+    pyenchant
 commands =
     pydocstyle isabelle_client examples
     flake8 isabelle_client examples
