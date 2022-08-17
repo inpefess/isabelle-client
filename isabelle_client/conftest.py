@@ -15,6 +15,7 @@
 """Fixtures for unit tests live here."""
 import socketserver
 import threading
+from typing import Generator, Tuple
 from unittest.mock import Mock
 
 from pytest import fixture
@@ -69,8 +70,14 @@ class ReusableTCPServer(socketserver.TCPServer):
 
 
 @fixture(autouse=True, scope="session")
-def tcp_servers():
-    """Get a simplistic TCP server mocking Isabelle server behaviour."""
+def tcp_servers() -> Generator[
+    Tuple[ReusableTCPServer, ReusableTCPServer], None, None
+]:
+    """
+    Get a simplistic TCP server mocking Isabelle server behaviour.
+
+    :returns: an instance of a mock working server and a mock buggy server
+    """
     with ReusableTCPServer(
         ("localhost", 9999), DummyTCPHandler
     ) as server, ReusableTCPServer(

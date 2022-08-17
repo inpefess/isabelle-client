@@ -90,6 +90,7 @@ async def get_response_from_isabelle(
 
     :param reader: a StreamReader connected to a server
     :returns: a response from Isabelle
+    :raises ValueError: if the server response is malformed
     """
     response = (await reader.readline()).decode("utf-8")
     match = re.compile(r"(\d+)\n").match(response)

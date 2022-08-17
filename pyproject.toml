@@ -65,21 +65,33 @@ exclude_lines = [
     "from importlib.resources import files"
 ]
 
-[tool.pylint.master]
-disable = "bad-continuation"
+[tool.pylint.MASTER]
+load-plugins = [
+    "pylint.extensions.consider_ternary_expression",
+    "pylint.extensions.docparams",
+    "pylint.extensions.mccabe",
+    "pylint.extensions.set_membership",
+]
+
+[tool.pylint.parameter_documentation]
+accept-no-param-doc = false
+accept-no-raise-doc = false
+accept-no-return-doc = true
+accept-no-yields-doc = false
+default-docstring-type = "sphinx"
 
 [tool.pylint.format]
 max-line-length = 79
 
-[tool.pylint.typecheck]
-generated-members = ["asyncio.*"]
-
 [tool.pylint.design]
 max-statements = 10
 
+[tool.pylint.typecheck]
+generated-members = ["asyncio"]
+
 [tool.mypy]
 show_error_codes = true
-incremental = false
+incremental = true
 disable_error_code = "no-redef"
 
 [[tool.mypy.overrides]]

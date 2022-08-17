@@ -153,6 +153,7 @@ class IsabelleClient:
         :param kwargs: additional arguments
             (see Isabelle System manual for details)
         :returns: a ``session_id``
+        :raises ValueError: if the server response is malformed
         """
         arguments = {"session": session}
         arguments.update(kwargs)

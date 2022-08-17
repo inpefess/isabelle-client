@@ -47,6 +47,7 @@ def get_isabelle_client(server_info: str) -> IsabelleClient:
 
     :param server_info: a line returned by a server on start
     :returns: an Isabelle client
+    :raises ValueError: if the server response is malformed
     """
     match = re.compile(
         r"server \".*\" = (.*):(.*) \(password \"(.*)\"\)"
@@ -101,7 +102,11 @@ def start_isabelle_server(
 def start_isabelle_server_win32(
     args: str,
 ) -> Tuple[str, asyncio.subprocess.Process]:  # pragma: no cover
-    """Start Isabelle server on Windows."""
+    """
+    Start Isabelle server on Windows.
+
+    :param args: Isabelle server arguments string
+    """
     # this line enables asyncio.create_subprocess_exec on Windows:
     # https://docs.python.org/3/library/asyncio-platforms.html#asyncio-windows-subprocess
     asyncio.set_event_loop_policy(
