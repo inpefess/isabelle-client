@@ -11,9 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+# noqa: D205, D400
 """
-Utils
-======
+Utilities
+==========
 
 A collection of different useful functions.
 """
@@ -23,7 +24,6 @@ import re
 import sys
 from typing import Optional, Tuple
 
-from isabelle_client.compatibility_helper import async_run
 from isabelle_client.isabelle__client import IsabelleClient
 
 if sys.version_info.major == 3 and sys.version_info.minor >= 9:
@@ -35,7 +35,7 @@ else:  # pragma: no cover
 
 def get_isabelle_client(server_info: str) -> IsabelleClient:
     """
-    get an instance of ``IsabelleClient`` from server info
+    Get an instance of ``IsabelleClient`` from server info.
 
     >>> server_inf = 'server "test" = 127.0.0.1:10000 (password "pass")'
     >>> print(get_isabelle_client(server_inf).port)
@@ -47,6 +47,7 @@ def get_isabelle_client(server_info: str) -> IsabelleClient:
 
     :param server_info: a line returned by a server on start
     :returns: an Isabelle client
+    :raises ValueError: if the server response is malformed
     """
     match = re.compile(
         r"server \".*\" = (.*):(.*) \(password \"(.*)\"\)"
@@ -64,7 +65,7 @@ def start_isabelle_server(
     port: Optional[int] = None,
 ) -> Tuple[str, asyncio.subprocess.Process]:
     """
-    start Isabelle server
+    Start Isabelle server.
 
     >>> import os
     >>> os.environ["PATH"] = "isabelle_client/resources:$PATH"
@@ -95,13 +96,17 @@ def start_isabelle_server(
             "utf-8"
         ), isabelle_server
 
-    return async_run(async_call())
+    return asyncio.run(async_call())
 
 
 def start_isabelle_server_win32(
     args: str,
 ) -> Tuple[str, asyncio.subprocess.Process]:  # pragma: no cover
-    """start Isabelle server on Windows"""
+    """
+    Start Isabelle server on Windows.
+
+    :param args: Isabelle server arguments string
+    """
     # this line enables asyncio.create_subprocess_exec on Windows:
     # https://docs.python.org/3/library/asyncio-platforms.html#asyncio-windows-subprocess
     asyncio.set_event_loop_policy(
@@ -122,4 +127,4 @@ def start_isabelle_server_win32(
         server_info = (await isabelle_server.stdout.readline()).decode("utf-8")
         return server_info, isabelle_server
 
-    return async_run(async_call())
+    return asyncio.run(async_call())

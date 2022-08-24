@@ -11,18 +11,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-""" An example of the client usage """
+# noqa: D205
+"""An example of the client usage."""
+import asyncio
 import logging
 
-from isabelle_client import (
-    async_run,
-    get_isabelle_client,
-    start_isabelle_server,
-)
+from isabelle_client import get_isabelle_client, start_isabelle_server
 
 
 def main():
-    """ using Isabelle client """
+    """Use Isabelle client."""
     # first, we start Isabelle server
     server_info, _ = start_isabelle_server(
         name="test", port=9999, log_file="server.log"
@@ -40,7 +38,7 @@ def main():
     # or we can build a session document using ROOT and root.tex files from it
     isabelle.session_build(dirs=["."], session="examples")
     # or we can issue a free-text command through TCP
-    async_run(isabelle.execute_command("echo 42", asynchronous=False))
+    asyncio.run(isabelle.execute_command("echo 42", asynchronous=False))
     isabelle.shutdown()
 
 

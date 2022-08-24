@@ -21,7 +21,5 @@ Package Documentation
    :members:
 .. automodule:: isabelle_client.socket_communication
    :members:
-.. automodule:: isabelle_client.compatibility_helper
-   :members:
 .. automodule:: isabelle_client.utils
    :members:

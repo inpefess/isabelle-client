@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+# noqa: D205, D400
 """
 Isabelle Client
 ================
@@ -22,7 +23,6 @@ import json
 from logging import Logger
 from typing import Any, Dict, List, Optional, Union
 
-from isabelle_client.compatibility_helper import async_run
 from isabelle_client.socket_communication import (
     IsabelleResponse,
     get_final_message,
@@ -30,15 +30,7 @@ from isabelle_client.socket_communication import (
 
 
 class IsabelleClient:
-    """
-    a TCP client for an Isabelle server
-
-    :param address: IP or a domain name
-    :param port: a port number on which the server listens
-    :param password: a password to access the server through TCP
-    :param logger: a Python logger to store all requests to
-        and replies from the server
-    """
+    """A TCP client for an Isabelle server."""
 
     def __init__(
         self,
@@ -47,7 +39,15 @@ class IsabelleClient:
         password: str,
         logger: Optional[Logger] = None,
     ):
-        """"""
+        """
+        Create a client to Isabelle server.
+
+        :param address: IP or a domain name
+        :param port: a port number on which the server listens
+        :param password: a password to access the server through TCP
+        :param logger: a Python logger to store all requests to
+            and replies from the server
+        """
         self.address = address
         self.port = port
         self.password = password
@@ -58,14 +58,14 @@ class IsabelleClient:
         command: str,
         asynchronous: bool = True,
     ) -> List[IsabelleResponse]:
-        """
-        executes a command and waits for results
+        r"""
+        Execute a command and waits for results.
 
         >>> logger = getfixture("mock_logger")  # noqa: F821
         >>> isabelle_client = IsabelleClient(
         ...     "localhost", 9999, "test_password", logger
         ... )
-        >>> test_response = async_run(
+        >>> test_response = asyncio.run(
         ...     isabelle_client.execute_command("test_command")
         ... )
         >>> print(test_response[-1].response_type)
@@ -75,9 +75,9 @@ class IsabelleClient:
         >>> print(test_response[-1].response_length)
         43
         >>> print(logger.info.mock_calls)
-        [call('test_password\\ntest_command\\n'),
+        [call('test_password\ntest_command\n'),
         call('OK "connection OK"'),
-        call('43\\nFINISHED {"session_id": "test_session_id"}')]
+        call('43\nFINISHED {"session_id": "test_session_id"}')]
 
         :param command: a full text of a command to Isabelle
         :param asynchronous: if ``False``, waits for ``OK``; else waits for
@@ -106,7 +106,7 @@ class IsabelleClient:
         **kwargs,
     ) -> List[IsabelleResponse]:
         """
-        build a session from ROOT file
+        Build a session from ROOT file.
 
         >>> isabelle_client = IsabelleClient(
         ...     "localhost", 9999, "test_password"
@@ -131,14 +131,14 @@ class IsabelleClient:
         if dirs is not None:
             arguments["dirs"] = dirs
         arguments.update(kwargs)
-        response = async_run(
+        response = asyncio.run(
             self.execute_command(f"session_build {json.dumps(arguments)}")
         )
         return response
 
     def session_start(self, session: str = "HOL", **kwargs) -> str:
         """
-        start a new session
+        Start a new session.
 
         >>> isabelle_client = IsabelleClient("localhost", 9998, "test")
         >>> print(isabelle_client.session_start(verbose=True))
@@ -153,10 +153,11 @@ class IsabelleClient:
         :param kwargs: additional arguments
             (see Isabelle System manual for details)
         :returns: a ``session_id``
+        :raises ValueError: if the server response is malformed
         """
         arguments = {"session": session}
         arguments.update(kwargs)
-        response_list = async_run(
+        response_list = asyncio.run(
             self.execute_command(f"session_start {json.dumps(arguments)}")
         )
         if response_list[-1].response_type == "FINISHED":
@@ -167,7 +168,7 @@ class IsabelleClient:
 
     def session_stop(self, session_id: str) -> List[IsabelleResponse]:
         """
-        stop session with given ID
+        Stop session with given ID.
 
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
         >>> test_response = isabelle_client.session_stop("test")
@@ -178,7 +179,9 @@ class IsabelleClient:
         :returns: Isabelle server response
         """
         arguments = json.dumps({"session_id": session_id})
-        response = async_run(self.execute_command(f"session_stop {arguments}"))
+        response = asyncio.run(
+            self.execute_command(f"session_stop {arguments}")
+        )
         return response
 
     def use_theories(
@@ -189,7 +192,7 @@ class IsabelleClient:
         **kwargs,
     ) -> List[IsabelleResponse]:
         """
-        run the engine on theory files
+        Run the engine on theory files.
 
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
         >>> test_response = isabelle_client.use_theories(
@@ -217,7 +220,7 @@ class IsabelleClient:
         arguments.update(kwargs)
         if master_dir is not None:
             arguments["master_dir"] = master_dir
-        response = async_run(
+        response = asyncio.run(
             self.execute_command(f"use_theories {json.dumps(arguments)}")
         )
         if session_id is None:
@@ -226,7 +229,7 @@ class IsabelleClient:
 
     def echo(self, message: Any) -> List[IsabelleResponse]:
         """
-        asks a server to echo a message
+        Ask a server to echo a message.
 
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
         >>> test_response = isabelle_client.echo("test_message")
@@ -236,7 +239,7 @@ class IsabelleClient:
         :param message: any text
         :returns: Isabelle server response
         """
-        response = async_run(
+        response = asyncio.run(
             self.execute_command(
                 f"echo {json. dumps(message)}", asynchronous=False
             )
@@ -245,7 +248,7 @@ class IsabelleClient:
 
     def help(self) -> List[IsabelleResponse]:
         """
-        asks a server to display the list of available commands
+        Ask a server to display the list of available commands.
 
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
         >>> test_response = isabelle_client.help()
@@ -254,7 +257,9 @@ class IsabelleClient:
 
         :returns: Isabelle server response
         """
-        response = async_run(self.execute_command("help", asynchronous=False))
+        response = asyncio.run(
+            self.execute_command("help", asynchronous=False)
+        )
         return response
 
     def purge_theories(
@@ -265,7 +270,7 @@ class IsabelleClient:
         purge_all: Optional[bool] = None,
     ) -> List[IsabelleResponse]:
         """
-        asks a server to purge listed theories from it
+        Ask a server to purge listed theories from it.
 
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
         >>> test_response = isabelle_client.purge_theories(
@@ -289,7 +294,7 @@ class IsabelleClient:
             arguments["master_dir"] = master_dir
         if purge_all is not None:
             arguments["all"] = purge_all
-        response = async_run(
+        response = asyncio.run(
             self.execute_command(
                 f"purge_theories {json.dumps(arguments)}", asynchronous=False
             )
@@ -298,7 +303,7 @@ class IsabelleClient:
 
     def cancel(self, task: str) -> List[IsabelleResponse]:
         """
-        asks a server to try to cancel a task with a given ID
+        Ask a server to try to cancel a task with a given ID.
 
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
         >>> test_response = isabelle_client.cancel("test_task")
@@ -309,7 +314,7 @@ class IsabelleClient:
         :returns: Isabelle server response
         """
         arguments = {"task": task}
-        response = async_run(
+        response = asyncio.run(
             self.execute_command(
                 f"cancel {json.dumps(arguments)}", asynchronous=False
             )
@@ -318,7 +323,7 @@ class IsabelleClient:
 
     def shutdown(self) -> List[IsabelleResponse]:
         """
-        asks a server to shutdown immediately
+        Ask a server to shutdown immediately.
 
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
         >>> test_response = isabelle_client.shutdown()
@@ -327,7 +332,7 @@ class IsabelleClient:
 
         :returns: Isabelle server response
         """
-        response = async_run(
+        response = asyncio.run(
             self.execute_command("shutdown", asynchronous=False)
         )
         return response

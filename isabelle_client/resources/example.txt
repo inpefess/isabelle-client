@@ -30,9 +30,8 @@ SLEEP 12
 # all these messages are also saved to the log file
 !ls output
 # in addition, we can issue a free-form command through TCP
-from isabelle_client import async_run
-
-async_run(isabelle.execute_command("echo 42", asynchronous=False))
+import asyncio
+asyncio.run(isabelle.execute_command("echo 42", asynchronous=False))
 isabelle.shutdown()
 # our sessions was logged to the file:
 !cat session.log

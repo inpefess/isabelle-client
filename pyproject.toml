@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "isabelle-client"
-version = "0.3.6"
+version = "0.3.7"
 description = "A client to Isabelle proof assistant server"
 authors = ["Boris Shminke <boris@shminke.ml>"]
 license = "Apache-2.0"
@@ -11,7 +11,6 @@ classifiers=[
 	"Programming Language :: Python :: 3.9",
 	"Programming Language :: Python :: 3.8",
 	"Programming Language :: Python :: 3.7",	
-	"Programming Language :: Python :: 3.6",
 	"License :: OSI Approved :: Apache Software License",
 	"Operating System :: OS Independent",
 	"Intended Audience :: Science/Research",
@@ -24,8 +23,7 @@ classifiers=[
 include = ["isabelle_client/py.typed"]
 
 [tool.poetry.dependencies]
-python = ">= 3.6.2, < 4.0"
-dataclasses = {version = "*", markers = "python_version < \"3.7\""}
+python = ">= 3.7.1, < 4.0"
 importlib-resources = {version = "*", markers = "python_version < \"3.9\""}
 
 [tool.poetry.dev-dependencies]
@@ -39,6 +37,10 @@ sphinx-rtd-theme = "*"
 sphinx-autodoc-typehints = "*"
 types-dataclasses = "*"
 jupyterlab = "*"
+pydocstyle = "*"
+tox = "*"
+pyenchant = "*"
+tbump = "*"
 
 [tool.black]
 line-length=79
@@ -56,7 +58,7 @@ minversion = "6.0"
 addopts = """--doctest-modules --cov isabelle_client --cov-report xml
     --cov-report term-missing --cov-fail-under=100
     --junit-xml test-results/isabelle-client.xml"""
-testpaths = ["gym_saturation"]
+testpaths = ["isabelle_client"]
 doctest_optionflags = "NORMALIZE_WHITESPACE"
 
 [tool.coverage.report]
@@ -65,23 +67,88 @@ exclude_lines = [
     "from importlib.resources import files"
 ]
 
-[tool.pylint.master]
-disable = "bad-continuation"
+[tool.pylint.MASTER]
+load-plugins = [
+    "pylint.extensions.consider_ternary_expression",
+    "pylint.extensions.docparams",
+    "pylint.extensions.mccabe",
+    "pylint.extensions.set_membership",
+]
+
+[tool.pylint.parameter_documentation]
+accept-no-param-doc = false
+accept-no-raise-doc = false
+accept-no-return-doc = true
+accept-no-yields-doc = false
+default-docstring-type = "sphinx"
 
 [tool.pylint.format]
 max-line-length = 79
 
-[tool.pylint.typecheck]
-generated-members = ["asyncio.*"]
-
 [tool.pylint.design]
 max-statements = 10
 
+[tool.pylint.typecheck]
+generated-members = ["asyncio"]
+
+[tool.pylint.spelling]
+spelling-dict = "en_GB"
+spelling-private-dict-file = "spelling.dict"
+
 [tool.mypy]
 show_error_codes = true
-incremental = false
+incremental = true
 disable_error_code = "no-redef"
 
 [[tool.mypy.overrides]]
 module = ["importlib_resources"]
 ignore_missing_imports = true
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+isolated_build = True
+envlist = py37,py38,py39,py310
+
+[testenv]
+deps =
+    pytest-cov
+    flake8
+    pydocstyle
+    pylint
+    mypy
+    toml
+    pyenchant
+commands =
+    pydocstyle isabelle_client examples
+    flake8 isabelle_client examples
+    pylint isabelle_client examples
+    mypy isabelle_client examples
+    pytest
+"""
+
+[tool.tbump]
+github_url = "https://github.com/inpfess/isabelle-client/"
+
+[tool.tbump.version]
+current = "0.3.7"
+regex = '''
+  (?P<major>\d+)
+  \.
+  (?P<minor>\d+)
+  \.
+  (?P<patch>\d+)
+  '''
+
+[tool.tbump.git]
+message_template = "Bump to {new_version}"
+tag_template = "v{new_version}"
+
+[[tool.tbump.file]]
+src = "isabelle_client/__init__.py"
+
+[[tool.tbump.file]]
+src = "pyproject.toml"
+
+[[tool.tbump.file]]
+src = "doc/source/conf.py"
