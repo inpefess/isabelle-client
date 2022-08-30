@@ -19,7 +19,7 @@ import sys
 
 sys.path.insert(0, os.path.abspath("../.."))
 project = "isabelle-client"
-version = "0.3.7"
+version = "0.3.8"
 copyright = "2021-2022, Boris Shminke"
 author = "Boris Shminke"
 extensions = ["sphinx.ext.autodoc", "sphinx.ext.coverage"]
