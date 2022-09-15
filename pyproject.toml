@@ -41,6 +41,7 @@ pydocstyle = "*"
 tox = "*"
 pyenchant = "*"
 tbump = "*"
+nbconvert = {version = "*", extras = ["webpdf"]}
 
 [tool.black]
 line-length=79
