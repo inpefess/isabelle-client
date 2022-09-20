@@ -19,3 +19,6 @@ flycheck_*.*
 .dir-locals.el
 examples/output/
 coverage.xml
+*.nav
+*.snm
+*.toc
