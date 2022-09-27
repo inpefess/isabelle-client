@@ -82,11 +82,8 @@ More documentation can be found
 Video example
 =============
 
-.. image:: ../_static/tty.gif
-  :alt:
-
-(if not displayed correctly on this page, please watch `here <https://isabelle-client.readthedocs.io/en/latest/#video-example>`__).
-
+.. image:: https://isabelle-client.readthedocs.io/en/latest/_images/tty.gif
+	   
 How to cite
 ===========
 
