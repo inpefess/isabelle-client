@@ -1,0 +1,55 @@
+%% Copyright 2022 Boris Shminke
+%%
+%% Licensed under the Apache License, Version 2.0 (the "License");
+%% you may not use this file except in compliance with the License.
+%% You may obtain a copy of the License at
+%%
+%%     https://www.apache.org/licenses/LICENSE-2.0
+%%
+%% Unless required by applicable law or agreed to in writing, software
+%% distributed under the License is distributed on an "AS IS" BASIS,
+%% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+%% See the License for the specific language governing permissions and
+%% limitations under the License.
+
+\TOOL{Python client for Isabell\-e server}
+\VERSION{0.3.5}
+\PROGRAMMINGLANGUAGE{Python}
+\LICENSE{Apache-2.0}
+\URL{https://pypi.org/project/isabelle-client}
+\CICMauthor{Boris Shminke}{Laboratoire J.A. Dieudonné, CNRS and Université Côte d'Azur, France
+\email{boris.shminke@cnrs.fr}}
+
+\maketool
+
+\subsubsection{Description}~
+
+Python client to Isabelle server~\cite{IsabelleServer} gives researchers and students using Python as their primary programming language an opportunity to communicate with the Isabelle server through TCP directly from a Python script.
+
+Such an approach helps avoid the complexities of integrating the existing Python script with languages used for Isabelle development (ML and Scala). \texttt{isabelle-client} relies on \texttt{asyncio}, a Python package providing a high-level interface for TCP communications.
+
+The client supports relaying all the Isabelle server commands described in its manual (see Chapter 4 of~\cite{isabelle_system_manual}) and parses the responses back to Python objects.
+
+The client's distributive package also provides a utility function for starting an instance of the Isabelle server in the background directly from a Python script.
+
+The digital artefact of the current version is available on Zenodo~\cite{boris_shminke_2022_6490275}. Interested potential users of the client can also follow an interactive example~\footnote{ \href{https://mybinder.org/v2/gh/inpefess/isabelle-client/HEAD?labpath=isabelle-client-examples/example.ipynb}{https://bit.ly/isabelle-client}} and the package documentation~\footnote{\href{https://isabelle-client.rtfd.io}{https://isabelle-client.rtfd.io}} for more detailed information.
+
+\subsubsection{Applications}
+\begin{itemize}
+\item A discovery of a proof~\cite{FussnerShminke} for an algebraic problem which stood open for two years despite the efforts of specialists in the field.
+\item The \texttt{isabelle-client} running in a Docker container on Binder was used during the practical sessions of the Advanced Logic course taught at the Université Côte d'Azur in the autumn of the 2021-2022 academic year. This use case helped the author to realise the need for ease of the installation procedure on different operating systems and programming environments.
+\item Also, Fabian Huch used the \texttt{isabelle-client} for debugging the ``Proving for Fun'' backend~\cite{haslbeck2019competitive}. Thanks to this use case, the importance of supporting different (and even outdated) versions of Python became known.
+\end{itemize}
+\subsubsection{Changes from previous version}~
+
+The first public version (0.2.0) of this client~\cite{DBLP:conf/mkm/LiskaLNRSSSW21} worked only for Python 3.7 on GNU/Linux and was supposed to be installed only with the \texttt{pip} package manager.
+\begin{itemize}
+\item The current version is available for any Python 3.6+ on GNU/Linux and Windows. Every new build is tested in a continuous integration workflow against each supported Python version.
+\item The package is hosted now not only on the Python Package Index (PyPI), but also on Conda Forge~\cite{conda_forge_community_2015_4774216}, which enables its installation with both \texttt{pip} and \texttt{conda} package managers.
+\item In addition, one can run the client inside a Docker container, for example, in a cloud using Binder~\cite{project_jupyter-proc-scipy-2018}.
+\item The current version of the client is tested to work with the latest Isabelle 2021-1 (released in December 2021).
+\item The last client version returns all server replies as a Python list, not only the last one as it was in the previous version giving more flexibility to the end-user.
+\item Last but not least, the current version arrives with detailed documentation pages and is nearly 100\% covered with unit tests using fixtures for emulating a working Isabelle server behaviour.
+\end{itemize}
+\subsubsection{Acknowledgements}
+This work has been supported by the French government, through the 3IA Côte d'Azur Investments in the Future project managed by the National Research Agency (ANR) with the reference number ANR-19-P3IA-0002.

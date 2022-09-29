@@ -82,16 +82,15 @@ More documentation can be found
 Video example
 =============
 
-.. image:: ../_static/tty.gif
-  :alt:
-
-(if not displayed correctly on this page, please watch `here <https://isabelle-client.readthedocs.io/en/latest/#video-example>`__).
-
+.. image:: https://isabelle-client.readthedocs.io/en/latest/_images/tty.gif
+	   
 How to cite
 ===========
 
-If you’re writing a research paper, you can cite Isabelle client (and
-Isabelle 2021) using the `following
+If you’re writing a research paper, you can cite Isabelle client
+using the `following DOI
+<https://doi.org/10.1007/978-3-031-16681-5_24>`__. You can also cite
+Isabelle 2021 (and the earlier version of the client) with `this
 DOI <https://doi.org/10.1007/978-3-030-81097-9_20>`__.
 
 .. |PyPI version| image:: https://badge.fury.io/py/isabelle-client.svg

@@ -1,0 +1,80 @@
+%\documentclass[preprint]{llncs}
+\documentclass{llncs}
+\usepackage{hyperref}
+%\usepackage{floatflt}
+%\begin{floatingtable}[r]{
+%}\end{floatingtable}
+
+%%%% Macro to append all authors
+\makeatletter
+% CICMauthor
+%\newcommand{\CICMauthors}{\@starttoc{cicmauthors}}
+%\newcommand{\l@CICMauthors}[2]{#1\par}
+\newcommand{\CICMauthor}[2]{
+%   \addtocontents{cicmauthors}{#1}
+%   \addtocontents{cicinstitutes}{#2}
+   \addtocontents{cicmauthinsts}{\textbf{#1}, #2\newline}
+}
+
+% CICMinstitute
+%\newcommand{\CICMinstitutes}{\@starttoc{cicinstitutes}}
+%\newcommand{\l@CICMinstitutes}[2]{#1\par}
+
+% CICMauthinsts
+\newcommand{\CICMauthinsts}{\@starttoc{cicmauthinsts}}
+
+\newcommand{\TOOL}[1]{\def\@TOOL{#1}}
+\newcommand{\VERSION}[1]{\def\@VERSION{#1}}
+\newcommand{\PROGRAMMINGLANGUAGE}[1]{\def\@PROGRAMMINGLANGUAGE{#1}}
+\newcommand{\LICENSE}[1]{\def\@LICENSE{#1}}
+\newcommand{\URL}[1]{\def\@URL{\url{#1}}}
+
+\newcommand{\maketool}{
+\noindent
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}@{}lr}
+\begin{tabular}[t]{@{}p{5cm}}
+{\Large\textbf{\@TOOL}}\\\\
+\CICMauthinsts\\
+\end{tabular}
+&
+\begin{tabular}[t]{@{}|ll|}
+\hline
+\textbf{Tool:} & \@TOOL{} (v\@VERSION)\\
+\textbf{Impl. in:} & \@PROGRAMMINGLANGUAGE\\
+\textbf{License:} & \@LICENSE\\
+\textbf{Download:} & \\
+\multicolumn{2}{l}{\@URL}\\
+\hline
+\end{tabular}
+\end{tabular*}
+}
+
+\makeatother
+
+\title{CICM'2022 System Entries}
+
+\author{Here we will put the consoldated list of authors}
+
+\institute{And here the consolidated list of institutes}
+
+\begin{document}
+\maketitle
+
+%Authors: \CICMauthors
+
+%Institutes: \CICMinstitutes
+
+\begin{abstract}
+This paper gives an overview of new tools and improvements of existing tools in the CICM domain.
+\end{abstract}
+
+\newpage
+
+\input{example.tex}
+
+\newpage
+
+\bibliographystyle{plain}
+\bibliography{bib.bib}
+
+\end{document}
