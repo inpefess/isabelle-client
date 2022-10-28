@@ -11,7 +11,7 @@ RUN adduser --disabled-password \
     --uid ${NB_UID} \
     ${NB_USER}
 RUN apt-get update
-RUN apt-get install -y python3-pip netcat
+RUN apt-get install -y python3-pip
 ENV HOME /home/${NB_USER}
 ENV ISABELLE_BIN /home/isabelle/Isabelle/bin/
 ENV PATH=${HOME}/.local/bin/:${ISABELLE_BIN}:${PATH}
