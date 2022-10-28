@@ -1,4 +1,4 @@
-FROM makarius/isabelle:Isabelle2021-1
+FROM makarius/isabelle:Isabelle2022
 ARG NB_USER=jovyan
 ARG NB_UID=1000
 ENV USER ${NB_USER}
