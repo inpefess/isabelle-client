@@ -101,7 +101,7 @@ class IsabelleClient:
     def session_build(
         self,
         session: str,
-        dirs: List[str] = None,
+        dirs: Optional[List[str]] = None,
         verbose: bool = False,
         **kwargs,
     ) -> List[IsabelleResponse]:
