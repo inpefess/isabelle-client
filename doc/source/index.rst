@@ -21,6 +21,8 @@
 
    usage-example
    package-documentation
+   code-of-conduct
+   contributing
 
 Indices and tables
 *******************
