@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "isabelle-client"
-version = "0.3.10"
+version = "0.3.11"
 description = "A client to Isabelle proof assistant server"
 authors = ["Boris Shminke <boris@shminke.ml>"]
 license = "Apache-2.0"
@@ -133,7 +133,7 @@ commands =
 github_url = "https://github.com/inpfess/isabelle-client/"
 
 [tool.tbump.version]
-current = "0.3.10"
+current = "0.3.11"
 regex = '''
   (?P<major>\d+)
   \.

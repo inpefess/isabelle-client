@@ -93,31 +93,8 @@ DOI <https://doi.org/10.1007/978-3-030-81097-9_20>`__.
 How to Contribute
 =================
 
-`Pull requests <https://github.com/inpefess/isabelle-client/pulls>`__
-are welcome. To start:
+Please follow `the contribution guide <https://isabelle-client.readthedocs.io/en/latest/contributing.html>`__ while adhering to `the code of conduct <https://isabelle-client.readthedocs.io/en/latest/code-of-conduct.html>`__.
 
-.. code:: sh
-
-   git clone https://github.com/inpefess/isabelle-client
-   cd isabelle-client
-   # activate python virtual environment with Python 3.7+
-   pip install -U pip
-   pip install -U setuptools wheel poetry
-   poetry install
-   # recommended but not necessary
-   pre-commit install
-
-To check the code quality before creating a pull request, one might run
-the script
-`local-build.sh <https://github.com/inpefess/isabelle-client/blob/master/local-build.sh>`__.
-It locally does nearly the same as the CI pipeline after the PR is
-created.
-
-Reporting issues or problems with the software
-==============================================
-
-Questions and bug reports are welcome on `the
-tracker <https://github.com/inpefess/isabelle-client/issues>`__.
 
 .. |PyPI version| image:: https://badge.fury.io/py/isabelle-client.svg
    :target: https://badge.fury.io/py/isabelle-client
