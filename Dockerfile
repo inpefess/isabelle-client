@@ -1,4 +1,4 @@
-FROM makarius/isabelle:Isabelle2022
+FROM makarius/isabelle:Isabelle2022_X11_Latex
 ARG NB_USER=jovyan
 ARG NB_UID=1000
 ENV USER ${NB_USER}
