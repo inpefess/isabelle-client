@@ -70,9 +70,9 @@ class ReusableTCPServer(socketserver.TCPServer):
 
 
 @fixture(autouse=True, scope="session")
-def tcp_servers() -> Generator[
-    Tuple[ReusableTCPServer, ReusableTCPServer], None, None
-]:
+def tcp_servers() -> (
+    Generator[Tuple[ReusableTCPServer, ReusableTCPServer], None, None]
+):
     """
     Get a simplistic TCP server mocking Isabelle server behaviour.
 
@@ -93,8 +93,12 @@ def tcp_servers() -> Generator[
 
 
 @fixture
-def mock_logger():
-    """Get a mock for logger to spy on ``info`` calls."""
+def mock_logger() -> Mock:
+    """
+    Get a mock for logger to spy on ``info`` calls.
+
+    :returns: mock logger
+    """
     logger = Mock()
     logger.info = Mock()
     return logger

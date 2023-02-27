@@ -39,8 +39,12 @@ class IsabelleResponse:
     response_body: str
     response_length: Optional[int] = None
 
-    def __str__(self):
-        """Pretty print Isabelle server response."""
+    def __str__(self) -> str:
+        """
+        Pretty print Isabelle server response.
+
+        :returns: a string representation of Isabelle server response
+        """
         return (
             (
                 f"{self.response_length}\n"
