@@ -88,13 +88,23 @@ def start_isabelle_server(
     if sys.platform == "win32":
         return start_isabelle_server_win32(args)  # pragma: no cover
 
-    async def async_call():
+    async def async_call() -> Tuple[str, asyncio.subprocess.Process]:
+        """
+        Start Isabelle server asynchronously.
+
+        :returns: a line of server info and server process
+        :raises ValueError: if no stdout seen after starting the server
+        """
         isabelle_server = await asyncio.create_subprocess_exec(
             "isabelle", *(args.split(" ")), stdout=asyncio.subprocess.PIPE
         )
-        return (await isabelle_server.stdout.readline()).decode(
-            "utf-8"
-        ), isabelle_server
+        if isabelle_server.stdout is not None:
+            return (await isabelle_server.stdout.readline()).decode(
+                "utf-8"
+            ), isabelle_server
+        raise ValueError(
+            "No stdout while startnig the server."
+        )  # pragma: no cover
 
     return asyncio.run(async_call())
 
@@ -106,6 +116,7 @@ def start_isabelle_server_win32(
     Start Isabelle server on Windows.
 
     :param args: Isabelle server arguments string
+    :returns: a line of server info and server process
     """
     # this line enables asyncio.create_subprocess_exec on Windows:
     # https://docs.python.org/3/library/asyncio-platforms.html#asyncio-windows-subprocess
@@ -113,7 +124,13 @@ def start_isabelle_server_win32(
         asyncio.WindowsProactorEventLoopPolicy()  # type: ignore
     )
 
-    async def async_call():
+    async def async_call() -> Tuple[str, asyncio.subprocess.Process]:
+        """
+        Start Isabelle server in Cygwin asynchronously.
+
+        :returns: a line of server info and server process
+        :raises ValueError: if no stdout seen after starting the server
+        """
         isabelle_server = await asyncio.create_subprocess_exec(
             str(
                 files("isabelle_client").joinpath(
@@ -124,7 +141,11 @@ def start_isabelle_server_win32(
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
         )
-        server_info = (await isabelle_server.stdout.readline()).decode("utf-8")
-        return server_info, isabelle_server
+        if isabelle_server.stdout is not None:
+            server_info = (await isabelle_server.stdout.readline()).decode(
+                "utf-8"
+            )
+            return server_info, isabelle_server
+        raise ValueError("No stdout while startnig the server.")
 
     return asyncio.run(async_call())
