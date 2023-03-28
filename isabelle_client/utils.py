@@ -21,6 +21,7 @@ A collection of different useful functions.
 import asyncio
 import os
 import re
+import socketserver
 import sys
 from typing import Optional, Tuple
 
@@ -149,3 +150,51 @@ def start_isabelle_server_win32(
         raise ValueError("No stdout while startnig the server.")
 
     return asyncio.run(async_call())
+
+
+class BuggyDummyTCPHandler(socketserver.BaseRequestHandler):
+    """A dummy handler to mock bugs in Isabelle server response."""
+
+    def handle(self):
+        """Return something weird."""
+        request = self.request.recv(1024).decode("utf-8").split("\n")[0]
+        if request == "ping":
+            self.request.sendall(b"5\n")
+            self.request.sendall(b"# !!!")
+        else:
+            self.request.sendall(b'OK "connection OK"\n')
+            self.request.sendall(b"7\n")
+            self.request.sendall(b"FAILED\n")
+
+
+class DummyTCPHandler(socketserver.BaseRequestHandler):
+    """A dummy handler to mock Isabelle server."""
+
+    # pylint: disable=too-many-statements
+    def handle(self):
+        """Return something similar to what Isabelle server does."""
+        request = self.request.recv(1024).decode("utf-8").split("\n")[1]
+        command = request.split(" ")[0]
+        self.request.sendall(b'OK "connection OK"\n')
+
+        if command == "echo":
+            self.request.sendall(
+                f"OK{request.split(' ')[1]}\n".encode("utf-8")
+            )
+        elif command in {"shutdown", "cancel"}:
+            self.request.sendall(b"OK")
+        elif command == "purge_theories":
+            self.request.sendall(b'OK {"purged": [], "retained": []}')
+        elif command == "help":
+            self.request.sendall(b'OK ["echo", "help"]')
+        else:
+            self.request.sendall(b"43\n")
+            self.request.sendall(
+                b'FINISHED {"session_id": "test_session_id"}\n'
+            )
+
+
+class ReusableDummyTCPServer(socketserver.TCPServer):
+    """Ignore TIME-WAIT during testing."""
+
+    allow_reuse_address = True
