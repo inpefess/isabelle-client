@@ -1,4 +1,4 @@
-|Binder|\ |PyPI version|\ |Anaconda version|\ |CircleCI|\ |Documentation Status|\ |codecov|
+|Binder|\ |PyPI version|\ |Anaconda version|\ |CircleCI|\ |Documentation Status|\ |codecov|\ |DOI|
 
 Python client for Isabelle server
 =================================
@@ -108,3 +108,5 @@ Please follow `the contribution guide <https://isabelle-client.readthedocs.io/en
    :target: https://codecov.io/gh/inpefess/isabelle-client
 .. |Binder| image:: https://mybinder.org/badge_logo.svg
    :target: https://mybinder.org/v2/gh/inpefess/isabelle-client/HEAD?labpath=isabelle-client-examples/example.ipynb
+.. |DOI| image:: https://img.shields.io/badge/DOI-10.1007%2F978--3--031--16681--5__24-blue
+   :target: https://doi.org/10.1007/978-3-031-16681-5_24

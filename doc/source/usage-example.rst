@@ -1,5 +1,5 @@
 ..
-  Copyright 2021 Boris Shminke
+  Copyright 2021-2023 Boris Shminke
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ This client might be useful if:
 
 * you have a machine with Isabelle installed
 * you have scripts for automatic generation of theory files in Python
-* you want to communicate with the server not using Scala and/or StandardML
+* you want to communicate with the server not using `Scala <https://scala-lang.org/>`__ and/or `Standard ML <https://polyml.org/>`__
 
 In what environment to use
 ==========================
@@ -36,7 +36,7 @@ The client works well in scripts and in Jupyter notebooks. For the latter, one h
     nest_asyncio.apply()
     
 .. warning::
-   When using `start_isabelle_server <package-documentation.html#isabelle_client.utils.start_isabelle_server>`__ utility function in Python REPL or terminal IPython, shutting the server down within the same session is known to cause a runtime error on exit from the session. This behavious is related to a `well known issue <https://ipython.readthedocs.io/en/stable/interactive/autoawait.html#difference-between-terminal-ipython-and-ipykernel>`__.
+   When using `start_isabelle_server <package-documentation.html#isabelle_client.utils.start_isabelle_server>`__ utility function in Python REPL or terminal IPython, shutting the server down within the same session is known to cause a runtime error on exit from the session. This behaviour is related to a `well known issue <https://ipython.readthedocs.io/en/stable/interactive/autoawait.html#difference-between-terminal-ipython-and-ipykernel>`__.
 
 Starting Isabelle server
 ========================
