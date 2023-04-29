@@ -16,10 +16,21 @@
 .. include:: ../README.rst
 			    
 .. toctree::
-   :maxdepth: 3
-   :caption: Contents:
+   :hidden:
+   :caption: Basic Usage
 
    usage-example
+
+.. toctree::
+   :hidden:
+   :caption: API
+
    package-documentation
+
+.. toctree::
+   :hidden:
+   :caption: Development
+
    code-of-conduct
    contributing
+   GitHub <https://github.com/inpefess/gym-saturation>

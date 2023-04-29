@@ -23,5 +23,4 @@ version = "0.3.15"
 copyright = "2021-2023, Boris Shminke"
 author = "Boris Shminke"
 extensions = ["sphinx.ext.autodoc", "sphinx.ext.coverage"]
-exclude_patterns = []
-html_theme = "sphinx_rtd_theme"
+html_theme = "furo"

@@ -34,7 +34,6 @@ pytest-cov = "*"
 pre-commit = "*"
 black = "*"
 flake8 = "*"
-sphinx-rtd-theme = "*"
 sphinx-autodoc-typehints = "*"
 types-dataclasses = "*"
 jupyterlab = "*"
@@ -44,6 +43,7 @@ pyenchant = "*"
 tbump = "*"
 nbconvert = {version = "*", extras = ["webpdf"]}
 toml = "*"
+furo = "*"
 
 [tool.black]
 line-length=79
