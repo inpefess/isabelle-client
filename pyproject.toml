@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "isabelle-client"
-version = "0.3.15"
+version = "0.3.16"
 description = "A client to Isabelle proof assistant server"
 authors = ["Boris Shminke <boris@shminke.ml>"]
 license = "Apache-2.0"
@@ -34,7 +34,6 @@ pytest-cov = "*"
 pre-commit = "*"
 black = "*"
 flake8 = "*"
-sphinx-rtd-theme = "*"
 sphinx-autodoc-typehints = "*"
 types-dataclasses = "*"
 jupyterlab = "*"
@@ -44,6 +43,7 @@ pyenchant = "*"
 tbump = "*"
 nbconvert = {version = "*", extras = ["webpdf"]}
 toml = "*"
+furo = "*"
 
 [tool.black]
 line-length=79
@@ -134,7 +134,7 @@ commands =
 github_url = "https://github.com/inpfess/isabelle-client/"
 
 [tool.tbump.version]
-current = "0.3.15"
+current = "0.3.16"
 regex = '''
   (?P<major>\d+)
   \.
@@ -154,4 +154,4 @@ src = "isabelle_client/__init__.py"
 src = "pyproject.toml"
 
 [[tool.tbump.file]]
-src = "doc/source/conf.py"
+src = "doc/conf.py"

@@ -4,7 +4,7 @@ set -e
 PACKAGE_NAME=isabelle_client
 cd doc
 make clean html coverage
-cat build/coverage/python.txt
+cat _build/coverage/python.txt
 cd ..
 pydocstyle ${PACKAGE_NAME} examples
 flake8 ${PACKAGE_NAME} examples

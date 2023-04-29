@@ -17,12 +17,10 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath("../.."))
+sys.path.insert(0, os.path.abspath(".."))
 project = "isabelle-client"
-version = "0.3.15"
+version = "0.3.16"
 copyright = "2021-2023, Boris Shminke"
 author = "Boris Shminke"
 extensions = ["sphinx.ext.autodoc", "sphinx.ext.coverage"]
-templates_path = ["_templates"]
-exclude_patterns = []
-html_theme = "sphinx_rtd_theme"
+html_theme = "furo"

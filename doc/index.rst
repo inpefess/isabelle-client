@@ -13,20 +13,24 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-.. include:: ../../README.rst
+.. include:: ../README.rst
 			    
 .. toctree::
-   :maxdepth: 3
-   :caption: Contents:
+   :hidden:
+   :caption: Basic Usage
 
    usage-example
+
+.. toctree::
+   :hidden:
+   :caption: API
+
    package-documentation
+
+.. toctree::
+   :hidden:
+   :caption: Development
+
    code-of-conduct
    contributing
-
-Indices and tables
-*******************
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   GitHub <https://github.com/inpefess/gym-saturation>
