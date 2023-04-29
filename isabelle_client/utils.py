@@ -170,28 +170,27 @@ class BuggyDummyTCPHandler(socketserver.BaseRequestHandler):
 class DummyTCPHandler(socketserver.BaseRequestHandler):
     """A dummy handler to mock Isabelle server."""
 
-    # pylint: disable=too-many-statements
+    _request_response = {
+        "shutdown": b"OK",
+        "cancel": b"OK",
+        "purge_theories": b'OK {"purged": [], "retained": []}',
+        "help": b'OK ["echo", "help"]',
+    }
+
     def handle(self):
         """Return something similar to what Isabelle server does."""
         request = self.request.recv(1024).decode("utf-8").split("\n")[1]
         command = request.split(" ")[0]
         self.request.sendall(b'OK "connection OK"\n')
-
         if command == "echo":
             self.request.sendall(
                 f"OK{request.split(' ')[1]}\n".encode("utf-8")
             )
-        elif command in {"shutdown", "cancel"}:
-            self.request.sendall(b"OK")
-        elif command == "purge_theories":
-            self.request.sendall(b'OK {"purged": [], "retained": []}')
-        elif command == "help":
-            self.request.sendall(b'OK ["echo", "help"]')
-        else:
-            self.request.sendall(b"43\n")
-            self.request.sendall(
-                b'FINISHED {"session_id": "test_session_id"}\n'
+        self.request.sendall(
+            self._request_response.get(
+                command, b'43\nFINISHED {"session_id": "test_session_id"}\n'
             )
+        )
 
 
 class ReusableDummyTCPServer(socketserver.TCPServer):
