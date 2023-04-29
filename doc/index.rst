@@ -13,7 +13,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-.. include:: ../../README.rst
+.. include:: ../README.rst
 			    
 .. toctree::
    :maxdepth: 3
@@ -23,10 +23,3 @@
    package-documentation
    code-of-conduct
    contributing
-
-Indices and tables
-*******************
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

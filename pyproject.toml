@@ -154,4 +154,4 @@ src = "isabelle_client/__init__.py"
 src = "pyproject.toml"
 
 [[tool.tbump.file]]
-src = "doc/source/conf.py"
+src = "doc/conf.py"
