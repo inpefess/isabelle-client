@@ -88,11 +88,13 @@ languages, e.g. `this one in Rust
 How to cite
 ===========
 
-If you’re writing a research paper, you can cite Isabelle client
+If you’re writing a research paper, you can cite the Isabelle client
 using the `following DOI
 <https://doi.org/10.1007/978-3-031-16681-5_24>`__. You can also cite
-Isabelle 2021 (and the earlier version of the client) with `this
-DOI <https://doi.org/10.1007/978-3-030-81097-9_20>`__.
+Isabelle 2021 (and the earlier version of the client) with `this DOI
+<https://doi.org/10.1007/978-3-030-81097-9_20>`__. There also is a
+somewhat more complete (but unpublished) `pre-print
+<https://arxiv.org/abs/2212.11173>`__.
 
 How to Contribute
 =================
