@@ -36,7 +36,6 @@ black = "*"
 flake8 = "*"
 sphinx-autodoc-typehints = "*"
 types-dataclasses = "*"
-jupyterlab = "*"
 pydocstyle = "*"
 tox = "*"
 pyenchant = "*"
@@ -44,6 +43,7 @@ tbump = "*"
 nbconvert = {version = "*", extras = ["webpdf"]}
 toml = "*"
 furo = "*"
+jedi = "*"
 
 [tool.black]
 line-length=79
