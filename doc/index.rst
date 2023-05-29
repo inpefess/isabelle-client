@@ -33,4 +33,4 @@
 
    code-of-conduct
    contributing
-   GitHub <https://github.com/inpefess/gym-saturation>
+   GitHub <https://github.com/inpefess/isabelle-client>

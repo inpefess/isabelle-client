@@ -154,5 +154,5 @@ guidelines:
    docstring, and add the feature to the list in README.rst.
 
 3. The pull request should work for Python 3.7, 3.8, 3.9, 3.10 and
-   3.11. Check https://github.com/inpefess/tptp-lark-parser/pulls and
+   3.11. Check https://github.com/inpefess/isabelle-client/pulls and
    make sure that the tests pass for all supported Python versions.
