@@ -40,7 +40,6 @@ pydocstyle = "*"
 tox = "*"
 pyenchant = "*"
 tbump = "*"
-nbconvert = {version = "*", extras = ["webpdf"]}
 toml = "*"
 furo = "*"
 jedi = "*"
