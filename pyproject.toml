@@ -60,7 +60,6 @@ addopts = """--doctest-modules --cov isabelle_client --cov-report xml
     --cov-report term-missing --cov-fail-under=100
     --junit-xml test-results/isabelle-client.xml"""
 testpaths = ["isabelle_client"]
-doctest_optionflags = "NORMALIZE_WHITESPACE"
 
 [tool.coverage.report]
 exclude_lines = [
@@ -102,7 +101,7 @@ incremental = true
 disable_error_code = "no-redef"
 
 [[tool.mypy.overrides]]
-module = ["importlib_resources"]
+module = ["importlib_resources", "py"]
 ignore_missing_imports = true
 
 [tool.tox]

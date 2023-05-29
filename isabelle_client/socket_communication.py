@@ -134,7 +134,7 @@ async def get_final_message(
     FINISHED {"session_id": "test_session_id"}
     >>> print(test_logger.info.mock_calls)
     [call('OK "connection OK"'),
-    call('43\nFINISHED {"session_id": "test_session_id"}')]
+     call('43\nFINISHED {"session_id": "test_session_id"}')]
 
     :param reader: a ``StreamReader`` connected to Isabelle server
     :param final_message: a set of possible final message types

@@ -76,8 +76,8 @@ class IsabelleClient:
         43
         >>> print(logger.info.mock_calls)
         [call('test_password\ntest_command\n'),
-        call('OK "connection OK"'),
-        call('43\nFINISHED {"session_id": "test_session_id"}')]
+         call('OK "connection OK"'),
+         call('43\nFINISHED {"session_id": "test_session_id"}')]
 
         :param command: a full text of a command to Isabelle
         :param asynchronous: if ``False``, waits for ``OK``; else waits for
