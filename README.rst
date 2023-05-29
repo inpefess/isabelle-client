@@ -66,7 +66,7 @@ More documentation
 More documentation can be found
 `here <https://isabelle-client.readthedocs.io/en/latest>`__.
 
-Similar Packages
+Similar Software
 ================
 
 There are Python clients to other interactive theorem provers, for
@@ -80,6 +80,10 @@ example:
 Modules helping to inetract with Isabelle server from Python are
 parts of the `Proving for Fun
 <https://github.com/maxhaslbeck/proving-contest-backends>`__ project.
+
+There are also clients to Isabelle server in other programming
+languages, e.g. `this one in Rust
+<https://lib.rs/crates/isabelle-client>`__.
 
 How to cite
 ===========
