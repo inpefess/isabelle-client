@@ -11,7 +11,6 @@ classifiers=[
 	"Programming Language :: Python :: 3.10",
 	"Programming Language :: Python :: 3.9",
 	"Programming Language :: Python :: 3.8",
-	"Programming Language :: Python :: 3.7",	
 	"License :: OSI Approved :: Apache Software License",
 	"Operating System :: OS Independent",
 	"Intended Audience :: Science/Research",
@@ -24,7 +23,7 @@ classifiers=[
 include = ["isabelle_client/py.typed"]
 
 [tool.poetry.dependencies]
-python = ">= 3.7.1, < 3.12"
+python = ">= 3.8.1, < 3.12"
 importlib-resources = {version = "*", markers = "python_version < \"3.9\""}
 
 [tool.poetry.group.dev.dependencies]
@@ -110,7 +109,7 @@ ignore_missing_imports = true
 legacy_tox_ini = """
 [tox]
 isolated_build = True
-envlist = py37,py38,py39,py310,py311
+envlist = py38,py39,py310,py311
 
 [testenv]
 deps =
