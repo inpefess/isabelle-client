@@ -66,7 +66,7 @@ More documentation
 More documentation can be found
 `here <https://isabelle-client.readthedocs.io/en/latest>`__.
 
-Similar Packages
+Similar Software
 ================
 
 There are Python clients to other interactive theorem provers, for
@@ -81,14 +81,20 @@ Modules helping to inetract with Isabelle server from Python are
 parts of the `Proving for Fun
 <https://github.com/maxhaslbeck/proving-contest-backends>`__ project.
 
+There are also clients to Isabelle server in other programming
+languages, e.g. `this one in Rust
+<https://lib.rs/crates/isabelle-client>`__.
+
 How to cite
 ===========
 
-If you’re writing a research paper, you can cite Isabelle client
+If you’re writing a research paper, you can cite the Isabelle client
 using the `following DOI
 <https://doi.org/10.1007/978-3-031-16681-5_24>`__. You can also cite
-Isabelle 2021 (and the earlier version of the client) with `this
-DOI <https://doi.org/10.1007/978-3-030-81097-9_20>`__.
+Isabelle 2021 (and the earlier version of the client) with `this DOI
+<https://doi.org/10.1007/978-3-030-81097-9_20>`__. There also is a
+somewhat more complete (but unpublished) `pre-print
+<https://arxiv.org/abs/2212.11173>`__.
 
 How to Contribute
 =================
