@@ -10,6 +10,8 @@ pydocstyle ${PACKAGE_NAME} examples
 flake8 ${PACKAGE_NAME} examples
 pylint ${PACKAGE_NAME} examples
 mypy ${PACKAGE_NAME} examples
-pyroma .
+find ${PACKAGE_NAME} -name "*.py" | xargs -I {} pyupgrade --py38-plus {}
+pyupgrade examples/*.py
+pyroma -n 10 .
 pytest
 scc -i py ${PACKAGE_NAME}

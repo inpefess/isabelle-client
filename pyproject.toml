@@ -44,6 +44,7 @@ toml = "*"
 furo = "*"
 jedi = "*"
 pyroma = "*"
+pyupgrade = "*"
 
 [tool.black]
 line-length=79
@@ -122,13 +123,16 @@ deps =
     toml
     pyenchant
     pyroma
+    pyupgrade
 commands =
     pydocstyle isabelle_client examples
     flake8 isabelle_client examples
     pylint isabelle_client examples
     mypy isabelle_client examples
+    pyroma -n 10 .
+    find isabelle_client -name "*.py" | xargs -I {} pyupgrade --py38-plus {}
+    pyupgrade examples/*.py
     pytest
-    pyroma .
 """
 
 [tool.tbump]

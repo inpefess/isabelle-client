@@ -183,9 +183,7 @@ class DummyTCPHandler(socketserver.BaseRequestHandler):
         command = request.split(" ")[0]
         self.request.sendall(b'OK "connection OK"\n')
         if command == "echo":
-            self.request.sendall(
-                f"OK{request.split(' ')[1]}\n".encode("utf-8")
-            )
+            self.request.sendall(f"OK{request.split(' ')[1]}\n".encode())
         self.request.sendall(
             self._request_response.get(
                 command, b'43\nFINISHED {"session_id": "test_session_id"}\n'
