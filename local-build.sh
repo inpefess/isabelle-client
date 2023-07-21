@@ -13,5 +13,6 @@ mypy ${PACKAGE_NAME} examples
 find ${PACKAGE_NAME} -name "*.py" | xargs -I {} pyupgrade --py38-plus {}
 pyupgrade examples/*.py
 pyroma -n 10 .
+bandit -r ${PACKAGE_NAME} examples
 pytest
 scc -i py ${PACKAGE_NAME}

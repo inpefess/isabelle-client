@@ -45,6 +45,7 @@ furo = "*"
 jedi = "*"
 pyroma = "*"
 pyupgrade = "*"
+bandit = "*"
 
 [tool.black]
 line-length=79
@@ -124,6 +125,7 @@ deps =
     pyenchant
     pyroma
     pyupgrade
+    bandit
 commands =
     pydocstyle isabelle_client examples
     flake8 isabelle_client examples
@@ -132,6 +134,7 @@ commands =
     pyroma -n 10 .
     find isabelle_client -name "*.py" | xargs -I {} pyupgrade --py38-plus {}
     pyupgrade examples/*.py
+    bandit -r isabelle_client examples
     pytest
 """
 
