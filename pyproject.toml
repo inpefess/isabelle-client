@@ -20,6 +20,7 @@ classifiers=[
 	"Topic :: Scientific/Engineering :: Artificial Intelligence",
 	"Typing :: Typed"
 ]
+keywords = ["TCP client", "Isabelle proof assistant", "interactive theorem prover"]
 include = ["isabelle_client/py.typed"]
 
 [tool.poetry.dependencies]
@@ -42,6 +43,7 @@ tbump = "*"
 toml = "*"
 furo = "*"
 jedi = "*"
+pyroma = "*"
 
 [tool.black]
 line-length=79
@@ -119,12 +121,14 @@ deps =
     mypy
     toml
     pyenchant
+    pyroma
 commands =
     pydocstyle isabelle_client examples
     flake8 isabelle_client examples
     pylint isabelle_client examples
     mypy isabelle_client examples
     pytest
+    pyroma .
 """
 
 [tool.tbump]
