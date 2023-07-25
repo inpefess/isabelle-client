@@ -136,7 +136,7 @@ class IsabelleClient:
         )
         return response
 
-    def session_start(self, session: str = "HOL", **kwargs) -> str:
+    def session_start(self, session: str = "Main", **kwargs) -> str:
         """
         Start a new session.
 
