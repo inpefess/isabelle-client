@@ -1,0 +1,7 @@
+OK {"task":"97504f00-3946-40fc-91a4-e9b1228df480"}
+158
+NOTE {"percentage":99,"task":"97504f00-3946-40fc-91a4-e9b1228df480","message":"theory Draft.Mock 99%","kind":"writeln","session":"","theory":"Draft.Example"}
+157
+NOTE {"percentage":100,"task":"97504f00-3946-40fc-91a4-e9b1228df480","message":"theory Draft.Mock 100%","kind":"writeln","session":"","theory":"Draft.Mock"}
+321
+FINISHED {"ok":true,"errors":[],"nodes":[{"messages":[],"exports":[],"status":{"percentage":100,"unprocessed":0,"running":0,"finished":7,"failed":0,"total":7,"consolidated":true,"canceled":false,"ok":true,"warned":0},"theory_name":"Draft.Mock","node_name":"/tmp/Mock.thy"}],"task":"97504f00-3946-40fc-91a4-e9b1228df480"}
