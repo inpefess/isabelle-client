@@ -21,6 +21,7 @@ A connector to the Isabelle server, hiding server interactions.
 import json
 import logging
 import os
+import tempfile
 from typing import Any, Dict, List, Optional
 from uuid import uuid4
 
@@ -58,7 +59,7 @@ class IsabelleConnector:
         new_working_directory = (
             working_directory
             if working_directory is not None
-            else os.path.join(os.environ["HOME"], str(uuid4()))
+            else os.path.join(tempfile.mkdtemp(), str(uuid4()))
         )
         if not os.path.exists(new_working_directory):
             os.mkdir(new_working_directory)
