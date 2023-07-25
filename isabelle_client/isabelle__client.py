@@ -66,18 +66,19 @@ class IsabelleClient:
         ...     "localhost", 9999, "test_password", logger
         ... )
         >>> test_response = asyncio.run(
-        ...     isabelle_client.execute_command("test_command")
+        ...     isabelle_client.execute_command("unknown command")
         ... )
         >>> print(test_response[-1].response_type)
-        FINISHED
+        ERROR
         >>> print(test_response[-1].response_body)
-        {"session_id": "test_session_id"}
+        "Bad command 'unknown'"
+        >>> # error messages don't return the response length
         >>> print(test_response[-1].response_length)
-        43
+        None
         >>> print(logger.info.mock_calls)
-        [call('test_password\ntest_command\n'),
-         call('OK "connection OK"'),
-         call('43\nFINISHED {"session_id": "test_session_id"}')]
+        [call('test_password\nunknown command\n'),
+         call('OK {"isabelle_id":"mock","isabelle_name":"Isabelle2022"}'),
+         call('ERROR "Bad command \'unknown\'"')]
 
         :param command: a full text of a command to Isabelle
         :param asynchronous: if ``False``, waits for ``OK``; else waits for
@@ -114,8 +115,8 @@ class IsabelleClient:
         >>> print(isabelle_client.session_build(
         ...     session="test_session", dirs=["."], verbose=True, options=[]
         ... )[-1])
-        43
-        FINISHED {"session_id": "test_session_id"}
+        400
+        FINISHED {"ok":true,"return_code":0,"sessions":[{"session":"Pure",...}
 
         :param session: a name of the session from ROOT file
         :param dirs: where to look for ROOT files
@@ -144,10 +145,10 @@ class IsabelleClient:
         >>> print(isabelle_client.session_start(verbose=True))
         Traceback (most recent call last):
             ...
-        ValueError: Unexpected response type: FAILED
+        ValueError: Unexpected response type: ERROR
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
         >>> print(isabelle_client.session_start())
-        test_session_id
+        167dd6d8-1eeb-4315-8022-c8c527d9bd87
 
         :param session: a name of a session to start
         :param kwargs: additional arguments
@@ -253,7 +254,7 @@ class IsabelleClient:
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
         >>> test_response = isabelle_client.help()
         >>> print(test_response[-1].response_body)
-        ["echo", "help"]
+        ["cancel","echo","help","purge_theories","session_build",...]
 
         :returns: Isabelle server response
         """
@@ -277,7 +278,7 @@ class IsabelleClient:
         ...     "test", [], "dir", True
         ... )
         >>> print(test_response[-1].response_body)
-        {"purged": [], "retained": []}
+        {"purged":[{"node_name":"/tmp/Mock.thy",...}],"retained":[]}
 
         :param session_id: an ID of the session from which to purge theories
         :param theories: a list of theory names to purge from the server
