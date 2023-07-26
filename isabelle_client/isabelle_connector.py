@@ -22,14 +22,10 @@ import json
 import logging
 import os
 import tempfile
-from typing import Any, Dict, List, Optional
+from typing import Optional
 from uuid import uuid4
 
 from isabelle_client.utils import get_isabelle_client, start_isabelle_server
-
-
-class UnexpectedResponseFromIsabelle(RuntimeError):
-    """Raised when the Isabelle response has an unexpected format."""
 
 
 class IsabelleTheoryError(RuntimeError):
@@ -40,12 +36,13 @@ class IsabelleConnector:
     r"""
     A connector to the Isabelle server, hiding server interactions.
 
+    >>> os.environ["PATH"] = "isabelle_client/resources:$PATH"
     >>> connector = IsabelleConnector()
     >>> print(connector.working_directory)
     /...
-    >>> connector.verify_lemma("\<forall> x. \<exists> y. x = y")
+    >>> connector.verify_lemma("\<forall> x. \<exists> y. x = y", "Mock")
     True
-    >>> connector.verify_lemma("\<forall> x. \<forall> y. x = y")
+    >>> connector.verify_lemma("\<forall> x. \<forall> y. x = y", "Fail")
     Traceback (most recent call last):
      ...
     isabelle...Error: Failed to finish proof\<^here>:
@@ -89,8 +86,12 @@ class IsabelleConnector:
             )
         )
 
-    def _write_temp_theory_file(self, lemma_text: str) -> str:
-        theory_name = "T" + str(uuid4()).replace("-", "")
+    def _write_temp_theory_file(
+        self, lemma_text: str, theory: Optional[str] = None
+    ) -> str:
+        theory_name = (
+            "T" + str(uuid4()).replace("-", "") if theory is None else theory
+        )
         with open(
             os.path.join(self._working_directory, f"{theory_name}.thy"),
             "w",
@@ -104,34 +105,25 @@ class IsabelleConnector:
             theory_file.write("end\n")
         return theory_name
 
-    def _extract_errors(
-        self, json_response: Dict[str, Any], theory_name: str
-    ) -> List[Dict[str, Any]]:
-        if "nodes" in json_response:
-            if "theory_name" in json_response["nodes"][0]:
-                if (
-                    json_response["nodes"][0]["theory_name"]
-                    == f"Draft.{theory_name}"
-                ):
-                    return json_response["errors"]
-        raise UnexpectedResponseFromIsabelle(json_response)
-
-    def verify_lemma(self, lemma_text: str) -> bool:
+    def verify_lemma(
+        self, lemma_text: str, theory: Optional[str] = None
+    ) -> bool:
         """
         Verify a lemma statement using the Isabelle server.
 
         :param lemma_text: (hopefully) syntactically valid Isabelle lemma
+        :param theory: (for tests) fixed named for theory file
         :returns: True if validation successful
         :raises IsabelleTheoryError: if validation failed
         """
-        theory_name = self._write_temp_theory_file(lemma_text)
+        theory_name = self._write_temp_theory_file(lemma_text, theory)
         validation_result = self._client.use_theories(
             theories=[theory_name], master_dir=self._working_directory
         )
         for isabelle_response in validation_result:
             if isabelle_response.response_type == "FINISHED":
                 json_response = json.loads(isabelle_response.response_body)
-                errors = self._extract_errors(json_response, theory_name)
+                errors = json_response["errors"]
                 if errors:
                     raise IsabelleTheoryError(errors[0]["message"])
         return True

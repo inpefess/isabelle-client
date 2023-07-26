@@ -1,0 +1,7 @@
+OK {"task":"09383961-0def-4806-9198-773ccab8cd53"}
+155
+NOTE {"percentage":99,"task":"09383961-0def-4806-9198-773ccab8cd53","message":"theory Draft.Fail 99%","kind":"writeln","session":"","theory":"Draft.Fail"}
+157
+NOTE {"percentage":100,"task":"09383961-0def-4806-9198-773ccab8cd53","message":"theory Draft.Fail 100%","kind":"writeln","session":"","theory":"Draft.Fail"}
+665
+FINISHED {"ok":false,"errors":[{"kind":"error","message":"Failed to finish proof\\<^here>:\ngoal (1 subgoal):\n 1. \\<And>x y. x = y","pos":{"line":5,"offset":56,"end_offset":58,"file":"/tmp/Fail.thy"}}],"nodes":[{"messages":[{"kind":"error","message":"Failed to finish proof\\<^here>:\ngoal (1 subgoal):\n 1. \\<And>x y. x = y","pos":{"line":5,"offset":56,"end_offset":58,"file":"/tmp/Fail.thy"}}],"exports":[],"status":{"percentage":100,"unprocessed":0,"running":0,"finished":7,"failed":1,"total":8,"consolidated":true,"canceled":false,"ok":false,"warned":0},"theory_name":"Draft.Fail","node_name":"/tmp/Fail.thy"}],"task":"09383961-0def-4806-9198-773ccab8cd53"}

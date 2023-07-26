@@ -19,6 +19,7 @@ Utilities
 A collection of different useful functions.
 """
 import asyncio
+import json
 import os
 import re
 import socketserver
@@ -68,7 +69,6 @@ def start_isabelle_server(
     """
     Start Isabelle server.
 
-    >>> import os
     >>> os.environ["PATH"] = "isabelle_client/resources:$PATH"
     >>> print(start_isabelle_server()[0])
     server "isabelle" = 127.0.0.1:9999 (password "test_password")
@@ -171,27 +171,34 @@ class BuggyDummyTCPHandler(socketserver.BaseRequestHandler):
 class DummyTCPHandler(socketserver.BaseRequestHandler):
     """A dummy handler to mock Isabelle server."""
 
+    def _mock_command_execution(self, command: str, arguments: str):
+        filename = command
+        if command == "use_theories":
+            theory_name = json.loads(arguments)["theories"][0]
+            if theory_name != "Mock":
+                filename += f".{theory_name}"
+        with open(
+            str(
+                files("isabelle_client").joinpath(
+                    os.path.join("resources", "isabelle-responses", filename)
+                )
+            ),
+            encoding="utf8",
+        ) as mock_response_file:
+            self.request.sendall(mock_response_file.read().encode())
+
     def handle(self):
         """Return something similar to what Isabelle server does."""
         request = self.request.recv(4096).decode("utf-8").split("\n")[1]
         command = request.split(" ")[0]
+        arguments = request[len(command) :]
         self.request.sendall(
             b'OK {"isabelle_id":"mock","isabelle_name":"Isabelle2022"}\n'
         )
         if command == "echo":
-            self.request.sendall(f"OK {request.split(' ')[1]}\n".encode())
+            self.request.sendall(f"OK {arguments[1:]}\n".encode())
         else:
-            with open(
-                str(
-                    files("isabelle_client").joinpath(
-                        os.path.join(
-                            "resources", "isabelle-responses", command
-                        )
-                    )
-                ),
-                encoding="utf8",
-            ) as mock_response_file:
-                self.request.sendall(mock_response_file.read().encode())
+            self._mock_command_execution(command, arguments)
 
 
 class ReusableDummyTCPServer(socketserver.TCPServer):

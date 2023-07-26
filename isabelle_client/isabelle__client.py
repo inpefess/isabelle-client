@@ -197,7 +197,7 @@ class IsabelleClient:
 
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
         >>> test_response = isabelle_client.use_theories(
-        ...     ["test"], master_dir="test", watchdog_timeout=0
+        ...     ["Mock"], master_dir="test", watchdog_timeout=0
         ... )
         >>> print(test_response[-1].response_type)
         FINISHED
