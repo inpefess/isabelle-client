@@ -19,6 +19,7 @@ Utilities
 A collection of different useful functions.
 """
 import asyncio
+import json
 import os
 import re
 import socketserver
@@ -68,7 +69,6 @@ def start_isabelle_server(
     """
     Start Isabelle server.
 
-    >>> import os
     >>> os.environ["PATH"] = "isabelle_client/resources:$PATH"
     >>> print(start_isabelle_server()[0])
     server "isabelle" = 127.0.0.1:9999 (password "test_password")
@@ -157,40 +157,48 @@ class BuggyDummyTCPHandler(socketserver.BaseRequestHandler):
 
     def handle(self):
         """Return something weird."""
-        request = self.request.recv(1024).decode("utf-8").split("\n")[0]
-        if request == "ping":
+        request = self.request.recv(4096).decode("utf-8").split("\n")[1]
+        if request == "help":
             self.request.sendall(b"5\n")
             self.request.sendall(b"# !!!")
         else:
-            self.request.sendall(b'OK "connection OK"\n')
-            self.request.sendall(b"7\n")
-            self.request.sendall(b"FAILED\n")
+            self.request.sendall(
+                b'OK {"isabelle_id":"mock","isabelle_name":"Isabelle2022"}\n'
+            )
+            self.request.sendall(b"ERROR UNEXPECTED\n")
 
 
 class DummyTCPHandler(socketserver.BaseRequestHandler):
     """A dummy handler to mock Isabelle server."""
 
-    _request_response = {
-        "shutdown": b"OK",
-        "cancel": b"OK",
-        "purge_theories": b'OK {"purged": [], "retained": []}',
-        "help": b'OK ["echo", "help"]',
-    }
+    def _mock_command_execution(self, command: str, arguments: str):
+        filename = command
+        if command == "use_theories":
+            theory_name = json.loads(arguments)["theories"][0]
+            if theory_name != "Mock":
+                filename += f".{theory_name}"
+        with open(
+            str(
+                files("isabelle_client").joinpath(
+                    os.path.join("resources", "isabelle-responses", filename)
+                )
+            ),
+            encoding="utf8",
+        ) as mock_response_file:
+            self.request.sendall(mock_response_file.read().encode())
 
     def handle(self):
         """Return something similar to what Isabelle server does."""
-        request = self.request.recv(1024).decode("utf-8").split("\n")[1]
+        request = self.request.recv(4096).decode("utf-8").split("\n")[1]
         command = request.split(" ")[0]
-        self.request.sendall(b'OK "connection OK"\n')
-        if command == "echo":
-            self.request.sendall(
-                f"OK{request.split(' ')[1]}\n".encode("utf-8")
-            )
+        arguments = request[len(command) :]
         self.request.sendall(
-            self._request_response.get(
-                command, b'43\nFINISHED {"session_id": "test_session_id"}\n'
-            )
+            b'OK {"isabelle_id":"mock","isabelle_name":"Isabelle2022"}\n'
         )
+        if command == "echo":
+            self.request.sendall(f"OK {arguments[1:]}\n".encode())
+        else:
+            self._mock_command_execution(command, arguments)
 
 
 class ReusableDummyTCPServer(socketserver.TCPServer):

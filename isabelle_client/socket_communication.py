@@ -73,17 +73,17 @@ async def get_response_from_isabelle(
     ...     test_reader, test_writer = await asyncio.open_connection(
     ...     "localhost", 9999
     ... )
-    ...     test_writer.write(b"ping\n")
+    ...     test_writer.write(b"test_password\nhelp\n")
     ...     result = [str(await get_response_from_isabelle(test_reader))]
     ...     result += [str(await get_response_from_isabelle(test_reader))]
     ...     return result
     >>> print(asyncio.run(awaiter()))
-    ['OK "connection OK"', '43\nFINISHED {"session_id": "test_session_id"}']
+    ['OK {"isabelle_id":"mock","isabelle_name":"Isabelle2022"}', '118\nOK [...]
     >>> async def awaiter():
     ...     test_reader, test_writer = await asyncio.open_connection(
     ...     "localhost", 9998
     ... )
-    ...     test_writer.write(b"ping\n")
+    ...     test_writer.write(b"test_password\nhelp\n")
     ...     result = [str(await get_response_from_isabelle(test_reader))]
     ...     result += [str(await get_response_from_isabelle(test_reader))]
     ...     return result
@@ -122,19 +122,19 @@ async def get_final_message(
     ...     test_reader, test_writer = await asyncio.open_connection(
     ...     "localhost", 9999
     ... )
-    ...     test_writer.write(b"ping\n")
+    ...     test_writer.write(b"test_password\nhelp\n")
     ...     result = await get_final_message(
-    ...         test_reader, {"FINISHED"}, test_logger
+    ...         test_reader, {"OK"}, test_logger
     ...     )
     ...     return result
     >>> for response in asyncio.run(awaiter()):
     ...     print(response)
-    OK "connection OK"
-    43
-    FINISHED {"session_id": "test_session_id"}
+    OK {"isabelle_id":"mock","isabelle_name":"Isabelle2022"}
+    118
+    OK ["cancel","echo","help","purge_theories","session_build",...]
     >>> print(test_logger.info.mock_calls)
-    [call('OK "connection OK"'),
-     call('43\nFINISHED {"session_id": "test_session_id"}')]
+    [call('OK {"isabelle_id":"mock","isabelle_name":"Isabelle2022"}'),
+     call('118\nOK ["cancel","echo","help","purge_theories","session_buil...')]
 
     :param reader: a ``StreamReader`` connected to Isabelle server
     :param final_message: a set of possible final message types

@@ -27,7 +27,6 @@ with open(  # type: ignore
     files("isabelle_client").joinpath(
         os.path.join("resources", "example.txt")
     ),
-    "r",
     encoding="utf-8",
 ) as example:
     lines = example.readlines()

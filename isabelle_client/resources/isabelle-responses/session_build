@@ -1,0 +1,8 @@
+OK {"task":"e279a4da-51a0-412b-b15a-3d0d02b39287"}
+NOTE {"kind":"writeln","message":"Building Main ...","task":"e279a4da-51a0-412b-b15a-3d0d02b39287"}
+151
+NOTE {"task":"e279a4da-51a0-412b-b15a-3d0d02b39287","message":"Main: theory Main.Main_Doc","kind":"writeln","session":"Main","theory":"Main.Main_Doc"}
+150
+NOTE {"kind":"writeln","message":"Finished Main (0:00:06 elapsed time, 0:00:09 cpu time, factor 1.44)","task":"e279a4da-51a0-412b-b15a-3d0d02b39287"}
+400
+FINISHED {"ok":true,"return_code":0,"sessions":[{"session":"Pure","ok":true,"timeout":false,"timing":{"elapsed":0,"cpu":0,"gc":0},"return_code":0},{"session":"HOL","ok":true,"timeout":false,"timing":{"elapsed":0,"cpu":0,"gc":0},"return_code":0},{"session":"Main","ok":true,"timeout":false,"timing":{"elapsed":6.643,"cpu":9.561,"gc":0},"return_code":0}],"task":"e279a4da-51a0-412b-b15a-3d0d02b39287"}

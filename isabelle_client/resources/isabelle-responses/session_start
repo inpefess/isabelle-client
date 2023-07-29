@@ -1,0 +1,5 @@
+OK {"task":"6c77254a-3b05-47cc-bc49-093ec7ccc2b8"}
+108
+NOTE {"kind":"writeln","message":"Starting session Main ...","task":"6c77254a-3b05-47cc-bc49-093ec7ccc2b8"}
+170
+FINISHED {"session_id":"167dd6d8-1eeb-4315-8022-c8c527d9bd87","tmp_dir":"/tmp/isabelle/server_session10866100026207629259","task":"6c77254a-3b05-47cc-bc49-093ec7ccc2b8"}
