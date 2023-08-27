@@ -55,3 +55,8 @@ genindex
 modindex
 forall
 subgoal
+fastforce
+spass
+simp
+verit
+zipperposition

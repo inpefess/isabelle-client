@@ -21,14 +21,20 @@ A connector to the Isabelle server, hiding server interactions.
 import json
 from typing import Dict, Optional
 
-from isabelle_client.isabelle_connector import (
-    IsabelleConnector,
-    IsabelleTheoryError,
-)
+from isabelle_client.isabelle_connector import IsabelleConnector
 
 
 class SledgehammerConnector(IsabelleConnector):
-    """A connector to the Isabelle server parsing Sledgehammer response."""
+    r"""
+    A connector to the Isabelle server parsing Sledgehammer response.
+
+    >>> import os
+    >>> os.environ["PATH"] = "isabelle_client/resources:$PATH"
+    >>> sledgehammer = SledgehammerConnector()
+    >>> sledgehammer.parse_sledgehammer_response(
+    ...     "\<forall> x. \<exists> y. x = y", theory="Sledgehammer")
+    {'verit': 'by simp', 'zipperposition': 'by simp',...spass': 'by fastforce'}
+    """
 
     def parse_sledgehammer_response(
         self, lemma_text: str, theory: Optional[str] = None
@@ -39,7 +45,6 @@ class SledgehammerConnector(IsabelleConnector):
         :param lemma_text: (hopefully) syntactically valid Isabelle lemma
         :param theory: (for tests) fixed named for theory file
         :returns: parsed Sledgehammer response
-        :raises IsabelleTheoryError: if something went wrong
         """
         theory_name = self._write_temp_theory_file(
             lemma_text=lemma_text, theory=theory, task="sledgehammer\noops"
@@ -51,10 +56,6 @@ class SledgehammerConnector(IsabelleConnector):
         for sledgehammer_response in sledgehammer_responses:
             if sledgehammer_response.response_type == "FINISHED":
                 json_response = json.loads(sledgehammer_response.response_body)
-                if json_response["errors"]:
-                    raise IsabelleTheoryError(
-                        json_response["errors"][0]["message"]
-                    )
                 messages = [
                     node["message"].split(": ")
                     for node in json_response["nodes"][0]["messages"]
