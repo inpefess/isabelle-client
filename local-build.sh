@@ -15,4 +15,5 @@ pyupgrade examples/*.py
 pyroma -n 10 .
 bandit -r ${PACKAGE_NAME} examples
 pytest
-scc -i py ${PACKAGE_NAME}
+scc --no-cocomo --by-file -i py ${PACKAGE_NAME}
+

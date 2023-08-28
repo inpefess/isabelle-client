@@ -40,9 +40,11 @@ class IsabelleConnector:
     >>> connector = IsabelleConnector()
     >>> print(connector.working_directory)
     /...
-    >>> connector.verify_lemma("\<forall> x. \<exists> y. x = y", "Mock")
+    >>> connector.verify_lemma(
+    ...     "\<forall> x. \<exists> y. x = y", theory="Mock")
     True
-    >>> connector.verify_lemma("\<forall> x. \<forall> y. x = y", "Fail")
+    >>> connector.verify_lemma(
+    ...     "\<forall> x. \<forall> y. x = y", theory="Fail")
     Traceback (most recent call last):
      ...
     isabelle...Error: Failed to finish proof\<^here>:
@@ -87,7 +89,10 @@ class IsabelleConnector:
         )
 
     def _write_temp_theory_file(
-        self, lemma_text: str, theory: Optional[str] = None
+        self,
+        lemma_text: str,
+        task: str,
+        theory: Optional[str] = None,
     ) -> str:
         theory_name = (
             "T" + str(uuid4()).replace("-", "") if theory is None else theory
@@ -101,22 +106,26 @@ class IsabelleConnector:
             theory_file.write("imports Main\n")
             theory_file.write("begin\n")
             theory_file.write(f'lemma "{lemma_text}"\n')
-            theory_file.write("by auto\n")
+            theory_file.write(f"{task}\n")
             theory_file.write("end\n")
         return theory_name
 
     def verify_lemma(
-        self, lemma_text: str, theory: Optional[str] = None
+        self,
+        lemma_text: str,
+        task: str = "by auto",
+        theory: Optional[str] = None,
     ) -> bool:
         """
         Verify a lemma statement using the Isabelle server.
 
         :param lemma_text: (hopefully) syntactically valid Isabelle lemma
+        :param task: how to prove lemma. ``"by auto"`` by default
         :param theory: (for tests) fixed named for theory file
         :returns: True if validation successful
         :raises IsabelleTheoryError: if validation failed
         """
-        theory_name = self._write_temp_theory_file(lemma_text, theory)
+        theory_name = self._write_temp_theory_file(lemma_text, task, theory)
         validation_result = self._client.use_theories(
             theories=[theory_name], master_dir=self._working_directory
         )
