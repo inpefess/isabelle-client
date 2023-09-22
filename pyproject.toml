@@ -2,7 +2,7 @@
 name = "isabelle-client"
 version = "0.4.2"
 description = "A client to Isabelle proof assistant server"
-authors = ["Boris Shminke <boris@shminke.ml>"]
+authors = ["Boris Shminke <boris@shminke.com>"]
 license = "Apache-2.0"
 repository = "https://github.com/inpefess/isabelle-client"
 readme = "README.rst"
