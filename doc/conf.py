@@ -22,5 +22,16 @@ project = "isabelle-client"
 version = "0.4.2"
 copyright = "2021-2023, Boris Shminke"
 author = "Boris Shminke"
-extensions = ["sphinx.ext.autodoc", "sphinx.ext.coverage"]
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.coverage",
+    # uncomment to rebuild examples
+    # "sphinx_gallery.gen_gallery",
+]
 html_theme = "furo"
+sphinx_gallery_conf = {
+    "download_all_examples": False,
+    "run_stale_examples": True,
+    "image_scrapers": (),
+    "reset_modules": (),
+}

@@ -46,6 +46,7 @@ jedi = "*"
 pyroma = "*"
 pyupgrade = "*"
 bandit = "*"
+sphinx-gallery = "*"
 
 [tool.black]
 line-length=79
