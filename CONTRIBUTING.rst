@@ -113,10 +113,10 @@ installed and ready to go.
 
    .. code:: bash
 
-      pydocstyle isabelle_client examples
-      flake8 isabelle_client examples
-      pylint isabelle_client examples
-      mypy isabelle_client examples
+      pydocstyle isabelle_client
+      flake8 isabelle_client
+      pylint isabelle_client
+      mypy isabelle_client
 
 6. The next step would be to run the test cases. `isabelle-client`
    uses pytest and all the existing tests are `doctests

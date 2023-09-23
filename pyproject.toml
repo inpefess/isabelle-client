@@ -126,12 +126,12 @@ deps =
     pyroma
     bandit
 commands =
-    pydocstyle isabelle_client examples
-    flake8 isabelle_client examples
-    pylint isabelle_client examples
-    mypy isabelle_client examples
+    pydocstyle isabelle_client
+    flake8 isabelle_client
+    pylint isabelle_client
+    mypy isabelle_client
     pyroma -n 10 .
-    bandit -r isabelle_client examples
+    bandit -r isabelle_client
     pytest
 """
 

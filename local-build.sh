@@ -6,14 +6,12 @@ cd doc
 make clean html coverage
 cat _build/coverage/python.txt
 cd ..
-pydocstyle ${PACKAGE_NAME} examples
-flake8 ${PACKAGE_NAME} examples
-pylint ${PACKAGE_NAME} examples
-mypy ${PACKAGE_NAME} examples
+pydocstyle ${PACKAGE_NAME}
+flake8 ${PACKAGE_NAME}
+pylint ${PACKAGE_NAME}
+mypy ${PACKAGE_NAME}
 find ${PACKAGE_NAME} -name "*.py" | xargs -I {} pyupgrade --py38-plus {}
-pyupgrade examples/*.py
 pyroma -n 10 .
-bandit -r ${PACKAGE_NAME} examples
+bandit -r ${PACKAGE_NAME}
 pytest
 scc --no-cocomo --by-file -i py ${PACKAGE_NAME}
-
