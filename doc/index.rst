@@ -14,19 +14,19 @@
   limitations under the License.
 
 .. include:: ../README.rst
-			    
-.. toctree::
-   :hidden:
-   :caption: Basic Usage
-
-   usage-example
-
+             
 .. toctree::
    :hidden:
    :caption: API
 
    package-documentation
 
+.. toctree::
+   :hidden:
+   :caption: Tutorials
+
+   auto_examples/index.rst
+   
 .. toctree::
    :hidden:
    :caption: Development

@@ -24,3 +24,5 @@ coverage.xml
 *.toc
 _minted-*/
 \#*.*\#
+*.pickle
+*.md5
