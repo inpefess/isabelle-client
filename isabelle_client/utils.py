@@ -36,6 +36,9 @@ else:  # pragma: no cover
     from importlib_resources import files  # pylint: disable=import-error
 
 
+MS_WINDOWS = "win32"
+
+
 class IsabelleServerCommands(Enum):
     """Supported Isabelle server commands."""
 
@@ -95,7 +98,7 @@ def start_isabelle_server(
         + (f" -p {str(port)}" if port is not None else "")
         + (f" -n {name}" if name is not None else "")
     )
-    if sys.platform == "win32":
+    if sys.platform == MS_WINDOWS:
         return start_isabelle_server_win32(args)  # pragma: no cover
 
     async def async_call() -> Tuple[str, asyncio.subprocess.Process]:
