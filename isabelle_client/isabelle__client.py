@@ -20,6 +20,7 @@ A Python client to `Isabelle <https://isabelle.in.tum.de>`__ server
 """
 import asyncio
 import json
+from enum import Enum
 from logging import Logger
 from typing import Any, Dict, List, Optional, Union
 
@@ -27,6 +28,20 @@ from isabelle_client.socket_communication import (
     IsabelleResponse,
     get_final_message,
 )
+
+
+class SynchronousResultType(Enum):
+    """Synchronous results of a server reply."""
+
+    OK = "OK"
+    ERROR = "ERROR"
+
+
+class AsynchronousResultType(Enum):
+    """Asynchronous results of a server reply."""
+
+    FAILED = "FAILED"
+    FINISHED = "FINISHED"
 
 
 class IsabelleClient:
@@ -86,9 +101,16 @@ class IsabelleClient:
         :returns: a list of Isabelle server responses
         """
         final_message = (
-            {"FINISHED", "FAILED", "ERROR"}
+            {
+                AsynchronousResultType.FINISHED.value,
+                AsynchronousResultType.FAILED.value,
+                SynchronousResultType.ERROR.value,
+            }
             if asynchronous
-            else {"OK", "ERROR"}
+            else {
+                SynchronousResultType.OK.value,
+                SynchronousResultType.ERROR.value,
+            }
         )
         reader, writer = await asyncio.open_connection(self.address, self.port)
         command = f"{self.password}\n{command}\n"
@@ -161,7 +183,10 @@ class IsabelleClient:
         response_list = asyncio.run(
             self.execute_command(f"session_start {json.dumps(arguments)}")
         )
-        if response_list[-1].response_type == "FINISHED":
+        if (
+            response_list[-1].response_type
+            == AsynchronousResultType.FINISHED.value
+        ):
             return json.loads(response_list[-1].response_body)["session_id"]
         raise ValueError(
             f"Unexpected response type: {response_list[-1].response_type}"

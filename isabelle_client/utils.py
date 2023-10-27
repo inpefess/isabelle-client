@@ -24,6 +24,7 @@ import os
 import re
 import socketserver
 import sys
+from enum import Enum
 from typing import Optional, Tuple
 
 from isabelle_client.isabelle__client import IsabelleClient
@@ -33,6 +34,17 @@ if sys.version_info.major == 3 and sys.version_info.minor >= 9:
     from importlib.resources import files  # type: ignore
 else:  # pragma: no cover
     from importlib_resources import files  # pylint: disable=import-error
+
+
+MS_WINDOWS = "win32"
+
+
+class IsabelleServerCommands(Enum):
+    """Supported Isabelle server commands."""
+
+    HELP = "help"
+    USE_THEORIES = "use_theories"
+    ECHO = "echo"
 
 
 def get_isabelle_client(server_info: str) -> IsabelleClient:
@@ -86,7 +98,7 @@ def start_isabelle_server(
         + (f" -p {str(port)}" if port is not None else "")
         + (f" -n {name}" if name is not None else "")
     )
-    if sys.platform == "win32":
+    if sys.platform == MS_WINDOWS:
         return start_isabelle_server_win32(args)  # pragma: no cover
 
     async def async_call() -> Tuple[str, asyncio.subprocess.Process]:
@@ -158,7 +170,7 @@ class BuggyDummyTCPHandler(socketserver.BaseRequestHandler):
     def handle(self):
         """Return something weird."""
         request = self.request.recv(4096).decode("utf-8").split("\n")[1]
-        if request == "help":
+        if request == IsabelleServerCommands.HELP.value:
             self.request.sendall(b"5\n")
             self.request.sendall(b"# !!!")
         else:
@@ -173,7 +185,7 @@ class DummyTCPHandler(socketserver.BaseRequestHandler):
 
     def _mock_command_execution(self, command: str, arguments: str):
         filename = command
-        if command == "use_theories":
+        if command == IsabelleServerCommands.USE_THEORIES.value:
             theory_name = json.loads(arguments)["theories"][0]
             if theory_name != "Mock":
                 filename += f".{theory_name}"
@@ -195,7 +207,7 @@ class DummyTCPHandler(socketserver.BaseRequestHandler):
         self.request.sendall(
             b'OK {"isabelle_id":"mock","isabelle_name":"Isabelle2022"}\n'
         )
-        if command == "echo":
+        if command == IsabelleServerCommands.ECHO.value:
             self.request.sendall(f"OK {arguments[1:]}\n".encode())
         else:
             self._mock_command_execution(command, arguments)
