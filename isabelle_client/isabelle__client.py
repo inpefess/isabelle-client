@@ -92,7 +92,7 @@ class IsabelleClient:
         None
         >>> print(logger.info.mock_calls)
         [call('test_password\nunknown command\n'),
-         call('OK {"isabelle_id":"mock","isabelle_name":"Isabelle2022"}'),
+         call('OK {"isabelle_id":"mock","isabelle_name":"Isabelle2024"}'),
          call('ERROR "Bad command \'unknown\'"')]
 
         :param command: a full text of a command to Isabelle

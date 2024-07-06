@@ -11,7 +11,7 @@
         :class: sphx-glr-download-link-note
 
         :ref:`Go to the end <sphx_glr_download_auto_examples_plot_example.py>`
-        to download the full example code
+        to download the full example code.
 
 .. rst-class:: sphx-glr-example-title
 
@@ -52,7 +52,7 @@ First, we need to start an Isabelle server
 
 .. GENERATED FROM PYTHON SOURCE LINES 45-52
 
-.. code-block:: default
+.. code-block:: Python
 
 
     from isabelle_client import start_isabelle_server
@@ -93,7 +93,7 @@ Let's create a client to our server
 
 .. GENERATED FROM PYTHON SOURCE LINES 71-76
 
-.. code-block:: default
+.. code-block:: Python
 
 
     from isabelle_client import get_isabelle_client
@@ -113,7 +113,7 @@ We will log all the messages from the server to a file
 
 .. GENERATED FROM PYTHON SOURCE LINES 78-85
 
-.. code-block:: default
+.. code-block:: Python
 
 
     import logging
@@ -135,7 +135,7 @@ Isabelle client supports all the commands implemented in Isabelle server
 
 .. GENERATED FROM PYTHON SOURCE LINES 87-92
 
-.. code-block:: default
+.. code-block:: Python
 
 
     from pprint import pprint
@@ -151,7 +151,7 @@ Isabelle client supports all the commands implemented in Isabelle server
  .. code-block:: none
 
     [IsabelleResponse(response_type='OK',
-                      response_body='{"isabelle_id":"b5f3d1051b13","isabelle_name":"Isabelle2023"}',
+                      response_body='{"isabelle_id":"29f2b8ff84f3","isabelle_name":"Isabelle2024"}',
                       response_length=None),
      IsabelleResponse(response_type='OK',
                       response_body='["cancel","echo","help","purge_theories","session_build","session_start","session_stop","shutdown","use_theories"]',
@@ -174,7 +174,7 @@ We can send this theory file to the server and get a response
 
 .. GENERATED FROM PYTHON SOURCE LINES 101-104
 
-.. code-block:: default
+.. code-block:: Python
 
 
     pprint(isabelle.use_theories(theories=["Example"], master_dir="."))
@@ -188,35 +188,30 @@ We can send this theory file to the server and get a response
  .. code-block:: none
 
     [IsabelleResponse(response_type='OK',
-                      response_body='{"isabelle_id":"b5f3d1051b13","isabelle_name":"Isabelle2023"}',
+                      response_body='{"isabelle_id":"29f2b8ff84f3","isabelle_name":"Isabelle2024"}',
                       response_length=None),
      IsabelleResponse(response_type='OK',
-                      response_body='{"task":"9ea417a7-81c2-4a70-a6ee-e7da5ff58af5"}',
+                      response_body='{"task":"1c23e3fd-1521-47d8-b9fd-26151fb78073"}',
                       response_length=None),
      IsabelleResponse(response_type='NOTE',
-                      response_body='{"percentage":14,"task":"9ea417a7-81c2-4a70-a6ee-e7da5ff58af5","message":"theory '
+                      response_body='{"percentage":14,"task":"1c23e3fd-1521-47d8-b9fd-26151fb78073","message":"theory '
                                     'Draft.Example '
                                     '14%","kind":"writeln","session":"","theory":"Draft.Example"}',
                       response_length=161),
      IsabelleResponse(response_type='NOTE',
-                      response_body='{"percentage":42,"task":"9ea417a7-81c2-4a70-a6ee-e7da5ff58af5","message":"theory '
-                                    'Draft.Example '
-                                    '42%","kind":"writeln","session":"","theory":"Draft.Example"}',
-                      response_length=161),
-     IsabelleResponse(response_type='NOTE',
-                      response_body='{"percentage":99,"task":"9ea417a7-81c2-4a70-a6ee-e7da5ff58af5","message":"theory '
+                      response_body='{"percentage":99,"task":"1c23e3fd-1521-47d8-b9fd-26151fb78073","message":"theory '
                                     'Draft.Example '
                                     '99%","kind":"writeln","session":"","theory":"Draft.Example"}',
                       response_length=161),
      IsabelleResponse(response_type='NOTE',
-                      response_body='{"percentage":100,"task":"9ea417a7-81c2-4a70-a6ee-e7da5ff58af5","message":"theory '
+                      response_body='{"percentage":100,"task":"1c23e3fd-1521-47d8-b9fd-26151fb78073","message":"theory '
                                     'Draft.Example '
                                     '100%","kind":"writeln","session":"","theory":"Draft.Example"}',
                       response_length=163),
      IsabelleResponse(response_type='FINISHED',
                       response_body='{"ok":true,"errors":[],"nodes":[{"messages":[{"kind":"writeln","message":"theorem '
                                     '\\\\<forall>x. \\\\<exists>y. x = '
-                                    'y","pos":{"line":5,"offset":59,"end_offset":61,"file":"Example.thy"}}],"exports":[],"status":{"percentage":100,"unprocessed":0,"running":0,"finished":7,"failed":0,"total":7,"consolidated":true,"canceled":false,"ok":true,"warned":0},"theory_name":"Draft.Example","node_name":"Example.thy"}],"task":"9ea417a7-81c2-4a70-a6ee-e7da5ff58af5"}',
+                                    'y","pos":{"line":5,"offset":59,"end_offset":61,"file":"Example.thy"}}],"exports":[],"status":{"percentage":100,"unprocessed":0,"running":0,"finished":7,"failed":0,"total":7,"consolidated":true,"canceled":false,"ok":true,"warned":0},"theory_name":"Draft.Example","node_name":"Example.thy"}],"task":"1c23e3fd-1521-47d8-b9fd-26151fb78073"}',
                       response_length=458)]
 
 
@@ -236,7 +231,7 @@ and ``./document/root.tex`` file
 
 .. GENERATED FROM PYTHON SOURCE LINES 114-125
 
-.. code-block:: default
+.. code-block:: Python
 
 
     import json
@@ -273,8 +268,8 @@ and ``./document/root.tex`` file
                    'return_code': 0,
                    'session': 'examples',
                    'timeout': False,
-                   'timing': {'cpu': 14.567, 'elapsed': 9.41, 'gc': 0}}],
-     'task': 'e36e45b8-6f6b-42a7-9c95-3873b2fd9b89'}
+                   'timing': {'cpu': 0, 'elapsed': 0, 'gc': 0}}],
+     'task': '7f6dd64b-3a55-469f-ad9c-fdf04f85b43e'}
 
 
 
@@ -285,7 +280,7 @@ One can also issue a free-form command, e.g.
 
 .. GENERATED FROM PYTHON SOURCE LINES 127-132
 
-.. code-block:: default
+.. code-block:: Python
 
 
     import asyncio
@@ -301,7 +296,7 @@ One can also issue a free-form command, e.g.
  .. code-block:: none
 
     [IsabelleResponse(response_type='OK',
-                      response_body='{"isabelle_id":"b5f3d1051b13","isabelle_name":"Isabelle2023"}',
+                      response_body='{"isabelle_id":"29f2b8ff84f3","isabelle_name":"Isabelle2024"}',
                       response_length=None),
      IsabelleResponse(response_type='OK', response_body='42', response_length=None)]
 
@@ -314,7 +309,7 @@ Finally, we can shut the server down.
 
 .. GENERATED FROM PYTHON SOURCE LINES 134-136
 
-.. code-block:: default
+.. code-block:: Python
 
 
     pprint(isabelle.shutdown())
@@ -327,7 +322,7 @@ Finally, we can shut the server down.
  .. code-block:: none
 
     [IsabelleResponse(response_type='OK',
-                      response_body='{"isabelle_id":"b5f3d1051b13","isabelle_name":"Isabelle2023"}',
+                      response_body='{"isabelle_id":"29f2b8ff84f3","isabelle_name":"Isabelle2024"}',
                       response_length=None),
      IsabelleResponse(response_type='OK', response_body='', response_length=None)]
 
@@ -337,7 +332,7 @@ Finally, we can shut the server down.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (1 minutes 1.590 seconds)
+   **Total running time of the script:** (0 minutes 12.785 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_example.py:
@@ -346,16 +341,13 @@ Finally, we can shut the server down.
 
   .. container:: sphx-glr-footer sphx-glr-footer-example
 
+    .. container:: sphx-glr-download sphx-glr-download-jupyter
 
-
+      :download:`Download Jupyter notebook: plot_example.ipynb <plot_example.ipynb>`
 
     .. container:: sphx-glr-download sphx-glr-download-python
 
       :download:`Download Python source code: plot_example.py <plot_example.py>`
-
-    .. container:: sphx-glr-download sphx-glr-download-jupyter
-
-      :download:`Download Jupyter notebook: plot_example.ipynb <plot_example.ipynb>`
 
 
 .. only:: html

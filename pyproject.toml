@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "isabelle-client"
-version = "0.4.11"
+version = "0.5.0"
 description = "A client to Isabelle proof assistant server"
 authors = ["Boris Shminke <boris@shminke.com>"]
 license = "Apache-2.0"
@@ -79,6 +79,7 @@ load-plugins = [
     "pylint.extensions.docparams",
     "pylint.extensions.mccabe",
     "pylint.extensions.set_membership",
+    "pylint.extensions.code_style",
 ]
 
 [tool.pylint.parameter_documentation]
@@ -141,7 +142,7 @@ commands =
 github_url = "https://github.com/inpfess/isabelle-client/"
 
 [tool.tbump.version]
-current = "0.4.11"
+current = "0.5.0"
 regex = '''
   (?P<major>\d+)
   \.

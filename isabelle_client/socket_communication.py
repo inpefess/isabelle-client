@@ -78,7 +78,7 @@ async def get_response_from_isabelle(
     ...     result += [str(await get_response_from_isabelle(test_reader))]
     ...     return result
     >>> print(asyncio.run(awaiter()))
-    ['OK {"isabelle_id":"mock","isabelle_name":"Isabelle2022"}', '118\nOK [...]
+    ['OK {"isabelle_id":"mock","isabelle_name":"Isabelle2024"}', '118\nOK [...]
     >>> async def awaiter():
     ...     test_reader, test_writer = await asyncio.open_connection(
     ...     "localhost", 9998
@@ -101,8 +101,7 @@ async def get_response_from_isabelle(
     length = int(match.group(1)) if match is not None else None
     if length is not None:
         response = (await reader.readexactly(length)).decode("utf-8")
-    match = re.compile(r"(\w+) ?(.*)").match(response)
-    if match is None:
+    if (match := re.compile("(\\w+) ?(.*)").match(response)) is None:
         raise ValueError(f"Unexpected response from Isabelle: {response}")
     return IsabelleResponse(match.group(1), match.group(2), length)
 
@@ -129,11 +128,11 @@ async def get_final_message(
     ...     return result
     >>> for response in asyncio.run(awaiter()):
     ...     print(response)
-    OK {"isabelle_id":"mock","isabelle_name":"Isabelle2022"}
+    OK {"isabelle_id":"mock","isabelle_name":"Isabelle2024"}
     118
     OK ["cancel","echo","help","purge_theories","session_build",...]
     >>> print(test_logger.info.mock_calls)
-    [call('OK {"isabelle_id":"mock","isabelle_name":"Isabelle2022"}'),
+    [call('OK {"isabelle_id":"mock","isabelle_name":"Isabelle2024"}'),
      call('118\nOK ["cancel","echo","help","purge_theories","session_buil...')]
 
     :param reader: a ``StreamReader`` connected to Isabelle server
