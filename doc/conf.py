@@ -19,7 +19,7 @@ import sys
 
 sys.path.insert(0, os.path.abspath(".."))
 project = "isabelle-client"
-version = "0.4.11"
+version = "0.5.0"
 copyright = "2021-2024, Boris Shminke"
 author = "Boris Shminke"
 extensions = [
