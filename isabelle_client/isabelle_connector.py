@@ -132,8 +132,7 @@ class IsabelleConnector:
         for isabelle_response in validation_result:
             if isabelle_response.response_type == "FINISHED":
                 json_response = json.loads(isabelle_response.response_body)
-                errors = json_response["errors"]
-                if errors:
+                if errors := json_response["errors"]:
                     raise IsabelleTheoryError(errors[0]["message"])
         return True
 

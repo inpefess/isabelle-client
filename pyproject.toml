@@ -79,6 +79,7 @@ load-plugins = [
     "pylint.extensions.docparams",
     "pylint.extensions.mccabe",
     "pylint.extensions.set_membership",
+    "pylint.extensions.code_style",
 ]
 
 [tool.pylint.parameter_documentation]

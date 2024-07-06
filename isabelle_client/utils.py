@@ -186,8 +186,7 @@ class DummyTCPHandler(socketserver.BaseRequestHandler):
     def _mock_command_execution(self, command: str, arguments: str):
         filename = command
         if command == IsabelleServerCommands.USE_THEORIES.value:
-            theory_name = json.loads(arguments)["theories"][0]
-            if theory_name != "Mock":
+            if (theory_name := json.loads(arguments)["theories"][0]) != "Mock":
                 filename += f".{theory_name}"
         with open(
             str(
