@@ -175,7 +175,7 @@ class BuggyDummyTCPHandler(socketserver.BaseRequestHandler):
             self.request.sendall(b"# !!!")
         else:
             self.request.sendall(
-                b'OK {"isabelle_id":"mock","isabelle_name":"Isabelle2022"}\n'
+                b'OK {"isabelle_id":"mock","isabelle_name":"Isabelle2024"}\n'
             )
             self.request.sendall(b"ERROR UNEXPECTED\n")
 
@@ -205,7 +205,7 @@ class DummyTCPHandler(socketserver.BaseRequestHandler):
         command = request.split(" ")[0]
         arguments = request[len(command) :]
         self.request.sendall(
-            b'OK {"isabelle_id":"mock","isabelle_name":"Isabelle2022"}\n'
+            b'OK {"isabelle_id":"mock","isabelle_name":"Isabelle2024"}\n'
         )
         if command == IsabelleServerCommands.ECHO.value:
             self.request.sendall(f"OK {arguments[1:]}\n".encode())

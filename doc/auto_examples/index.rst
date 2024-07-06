@@ -9,6 +9,7 @@ Isabelle client usage examples
 
     <div class="sphx-glr-thumbnails">
 
+.. thumbnail-parent-div-open
 
 .. raw:: html
 
@@ -26,6 +27,8 @@ Isabelle client usage examples
       <div class="sphx-glr-thumbnail-title">Basic usage example.</div>
     </div>
 
+
+.. thumbnail-parent-div-close
 
 .. raw:: html
 
