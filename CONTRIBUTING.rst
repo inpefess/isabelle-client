@@ -68,14 +68,17 @@ installed and ready to go.
 1. `Fork <https://github.com/inpefess/isabelle-client/fork>`__ the
    `isabelle-client` repo on GitHub.
 
-2. Clone your fork locally:
+1. Clone your fork locally:
 
    .. code:: sh
 
       cd path_for_the_repo
       git clone git@github.com:YOUR_NAME/isabelle-client.git
 
-3. It's highly recommended to use a virtual environment for your
+1. Install
+   [poetry](https://python-poetry.org/docs/#installing-with-the-official-installer).
+      
+1. It's highly recommended to use a virtual environment for your
    local development (by the standand means of Python or using
    Anaconda or anything else):
 
@@ -89,18 +92,16 @@ installed and ready to go.
    .. code:: bash
 
       (isabelle-client-env) $
-
-4. Now you can install all the things you need for development:
+      
+1. Now you can install all the things you need for development:
 
    .. code:: bash
 		   
-      pip install -U pip
-      pip install -U setuptools wheel poetry
       poetry install
       # recommended but not necessary
       pre-commit install
 
-4. Create a branch for local development:
+1. Create a branch for local development:
 
    .. code:: bash
 
@@ -108,7 +109,7 @@ installed and ready to go.
 
    Now you can make your changes locally.
 
-5. When you're done making changes, check that your changes pass code
+1. When you're done making changes, check that your changes pass code
    quality checks.
 
    .. code:: bash
@@ -118,7 +119,7 @@ installed and ready to go.
       pylint isabelle_client
       mypy isabelle_client
 
-6. The next step would be to run the test cases. `isabelle-client`
+1. The next step would be to run the test cases. `isabelle-client`
    uses pytest and all the existing tests are `doctests
    <https://docs.python.org/3/library/doctest.html>`__.
 
@@ -130,7 +131,7 @@ installed and ready to go.
    add a test to the existing test suite. If possible, do it by
    doctest, not a dedicates test case file.
 
-8. Commit your changes and push your branch to GitHub:
+1. Commit your changes and push your branch to GitHub:
 
    .. code:: bash
 
@@ -138,7 +139,7 @@ installed and ready to go.
       git commit -m "Your detailed description of your changes."
       git push origin name-of-your-bugfix-or-feature
 
-9. Submit a pull request through the GitHub website.
+1. Submit a pull request through the GitHub website.
 
 
 Pull Request Guidelines
@@ -153,6 +154,6 @@ guidelines:
    updated. Put your new functionality into a function with a
    docstring, and add the feature to the list in README.rst.
 
-3. The pull request should work for Python 3.8, 3.9, 3.10 and
-   3.11. Check https://github.com/inpefess/isabelle-client/pulls and
+3. The pull request should work for Python 3.8, 3.9, 3.10, 3.11, and
+   3.12. Check https://github.com/inpefess/isabelle-client/pulls and
    make sure that the tests pass for all supported Python versions.
