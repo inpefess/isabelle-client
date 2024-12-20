@@ -25,16 +25,10 @@ import re
 import socketserver
 import sys
 from enum import Enum
+from importlib.resources import files
 from typing import Optional, Tuple
 
 from isabelle_client.isabelle__client import IsabelleClient
-
-if sys.version_info.major == 3 and sys.version_info.minor >= 9:
-    # pylint: disable=no-name-in-module, import-error
-    from importlib.resources import files  # type: ignore
-else:  # pragma: no cover
-    from importlib_resources import files  # pylint: disable=import-error
-
 
 MS_WINDOWS = "win32"
 

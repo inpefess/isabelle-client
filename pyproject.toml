@@ -65,12 +65,6 @@ addopts = """--doctest-modules --cov isabelle_client --cov-report xml
     --junit-xml test-results/isabelle-client.xml"""
 testpaths = ["isabelle_client"]
 
-[tool.coverage.report]
-exclude_lines = [
-    "pragma: no cover",
-    "from importlib.resources import files"
-]
-
 [tool.pylint.MASTER]
 load-plugins = [
     "pylint.extensions.consider_ternary_expression",
@@ -104,10 +98,6 @@ spelling-private-dict-file = "spelling.dict"
 show_error_codes = true
 incremental = true
 disable_error_code = "no-redef"
-
-[[tool.mypy.overrides]]
-module = ["importlib_resources", "py"]
-ignore_missing_imports = true
 
 [tool.tox]
 legacy_tox_ini = """
