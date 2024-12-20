@@ -1,4 +1,13 @@
 Dockerfile
+CONTRIBUTING.rst
+CODE_OF_CONDUCT.rst
+README.rst
+LICENSE
+pyproject.toml
+poetry.lock
+test-results/
+spelling.dict
+isabelle_client/
 venv*/
 dist/
 doc/
