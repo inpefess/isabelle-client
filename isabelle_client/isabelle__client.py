@@ -22,7 +22,7 @@ import asyncio
 import json
 from enum import Enum
 from logging import Logger
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 from isabelle_client.socket_communication import (
     IsabelleResponse,
@@ -72,7 +72,7 @@ class IsabelleClient:
         self,
         command: str,
         asynchronous: bool = True,
-    ) -> List[IsabelleResponse]:
+    ) -> list[IsabelleResponse]:
         r"""
         Execute a command and waits for results.
 
@@ -124,10 +124,10 @@ class IsabelleClient:
     def session_build(
         self,
         session: str,
-        dirs: Optional[List[str]] = None,
+        dirs: Optional[list[str]] = None,
         verbose: bool = False,
         **kwargs,
-    ) -> List[IsabelleResponse]:
+    ) -> list[IsabelleResponse]:
         """
         Build a session from ROOT file.
 
@@ -147,7 +147,7 @@ class IsabelleClient:
             (see Isabelle System manual for details)
         :returns: an Isabelle response
         """
-        arguments: Dict[str, Union[str, List[str], bool]] = {
+        arguments: dict[str, Union[str, list[str], bool]] = {
             "session": session,
             "verbose": verbose,
         }
@@ -192,7 +192,7 @@ class IsabelleClient:
             f"Unexpected response type: {response_list[-1].response_type}"
         )
 
-    def session_stop(self, session_id: str) -> List[IsabelleResponse]:
+    def session_stop(self, session_id: str) -> list[IsabelleResponse]:
         """
         Stop session with given ID.
 
@@ -212,11 +212,11 @@ class IsabelleClient:
 
     def use_theories(
         self,
-        theories: List[str],
+        theories: list[str],
         session_id: Optional[str] = None,
         master_dir: Optional[str] = None,
         **kwargs,
-    ) -> List[IsabelleResponse]:
+    ) -> list[IsabelleResponse]:
         """
         Run the engine on theory files.
 
@@ -239,7 +239,7 @@ class IsabelleClient:
         new_session_id = (
             self.session_start() if session_id is None else session_id
         )
-        arguments: Dict[str, Union[List[str], int, str]] = {
+        arguments: dict[str, Union[list[str], int, str]] = {
             "session_id": new_session_id,
             "theories": theories,
         }
@@ -253,7 +253,7 @@ class IsabelleClient:
             self.session_stop(new_session_id)
         return response
 
-    def echo(self, message: Any) -> List[IsabelleResponse]:
+    def echo(self, message: Any) -> list[IsabelleResponse]:
         """
         Ask a server to echo a message.
 
@@ -272,7 +272,7 @@ class IsabelleClient:
         )
         return response
 
-    def help(self) -> List[IsabelleResponse]:
+    def help(self) -> list[IsabelleResponse]:
         """
         Ask a server to display the list of available commands.
 
@@ -291,10 +291,10 @@ class IsabelleClient:
     def purge_theories(
         self,
         session_id: str,
-        theories: List[str],
+        theories: list[str],
         master_dir: Optional[str] = None,
         purge_all: Optional[bool] = None,
-    ) -> List[IsabelleResponse]:
+    ) -> list[IsabelleResponse]:
         """
         Ask a server to purge listed theories from it.
 
@@ -312,7 +312,7 @@ class IsabelleClient:
             loaded theories
         :returns: Isabelle server response
         """
-        arguments: Dict[str, Union[str, List[str], bool]] = {
+        arguments: dict[str, Union[str, list[str], bool]] = {
             "session_id": session_id,
             "theories": theories,
         }
@@ -327,7 +327,7 @@ class IsabelleClient:
         )
         return response
 
-    def cancel(self, task: str) -> List[IsabelleResponse]:
+    def cancel(self, task: str) -> list[IsabelleResponse]:
         """
         Ask a server to try to cancel a task with a given ID.
 
@@ -347,7 +347,7 @@ class IsabelleClient:
         )
         return response
 
-    def shutdown(self) -> List[IsabelleResponse]:
+    def shutdown(self) -> list[IsabelleResponse]:
         """
         Ask a server to shutdown immediately.
 

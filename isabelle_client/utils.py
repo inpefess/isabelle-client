@@ -26,7 +26,7 @@ import socketserver
 import sys
 from enum import Enum
 from importlib.resources import files
-from typing import Optional, Tuple
+from typing import Optional
 
 from isabelle_client.isabelle__client import IsabelleClient
 
@@ -71,7 +71,7 @@ def start_isabelle_server(
     log_file: Optional[str] = None,
     name: Optional[str] = None,
     port: Optional[int] = None,
-) -> Tuple[str, asyncio.subprocess.Process]:
+) -> tuple[str, asyncio.subprocess.Process]:
     """
     Start Isabelle server.
 
@@ -95,7 +95,7 @@ def start_isabelle_server(
     if sys.platform == MS_WINDOWS:
         return start_isabelle_server_win32(args)  # pragma: no cover
 
-    async def async_call() -> Tuple[str, asyncio.subprocess.Process]:
+    async def async_call() -> tuple[str, asyncio.subprocess.Process]:
         """
         Start Isabelle server asynchronously.
 
@@ -118,7 +118,7 @@ def start_isabelle_server(
 
 def start_isabelle_server_win32(
     args: str,
-) -> Tuple[str, asyncio.subprocess.Process]:  # pragma: no cover
+) -> tuple[str, asyncio.subprocess.Process]:  # pragma: no cover
     """
     Start Isabelle server on Windows.
 
@@ -131,7 +131,7 @@ def start_isabelle_server_win32(
         asyncio.WindowsProactorEventLoopPolicy()  # type: ignore
     )
 
-    async def async_call() -> Tuple[str, asyncio.subprocess.Process]:
+    async def async_call() -> tuple[str, asyncio.subprocess.Process]:
         """
         Start Isabelle server in Cygwin asynchronously.
 

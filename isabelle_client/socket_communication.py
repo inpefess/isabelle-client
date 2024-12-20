@@ -22,7 +22,7 @@ import asyncio
 import re
 from dataclasses import dataclass
 from logging import Logger
-from typing import List, Optional, Set
+from typing import Optional
 
 
 @dataclass
@@ -108,9 +108,9 @@ async def get_response_from_isabelle(
 
 async def get_final_message(
     reader: asyncio.StreamReader,
-    final_message: Set[str],
+    final_message: set[str],
     logger: Optional[Logger] = None,
-) -> List[IsabelleResponse]:
+) -> list[IsabelleResponse]:
     r"""
     Get responses from Isabelle server.
 

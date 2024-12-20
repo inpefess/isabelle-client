@@ -10,7 +10,7 @@ pydocstyle ${PACKAGE_NAME}
 flake8 ${PACKAGE_NAME}
 pylint ${PACKAGE_NAME}
 mypy ${PACKAGE_NAME}
-find ${PACKAGE_NAME} -name "*.py" | xargs -I {} pyupgrade --py38-plus {}
+find ${PACKAGE_NAME} -name "*.py" | xargs -I {} pyupgrade --py39-plus {}
 pyroma -n 10 .
 bandit -r ${PACKAGE_NAME}
 pytest

@@ -14,7 +14,7 @@
 # noqa: D205
 """Fixtures for unit tests live here."""
 import threading
-from typing import Generator, Tuple
+from collections.abc import Generator
 from unittest.mock import Mock
 
 from pytest import fixture
@@ -29,7 +29,7 @@ from isabelle_client.utils import (
 @fixture(autouse=True, scope="session")
 def tcp_servers() -> (
     Generator[
-        Tuple[ReusableDummyTCPServer, ReusableDummyTCPServer], None, None
+        tuple[ReusableDummyTCPServer, ReusableDummyTCPServer], None, None
     ]
 ):
     """
