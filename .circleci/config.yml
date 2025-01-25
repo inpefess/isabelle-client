@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   build-and-test:
     docker:
-      - image: inpefess/multipython
+      - image: inpefess/multipython:3.12.0
     steps:
       - checkout
       - run:
