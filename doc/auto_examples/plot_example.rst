@@ -191,27 +191,22 @@ We can send this theory file to the server and get a response
                       response_body='{"isabelle_id":"29f2b8ff84f3","isabelle_name":"Isabelle2024"}',
                       response_length=None),
      IsabelleResponse(response_type='OK',
-                      response_body='{"task":"b7d7b94a-e5d9-439e-8c66-3fa630f29c9c"}',
+                      response_body='{"task":"93ecddd5-d6b5-4e4e-9ac4-28902a27abe7"}',
                       response_length=None),
      IsabelleResponse(response_type='NOTE',
-                      response_body='{"percentage":42,"task":"b7d7b94a-e5d9-439e-8c66-3fa630f29c9c","message":"theory '
-                                    'Draft.Example '
-                                    '42%","kind":"writeln","session":"","theory":"Draft.Example"}',
-                      response_length=161),
-     IsabelleResponse(response_type='NOTE',
-                      response_body='{"percentage":99,"task":"b7d7b94a-e5d9-439e-8c66-3fa630f29c9c","message":"theory '
+                      response_body='{"percentage":99,"task":"93ecddd5-d6b5-4e4e-9ac4-28902a27abe7","message":"theory '
                                     'Draft.Example '
                                     '99%","kind":"writeln","session":"","theory":"Draft.Example"}',
                       response_length=161),
      IsabelleResponse(response_type='NOTE',
-                      response_body='{"percentage":100,"task":"b7d7b94a-e5d9-439e-8c66-3fa630f29c9c","message":"theory '
+                      response_body='{"percentage":100,"task":"93ecddd5-d6b5-4e4e-9ac4-28902a27abe7","message":"theory '
                                     'Draft.Example '
                                     '100%","kind":"writeln","session":"","theory":"Draft.Example"}',
                       response_length=163),
      IsabelleResponse(response_type='FINISHED',
                       response_body='{"ok":true,"errors":[],"nodes":[{"messages":[{"kind":"writeln","message":"theorem '
                                     '\\\\<forall>x. \\\\<exists>y. x = '
-                                    'y","pos":{"line":5,"offset":59,"end_offset":61,"file":"Example.thy"}}],"exports":[],"status":{"percentage":100,"unprocessed":0,"running":0,"finished":7,"failed":0,"total":7,"consolidated":true,"canceled":false,"ok":true,"warned":0},"theory_name":"Draft.Example","node_name":"Example.thy"}],"task":"b7d7b94a-e5d9-439e-8c66-3fa630f29c9c"}',
+                                    'y","pos":{"line":5,"offset":59,"end_offset":61,"file":"Example.thy"}}],"exports":[],"status":{"percentage":100,"unprocessed":0,"running":0,"finished":7,"failed":0,"total":7,"consolidated":true,"canceled":false,"ok":true,"warned":0},"theory_name":"Draft.Example","node_name":"Example.thy"}],"task":"93ecddd5-d6b5-4e4e-9ac4-28902a27abe7"}',
                       response_length=458)]
 
 
@@ -269,7 +264,7 @@ and ``./document/root.tex`` file
                    'session': 'examples',
                    'timeout': False,
                    'timing': {'cpu': 0, 'elapsed': 0, 'gc': 0}}],
-     'task': '6238be1a-2810-453d-b15c-7125cda16f03'}
+     'task': 'fef060b0-a9cf-42d0-a696-746545968457'}
 
 
 
@@ -332,7 +327,7 @@ Finally, we can shut the server down.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 9.936 seconds)
+   **Total running time of the script:** (0 minutes 9.814 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_example.py:
