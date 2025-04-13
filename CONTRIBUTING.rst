@@ -78,26 +78,13 @@ installed and ready to go.
 1. Install
    [poetry](https://python-poetry.org/docs/#installing-with-the-official-installer).
       
-1. It's highly recommended to use a virtual environment for your
-   local development (by the standand means of Python or using
-   Anaconda or anything else):
+1. Now you can install all the things you need for development (this
+   command will also create a virtual environment in `.venv`
+   subfolder):
 
    .. code:: bash
 
-      python -m venv isabelle-client-env
-      source isabelle-client-env/bin/activate
-
-   This should change the shell to look something like:
-
-   .. code:: bash
-
-      (isabelle-client-env) $
-      
-1. Now you can install all the things you need for development:
-
-   .. code:: bash
-		   
-      poetry install
+      poetry install --all-groups
       # recommended but not necessary
       pre-commit install
 
