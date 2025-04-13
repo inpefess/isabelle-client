@@ -52,9 +52,9 @@ How to use
 
 
 For more details, follow the `usage
-example <https://isabelle-client.readthedocs.io/en/latest/usage-example.html#usage-example>`__
+example <https://isabelle-client.readthedocs.io/en/latest/auto_examples/plot_example.html#basic-usage-example>`__
 from documentation, run the
-`script <https://github.com/inpefess/isabelle-client/blob/master/examples/example.py>`__,
+`script <https://github.com/inpefess/isabelle-client/blob/master/examples/plot_example.py>`__,
 or use ``isabelle-client`` from a
 `notebook <https://github.com/inpefess/isabelle-client/blob/master/examples/example.ipynb>`__,
 e.g. with
