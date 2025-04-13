@@ -8,7 +8,7 @@ poetry.lock
 test-results/
 spelling.dict
 isabelle_client/
-venv*/
+.venv/
 dist/
 doc/
 ./**/.*
