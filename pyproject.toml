@@ -30,7 +30,6 @@ python = ">= 3.9.1, < 3.14"
 [tool.poetry.group.dev.dependencies]
 pylint = "*"
 mypy = "*"
-pytest-cov = "*"
 pre-commit = "*"
 black = "*"
 flake8 = "*"
@@ -48,6 +47,11 @@ pyupgrade = "*"
 bandit = "*"
 sphinx-gallery = "*"
 
+
+[tool.poetry.group.test.dependencies]
+coverage = "*"
+pytest = "*"
+
 [tool.black]
 line-length=79
 
@@ -61,8 +65,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = """--doctest-modules --cov isabelle_client --cov-report xml
-    --cov-report term-missing --cov-fail-under=100
+addopts = """--doctest-modules
     --junit-xml test-results/isabelle-client.xml"""
 testpaths = ["isabelle_client"]
 
@@ -108,7 +111,8 @@ envlist = py39,py310,py311,py312,py313
 
 [testenv]
 deps =
-    pytest-cov
+    pytest
+    coverage
     flake8
     pydocstyle
     pylint
@@ -124,7 +128,9 @@ commands =
     mypy isabelle_client
     pyroma -n 10 .
     bandit -r isabelle_client
-    pytest
+    coverage run
+    coverage xml
+    coverage report
 """
 
 [tool.tbump]
@@ -152,3 +158,11 @@ src = "pyproject.toml"
 
 [[tool.tbump.file]]
 src = "doc/conf.py"
+
+[tool.coverage.run]
+command_line = "-m pytest"
+source = ["isabelle_client"]
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
