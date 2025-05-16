@@ -34,7 +34,6 @@ optional = true
 pylint = "*"
 mypy = "*"
 pre-commit = "*"
-black = "*"
 sphinx-autodoc-typehints = "*"
 types-dataclasses = "*"
 tox = "*"
@@ -53,9 +52,6 @@ python-lsp-ruff = "*"
 [tool.poetry.group.test.dependencies]
 coverage = "*"
 pytest = "*"
-
-[tool.black]
-line-length=79
 
 [tool.isort]
 profile = "black"
