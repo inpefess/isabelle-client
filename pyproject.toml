@@ -174,4 +174,4 @@ exclude = ["examples", "doc/auto_examples"]
 line-length = 79
 
 [tool.ruff.lint]
-select = ["F", "E", "W"]
+select = ["F", "E", "W", "D"]
