@@ -32,7 +32,6 @@ pylint = "*"
 mypy = "*"
 pre-commit = "*"
 black = "*"
-flake8 = "*"
 sphinx-autodoc-typehints = "*"
 types-dataclasses = "*"
 pydocstyle = "*"
@@ -113,7 +112,6 @@ envlist = py39,py310,py311,py312,py313
 deps =
     pytest
     coverage
-    flake8
     pydocstyle
     pylint
     mypy
@@ -123,7 +121,6 @@ deps =
     bandit
 commands =
     pydocstyle isabelle_client
-    flake8 isabelle_client
     pylint isabelle_client
     mypy isabelle_client
     pyroma -n 10 .
