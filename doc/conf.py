@@ -14,6 +14,7 @@
 # limitations under the License.
 # pylint: disable-all
 """Sphinx doc config."""
+
 import os
 import sys
 

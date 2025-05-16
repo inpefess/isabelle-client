@@ -118,6 +118,7 @@ deps =
     pyroma
     ruff
 commands =
+    ruff format
     ruff check
     pylint isabelle_client
     mypy isabelle_client

@@ -6,6 +6,7 @@ cd doc
 make clean html coverage
 cat _build/coverage/python.txt
 cd ..
+ruff format
 ruff check
 pylint ${PACKAGE_NAME}
 mypy ${PACKAGE_NAME}

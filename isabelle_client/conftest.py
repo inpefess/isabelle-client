@@ -27,11 +27,9 @@ from isabelle_client.utils import (
 
 
 @fixture(autouse=True, scope="session")
-def tcp_servers() -> (
-    Generator[
-        tuple[ReusableDummyTCPServer, ReusableDummyTCPServer], None, None
-    ]
-):
+def tcp_servers() -> Generator[
+    tuple[ReusableDummyTCPServer, ReusableDummyTCPServer], None, None
+]:
     """
     Get a simplistic TCP server mocking Isabelle server behaviour.
 
