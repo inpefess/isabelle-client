@@ -44,7 +44,6 @@ toml = "*"
 furo = "*"
 pyroma = "*"
 pyupgrade = "*"
-bandit = "*"
 sphinx-gallery = "*"
 ruff = "*"
 python-lsp-server = {version = "*", extras = ["rope"]}
@@ -122,14 +121,12 @@ deps =
     toml
     pyenchant
     pyroma
-    bandit
     ruff
 commands =
     ruff check
     pylint isabelle_client
     mypy isabelle_client
     pyroma -n 10 .
-    bandit -r isabelle_client
     coverage run
     coverage xml
     coverage report
