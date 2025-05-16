@@ -169,7 +169,7 @@ show_missing = true
 line-length = 79
 
 [tool.ruff.lint]
-select = ["F", "E", "W", "D", "S"]
+select = ["F", "E", "W", "D", "S", "UP"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "pep257"
