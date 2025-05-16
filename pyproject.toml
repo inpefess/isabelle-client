@@ -27,6 +27,9 @@ include = ["isabelle_client/py.typed"]
 [tool.poetry.dependencies]
 python = ">= 3.9.1, < 3.14"
 
+[tool.poetry.group.dev]
+optional = true
+
 [tool.poetry.group.dev.dependencies]
 pylint = "*"
 mypy = "*"
@@ -45,7 +48,7 @@ pyroma = "*"
 pyupgrade = "*"
 bandit = "*"
 sphinx-gallery = "*"
-
+ruff = "*"
 
 [tool.poetry.group.test.dependencies]
 coverage = "*"
@@ -119,7 +122,9 @@ deps =
     pyenchant
     pyroma
     bandit
+    ruff
 commands =
+    ruff check
     pydocstyle isabelle_client
     pylint isabelle_client
     mypy isabelle_client
@@ -163,3 +168,10 @@ source = ["isabelle_client"]
 [tool.coverage.report]
 fail_under = 100
 show_missing = true
+
+[tool.ruff]
+exclude = ["examples", "doc/auto_examples"]
+line-length = 79
+
+[tool.ruff.lint]
+select = ["F", "E", "W"]
