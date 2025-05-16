@@ -23,6 +23,7 @@ import re
 from dataclasses import dataclass
 from logging import Logger
 from typing import Optional
+from collections.abc import AsyncGenerator
 
 
 @dataclass
@@ -110,7 +111,7 @@ async def get_final_message(
     reader: asyncio.StreamReader,
     final_message: set[str],
     logger: Optional[Logger] = None,
-) -> list[IsabelleResponse]:
+) -> AsyncGenerator[IsabelleResponse]:
     r"""
     Get responses from Isabelle server.
 
@@ -122,9 +123,11 @@ async def get_final_message(
     ...     "localhost", 9999
     ... )
     ...     test_writer.write(b"test_password\nhelp\n")
-    ...     result = await get_final_message(
+    ...     result = []
+    ...     async for message in get_final_message(
     ...         test_reader, {"OK"}, test_logger
-    ...     )
+    ...     ):
+    ...         result.append(message)
     ...     return result
     >>> for response in asyncio.run(awaiter()):
     ...     print(response)
@@ -138,9 +141,8 @@ async def get_final_message(
     :param reader: a ``StreamReader`` connected to Isabelle server
     :param final_message: a set of possible final message types
     :param logger: a logger where to send all server replies
-    :returns: the final response from Isabelle server
+    :yields: the final response from Isabelle server
     """
-    response_list = []
     response = IsabelleResponse("", "")
     password_ok_received = False
     while (
@@ -151,5 +153,4 @@ async def get_final_message(
         response = await get_response_from_isabelle(reader)
         if logger is not None:
             logger.info(str(response))
-        response_list.append(response)
-    return response_list
+        yield response

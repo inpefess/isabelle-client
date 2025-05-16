@@ -118,7 +118,11 @@ class IsabelleClient:
         await writer.drain()
         if self.logger is not None:
             self.logger.info(command)
-        response = await get_final_message(reader, final_message, self.logger)
+        response = []
+        async for message in get_final_message(
+            reader, final_message, self.logger
+        ):
+            response.append(message)
         return response
 
     def session_build(
