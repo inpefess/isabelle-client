@@ -170,7 +170,7 @@ show_missing = true
 line-length = 79
 
 [tool.ruff.lint]
-select = ["F", "E", "W", "D"]
+select = ["F", "E", "W", "D", "S"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "pep257"
@@ -178,4 +178,4 @@ convention = "pep257"
 [tool.ruff.lint.per-file-ignores]
 "doc/auto_examples/plot_example.py" = ["E402"]
 "examples/plot_example.py" = ["E402"]
-"examples/cicm2022_example.ipynb" = ["W605"]
+"examples/cicm2022_example.ipynb" = ["W605", "S311"]
