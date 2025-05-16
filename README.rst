@@ -56,9 +56,7 @@ example <https://isabelle-client.readthedocs.io/en/latest/auto_examples/plot_exa
 from documentation, run the
 `script <https://github.com/inpefess/isabelle-client/blob/master/examples/plot_example.py>`__,
 or use ``isabelle-client`` from a
-`notebook <https://github.com/inpefess/isabelle-client/blob/master/examples/example.ipynb>`__,
-e.g. with
-`Binder <https://mybinder.org/v2/gh/inpefess/isabelle-client/HEAD?labpath=isabelle-client-examples/example.ipynb>`__ (Binder might fail with 'Failed to create temporary user for ...' error which is `well known <https://mybinder-sre.readthedocs.io/en/latest/incident-reports/2018-02-20-jupyterlab-announcement.html>`__ and related neither to ``isabelle-client`` nor to the provided ``Dockerfile``. If that happens, try to run Docker as described in the section above).
+`notebook <https://github.com/inpefess/isabelle-client/blob/master/examples/example.ipynb>`__.
 
 More documentation
 ==================
