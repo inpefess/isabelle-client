@@ -37,7 +37,6 @@ pre-commit = "*"
 black = "*"
 sphinx-autodoc-typehints = "*"
 types-dataclasses = "*"
-pydocstyle = "*"
 tox = "*"
 pyenchant = "*"
 tbump = "*"
@@ -118,7 +117,6 @@ envlist = py39,py310,py311,py312,py313
 deps =
     pytest
     coverage
-    pydocstyle
     pylint
     mypy
     toml
@@ -128,7 +126,6 @@ deps =
     ruff
 commands =
     ruff check
-    pydocstyle isabelle_client
     pylint isabelle_client
     mypy isabelle_client
     pyroma -n 10 .

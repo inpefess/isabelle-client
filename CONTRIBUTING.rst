@@ -103,7 +103,6 @@ installed and ready to go.
    .. code:: bash
 
       ruff check
-      pydocstyle isabelle_client
       pylint isabelle_client
       mypy isabelle_client
 
