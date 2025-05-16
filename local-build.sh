@@ -9,7 +9,6 @@ cd ..
 ruff check
 pylint ${PACKAGE_NAME}
 mypy ${PACKAGE_NAME}
-find ${PACKAGE_NAME} -name "*.py" | xargs -I {} pyupgrade --py39-plus {}
 pyroma -n 10 .
 coverage run
 coverage report

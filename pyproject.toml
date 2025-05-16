@@ -43,7 +43,6 @@ tbump = "*"
 toml = "*"
 furo = "*"
 pyroma = "*"
-pyupgrade = "*"
 sphinx-gallery = "*"
 ruff = "*"
 python-lsp-server = {version = "*", extras = ["rope"]}
