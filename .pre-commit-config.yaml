@@ -16,3 +16,8 @@ repos:
         entry: ruff format
         language: system
         types: [python]
+    -   id: pydoclint
+        name:  pydoclint
+        entry: pydoclint
+        language: system
+        types: [python]

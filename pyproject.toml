@@ -46,6 +46,7 @@ python-lsp-server = {version = "*", extras = ["rope"]}
 pylsp-rope = "*"
 pylsp-mypy = "*"
 python-lsp-ruff = "*"
+pydoclint = "*"
 
 [tool.poetry.group.test.dependencies]
 coverage = "*"
@@ -84,9 +85,11 @@ deps =
     toml
     pyroma
     ruff
+    pydoclint
 commands =
     ruff format
     ruff check
+    pydoclint isabelle_client
     mypy isabelle_client
     pyroma -n 10 .
     coverage run
@@ -144,3 +147,9 @@ convention = "pep257"
 
 [tool.ruff.lint.pylint]
 max-statements = 10
+
+[tool.pydoclint]
+style = "sphinx"
+arg-type-hints-in-docstring = false
+check-return-types = false
+check-yield-types = false

@@ -36,6 +36,9 @@ class IsabelleConnector:
     r"""
     A connector to the Isabelle server, hiding server interactions.
 
+    :param working_directory: a directory for storing the server logs,
+            temporary theory files etc.
+
     >>> os.environ["PATH"] = "isabelle_client/resources:$PATH"
     >>> connector = IsabelleConnector()
     >>> print(connector.working_directory)
@@ -64,13 +67,7 @@ class IsabelleConnector:
             os.mkdir(new_working_directory)
         return new_working_directory
 
-    def __init__(self, working_directory: Optional[str] = None):
-        """
-        Start the server and create a client.
-
-        :param working_directory: a directory for storing the server logs,
-            temporary theory files etc.
-        """
+    def __init__(self, working_directory: Optional[str] = None):  # noqa: D107
         self._working_directory = self._get_or_create_working_directory(
             working_directory
         )

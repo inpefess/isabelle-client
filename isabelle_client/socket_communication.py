@@ -31,9 +31,17 @@ class IsabelleResponse:
     """
     A response from an Isabelle server.
 
-    :param response_type: an all capitals word like ``FINISHED`` or ``ERROR``
-    :param response_body: a JSON-formatted response
-    :param response_length: a length of JSON response
+    .. attribute :: response_type
+
+        an all capitals word like ``FINISHED`` or ``ERROR``
+
+    .. attribute :: response_body
+
+         a JSON-formatted response
+
+    .. attribute :: response_length
+
+        a length of JSON response
     """
 
     response_type: str

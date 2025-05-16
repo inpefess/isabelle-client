@@ -33,7 +33,7 @@ def tcp_servers() -> Generator[
     """
     Get a simplistic TCP server mocking Isabelle server behaviour.
 
-    :returns: an instance of a mock working server and a mock buggy server
+    :yields: an instance of a mock working server and a mock buggy server
     """
     with (
         ReusableDummyTCPServer(("localhost", 9999), DummyTCPHandler) as server,
