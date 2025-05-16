@@ -102,8 +102,8 @@ installed and ready to go.
 
    .. code:: bash
 
+      ruff format
       ruff check
-      pylint isabelle_client
       mypy isabelle_client
 
 1. The next step would be to run the test cases. `isabelle-client`

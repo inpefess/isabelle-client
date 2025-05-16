@@ -8,7 +8,6 @@ cat _build/coverage/python.txt
 cd ..
 ruff format
 ruff check
-pylint ${PACKAGE_NAME}
 mypy ${PACKAGE_NAME}
 pyroma -n 10 .
 coverage run

@@ -31,13 +31,11 @@ python = ">= 3.9.1, < 3.14"
 optional = true
 
 [tool.poetry.group.dev.dependencies]
-pylint = "*"
 mypy = "*"
 pre-commit = "*"
 sphinx-autodoc-typehints = "*"
 types-dataclasses = "*"
 tox = "*"
-pyenchant = "*"
 tbump = "*"
 toml = "*"
 furo = "*"
@@ -67,35 +65,6 @@ addopts = """--doctest-modules
     --junit-xml test-results/isabelle-client.xml"""
 testpaths = ["isabelle_client"]
 
-[tool.pylint.MASTER]
-load-plugins = [
-    "pylint.extensions.consider_ternary_expression",
-    "pylint.extensions.docparams",
-    "pylint.extensions.mccabe",
-    "pylint.extensions.set_membership",
-    "pylint.extensions.code_style",
-]
-
-[tool.pylint.parameter_documentation]
-accept-no-param-doc = false
-accept-no-raise-doc = false
-accept-no-return-doc = false
-accept-no-yields-doc = false
-default-docstring-type = "sphinx"
-
-[tool.pylint.format]
-max-line-length = 79
-
-[tool.pylint.design]
-max-statements = 10
-
-[tool.pylint.typecheck]
-generated-members = ["asyncio", "os"]
-
-[tool.pylint.spelling]
-spelling-dict = "en_GB"
-spelling-private-dict-file = "spelling.dict"
-
 [tool.mypy]
 show_error_codes = true
 incremental = true
@@ -111,16 +80,13 @@ envlist = py39,py310,py311,py312,py313
 deps =
     pytest
     coverage
-    pylint
     mypy
     toml
-    pyenchant
     pyroma
     ruff
 commands =
     ruff format
     ruff check
-    pylint isabelle_client
     mypy isabelle_client
     pyroma -n 10 .
     coverage run
