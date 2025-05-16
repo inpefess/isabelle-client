@@ -11,13 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# noqa: D205, D400
 """
 Socket Communication
 =====================
 
 A collection of functions for TCP communication.
-"""
+"""  # noqa: D205, D400
+
 import asyncio
 import re
 from dataclasses import dataclass
@@ -116,7 +116,7 @@ async def get_final_message(
 
     (until a message of specified 'final' type arrives)
 
-    >>> test_logger = getfixture("mock_logger")  # noqa: F821
+    >>> test_logger = getfixture("mock_logger")
     >>> async def awaiter():
     ...     test_reader, test_writer = await asyncio.open_connection(
     ...     "localhost", 9999

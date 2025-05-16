@@ -11,8 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# noqa: D205
 """Fixtures for unit tests live here."""
+
 import threading
 from collections.abc import Generator
 from unittest.mock import Mock
@@ -37,11 +37,12 @@ def tcp_servers() -> (
 
     :returns: an instance of a mock working server and a mock buggy server
     """
-    with ReusableDummyTCPServer(
-        ("localhost", 9999), DummyTCPHandler
-    ) as server, ReusableDummyTCPServer(
-        ("localhost", 9998), BuggyDummyTCPHandler
-    ) as buggy_server:
+    with (
+        ReusableDummyTCPServer(("localhost", 9999), DummyTCPHandler) as server,
+        ReusableDummyTCPServer(
+            ("localhost", 9998), BuggyDummyTCPHandler
+        ) as buggy_server,
+    ):
         thread = threading.Thread(target=server.serve_forever)
         thread.daemon = True
         thread.start()

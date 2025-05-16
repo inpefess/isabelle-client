@@ -11,13 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# noqa: D205, D400
 """
 Isabelle Client
 ================
 
 A Python client to `Isabelle <https://isabelle.in.tum.de>`__ server
-"""
+"""  # noqa: D205, D400
+
 import asyncio
 import json
 from enum import Enum
@@ -76,7 +76,7 @@ class IsabelleClient:
         r"""
         Execute a command and waits for results.
 
-        >>> logger = getfixture("mock_logger")  # noqa: F821
+        >>> logger = getfixture("mock_logger")
         >>> isabelle_client = IsabelleClient(
         ...     "localhost", 9999, "test_password", logger
         ... )
@@ -267,7 +267,7 @@ class IsabelleClient:
         """
         response = asyncio.run(
             self.execute_command(
-                f"echo {json. dumps(message)}", asynchronous=False
+                f"echo {json.dumps(message)}", asynchronous=False
             )
         )
         return response
