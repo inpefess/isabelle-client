@@ -11,18 +11,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# noqa: D205, D400
 """
 Socket Communication
 =====================
 
 A collection of functions for TCP communication.
-"""
+"""  # noqa: D205, D400
+
 import asyncio
 import re
 from dataclasses import dataclass
 from logging import Logger
 from typing import Optional
+from collections.abc import AsyncGenerator
 
 
 @dataclass
@@ -30,9 +31,17 @@ class IsabelleResponse:
     """
     A response from an Isabelle server.
 
-    :param response_type: an all capitals word like ``FINISHED`` or ``ERROR``
-    :param response_body: a JSON-formatted response
-    :param response_length: a length of JSON response
+    .. attribute :: response_type
+
+        an all capitals word like ``FINISHED`` or ``ERROR``
+
+    .. attribute :: response_body
+
+         a JSON-formatted response
+
+    .. attribute :: response_length
+
+        a length of JSON response
     """
 
     response_type: str
@@ -110,21 +119,23 @@ async def get_final_message(
     reader: asyncio.StreamReader,
     final_message: set[str],
     logger: Optional[Logger] = None,
-) -> list[IsabelleResponse]:
+) -> AsyncGenerator[IsabelleResponse]:
     r"""
     Get responses from Isabelle server.
 
     (until a message of specified 'final' type arrives)
 
-    >>> test_logger = getfixture("mock_logger")  # noqa: F821
+    >>> test_logger = getfixture("mock_logger")
     >>> async def awaiter():
     ...     test_reader, test_writer = await asyncio.open_connection(
     ...     "localhost", 9999
     ... )
     ...     test_writer.write(b"test_password\nhelp\n")
-    ...     result = await get_final_message(
+    ...     result = []
+    ...     async for message in get_final_message(
     ...         test_reader, {"OK"}, test_logger
-    ...     )
+    ...     ):
+    ...         result.append(message)
     ...     return result
     >>> for response in asyncio.run(awaiter()):
     ...     print(response)
@@ -138,9 +149,8 @@ async def get_final_message(
     :param reader: a ``StreamReader`` connected to Isabelle server
     :param final_message: a set of possible final message types
     :param logger: a logger where to send all server replies
-    :returns: the final response from Isabelle server
+    :yields: the final response from Isabelle server
     """
-    response_list = []
     response = IsabelleResponse("", "")
     password_ok_received = False
     while (
@@ -151,5 +161,4 @@ async def get_final_message(
         response = await get_response_from_isabelle(reader)
         if logger is not None:
             logger.info(str(response))
-        response_list.append(response)
-    return response_list
+        yield response

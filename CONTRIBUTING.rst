@@ -85,6 +85,7 @@ installed and ready to go.
    .. code:: bash
 
       poetry install --all-groups
+      source .venv/bin/activate
       # recommended but not necessary
       pre-commit install
 
@@ -101,9 +102,9 @@ installed and ready to go.
 
    .. code:: bash
 
-      pydocstyle isabelle_client
-      flake8 isabelle_client
-      pylint isabelle_client
+      ruff format
+      ruff check
+      pydoclint isabelle_client
       mypy isabelle_client
 
 1. The next step would be to run the test cases. `isabelle-client`

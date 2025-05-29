@@ -11,13 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# noqa: D205, D400
 """
 Isabelle Client
 ================
 
 A Python client to `Isabelle <https://isabelle.in.tum.de>`__ server
-"""
+"""  # noqa: D205, D400
+
 import asyncio
 import json
 from enum import Enum
@@ -45,24 +45,23 @@ class AsynchronousResultType(Enum):
 
 
 class IsabelleClient:
-    """A TCP client for an Isabelle server."""
+    """
+    A TCP client for an Isabelle server.
 
-    def __init__(
+    :param address: IP or a domain name
+    :param port: a port number on which the server listens
+    :param password: a password to access the server through TCP
+    :param logger: a Python logger to store all requests to
+        and replies from the server
+    """
+
+    def __init__(  # noqa: D107
         self,
         address: str,
         port: int,
         password: str,
         logger: Optional[Logger] = None,
     ):
-        """
-        Create a client to Isabelle server.
-
-        :param address: IP or a domain name
-        :param port: a port number on which the server listens
-        :param password: a password to access the server through TCP
-        :param logger: a Python logger to store all requests to
-            and replies from the server
-        """
         self.address = address
         self.port = port
         self.password = password
@@ -76,7 +75,7 @@ class IsabelleClient:
         r"""
         Execute a command and waits for results.
 
-        >>> logger = getfixture("mock_logger")  # noqa: F821
+        >>> logger = getfixture("mock_logger")
         >>> isabelle_client = IsabelleClient(
         ...     "localhost", 9999, "test_password", logger
         ... )
@@ -118,7 +117,11 @@ class IsabelleClient:
         await writer.drain()
         if self.logger is not None:
             self.logger.info(command)
-        response = await get_final_message(reader, final_message, self.logger)
+        response = []
+        async for message in get_final_message(
+            reader, final_message, self.logger
+        ):
+            response.append(message)
         return response
 
     def session_build(
@@ -128,7 +131,7 @@ class IsabelleClient:
         verbose: bool = False,
         **kwargs,
     ) -> list[IsabelleResponse]:
-        """
+        r"""
         Build a session from ROOT file.
 
         >>> isabelle_client = IsabelleClient(
@@ -143,7 +146,7 @@ class IsabelleClient:
         :param session: a name of the session from ROOT file
         :param dirs: where to look for ROOT files
         :param verbose: set to ``True`` for extra verbosity
-        :param kwargs: additional arguments
+        :param \**kwargs: additional arguments
             (see Isabelle System manual for details)
         :returns: an Isabelle response
         """
@@ -160,7 +163,7 @@ class IsabelleClient:
         return response
 
     def session_start(self, session: str = "Main", **kwargs) -> str:
-        """
+        r"""
         Start a new session.
 
         >>> isabelle_client = IsabelleClient("localhost", 9998, "test")
@@ -173,7 +176,7 @@ class IsabelleClient:
         167dd6d8-1eeb-4315-8022-c8c527d9bd87
 
         :param session: a name of a session to start
-        :param kwargs: additional arguments
+        :param \**kwargs: additional arguments
             (see Isabelle System manual for details)
         :returns: a ``session_id``
         :raises ValueError: if the server response is malformed
@@ -217,7 +220,7 @@ class IsabelleClient:
         master_dir: Optional[str] = None,
         **kwargs,
     ) -> list[IsabelleResponse]:
-        """
+        r"""
         Run the engine on theory files.
 
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
@@ -232,7 +235,7 @@ class IsabelleClient:
             created and then destroyed after trying to process theories
         :param master_dir: where to look for theory files; if ``None``, uses a
             temp folder of the session
-        :param kwargs: additional arguments
+        :param \**kwargs: additional arguments
             (see Isabelle System manual for details)
         :returns: Isabelle server response
         """
@@ -267,7 +270,7 @@ class IsabelleClient:
         """
         response = asyncio.run(
             self.execute_command(
-                f"echo {json. dumps(message)}", asynchronous=False
+                f"echo {json.dumps(message)}", asynchronous=False
             )
         )
         return response
