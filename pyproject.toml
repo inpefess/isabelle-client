@@ -46,6 +46,7 @@ pylsp-rope = "*"
 python-lsp-ruff = "*"
 pydoclint = "*"
 pyright = "*"
+debugpy = "*"
 
 [tool.poetry.group.test.dependencies]
 coverage = "*"
