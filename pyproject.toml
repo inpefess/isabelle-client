@@ -110,13 +110,7 @@ message_template = "Bump to {new_version}"
 tag_template = "v{new_version}"
 
 [[tool.tbump.file]]
-src = "isabelle_client/__init__.py"
-
-[[tool.tbump.file]]
 src = "pyproject.toml"
-
-[[tool.tbump.file]]
-src = "doc/conf.py"
 
 [tool.coverage.run]
 command_line = "-m pytest"
