@@ -50,6 +50,13 @@ jedi-language-server = "*"
 coverage = "*"
 pytest = "*"
 
+[tool.poetry.group.doc]
+optional = true
+
+[tool.poetry.group.doc.dependencies]
+furo = "*"
+sphinx-autodoc-typehints = "*"
+
 [tool.isort]
 profile = "black"
 src_paths = ["isabelle_client"]
