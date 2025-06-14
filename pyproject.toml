@@ -41,12 +41,10 @@ furo = "*"
 pyroma = "*"
 sphinx-gallery = "*"
 ruff = "*"
-python-lsp-server = {version = "*", extras = ["rope"]}
-pylsp-rope = "*"
-python-lsp-ruff = "*"
 pydoclint = "*"
 pyright = "*"
 debugpy = "*"
+jedi-language-server = "*"
 
 [tool.poetry.group.test.dependencies]
 coverage = "*"
