@@ -25,7 +25,7 @@
    :hidden:
    :caption: Tutorials
 
-   auto_examples/index.rst
+   example
    
 .. toctree::
    :hidden:
