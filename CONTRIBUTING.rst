@@ -84,7 +84,7 @@ installed and ready to go.
 
    .. code:: bash
 
-      poetry install --all-groups
+      poetry install --all-extras
       source .venv/bin/activate
       # recommended but not necessary
       pre-commit install

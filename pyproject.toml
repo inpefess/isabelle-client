@@ -4,7 +4,6 @@ version = "0.5.6"
 description = "A client to Isabelle proof assistant server"
 authors = [{name = "Boris Shminke", email = "<boris@shminke.com"}]
 license = "Apache-2.0"
-repository = "https://github.com/inpefess/isabelle-client"
 readme = "README.rst"
 classifiers=[
 	"Programming Language :: Python :: 3.13",
@@ -23,33 +22,19 @@ classifiers=[
 ]
 keywords = ["TCP client", "Isabelle proof assistant", "interactive theorem prover"]
 include = ["isabelle_client/py.typed"]
+requires-python = ">= 3.9.1, < 3.14"
 
-[tool.poetry.dependencies]
-python = ">= 3.9.1, < 3.14"
-
-[tool.poetry.group.dev]
-optional = true
-
-[tool.poetry.group.dev.dependencies]
-pre-commit = "*"
-types-dataclasses = "*"
-tox = "*"
-tbump = "*"
-toml = "*"
-pyroma = "*"
-ruff = "*"
-pydoclint = "*"
-pyright = "*"
-debugpy = "*"
-jedi-language-server = "*"
-isort = "*"
-
-[tool.poetry.group.test.dependencies]
-coverage = "*"
-pytest = "*"
+[project.urls]
+Homepage = "https://github.com/inpefess/isabelle-client"
+Repository = "https://github.com/inpefess/isabelle-client.git"
+Issues = "https://github.com/inpefess/isabelle-client/issues"
 
 [project.optional-dependencies]
 doc = ["furo", "sphinx-autodoc-typehints"]
+test = ["coverage", "pytest"]
+dev = ["pre-commit", "types-dataclasses", "tox", "tbump", "toml", "pyroma",
+       "ruff", "pydoclint", "pyright", "debugpy", "jedi-language-server",
+       "isort"]
 
 [tool.isort]
 profile = "black"
