@@ -1,8 +1,8 @@
-[tool.poetry]
+[project]
 name = "isabelle-client"
 version = "0.5.6"
 description = "A client to Isabelle proof assistant server"
-authors = ["Boris Shminke <boris@shminke.com>"]
+authors = [{name = "Boris Shminke", email = "<boris@shminke.com"}]
 license = "Apache-2.0"
 repository = "https://github.com/inpefess/isabelle-client"
 readme = "README.rst"
@@ -48,12 +48,8 @@ isort = "*"
 coverage = "*"
 pytest = "*"
 
-[tool.poetry.group.doc]
-optional = true
-
-[tool.poetry.group.doc.dependencies]
-furo = "*"
-sphinx-autodoc-typehints = "*"
+[project.optional-dependencies]
+doc = ["furo", "sphinx-autodoc-typehints"]
 
 [tool.isort]
 profile = "black"
