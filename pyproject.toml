@@ -32,12 +32,10 @@ optional = true
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "*"
-sphinx-autodoc-typehints = "*"
 types-dataclasses = "*"
 tox = "*"
 tbump = "*"
 toml = "*"
-furo = "*"
 pyroma = "*"
 ruff = "*"
 pydoclint = "*"
