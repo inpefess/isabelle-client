@@ -67,7 +67,7 @@ class IsabelleConnector:
             os.mkdir(new_working_directory)
         return new_working_directory
 
-    def __init__(self, working_directory: Optional[str] = None):  # noqa: D107
+    def __init__(self, working_directory: Optional[str] = None) -> None:  # noqa: D107
         self._working_directory = self._get_or_create_working_directory(
             working_directory
         )

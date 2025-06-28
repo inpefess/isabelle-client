@@ -108,7 +108,7 @@ show_missing = true
 line-length = 79
 
 [tool.ruff.lint]
-select = ["F", "E", "W", "D", "S", "UP", "PL"]
+select = ["F", "E", "W", "D", "S", "UP", "PL", "ERA", "YTT", "ANN"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "pep257"
@@ -124,3 +124,6 @@ style = "sphinx"
 arg-type-hints-in-docstring = false
 check-return-types = false
 check-yield-types = false
+
+[tool.ruff.lint.flake8-annotations]
+allow-star-arg-any = true
