@@ -1,2 +1,0 @@
-Isabelle client usage examples
-==============================

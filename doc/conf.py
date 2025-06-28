@@ -14,24 +14,14 @@
 # limitations under the License.
 """Sphinx doc config."""
 
-import os
-import sys
+from importlib.metadata import distribution
+import isabelle_client
 
-sys.path.insert(0, os.path.abspath(".."))
-project = "isabelle-client"
-version = "0.5.6"
-copyright = "2021-2025, Boris Shminke"
-author = "Boris Shminke"
-extensions = [
-    "sphinx.ext.autodoc",
-    "sphinx.ext.coverage",
-    # uncomment to rebuild examples
-    # "sphinx_gallery.gen_gallery",
-]
+distribution_metadata = distribution(isabelle_client.__name__).metadata
+
+project = distribution_metadata["Name"]
+version = distribution_metadata["Version"]
+author = distribution_metadata["Author"]
+copyright = f"2021-2025, {author}"
+extensions = ["sphinx.ext.autodoc", "sphinx.ext.coverage"]
 html_theme = "furo"
-sphinx_gallery_conf = {
-    "download_all_examples": False,
-    "run_stale_examples": True,
-    "image_scrapers": (),
-    "reset_modules": (),
-}

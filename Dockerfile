@@ -1,4 +1,4 @@
-FROM makarius/isabelle:Isabelle2024_X11_Latex
+FROM makarius/isabelle:Isabelle2025_X11_Latex
 ARG NB_USER=jovyan
 ARG NB_UID=1000
 ENV USER ${NB_USER}
@@ -21,4 +21,4 @@ RUN chown -R ${NB_USER}:${NB_USER} ${ISABELLE_BIN}
 USER ${NB_USER}
 WORKDIR ${HOME}
 RUN python3 -m pip install --no-cache-dir notebook jupyterlab isabelle-client
-ENTRYPOINT []
+ENTRYPOINT ["jupyter", "lab", "--ip", "0.0.0.0", "--NotebookApp.token=''"]

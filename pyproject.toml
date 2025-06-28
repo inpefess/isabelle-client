@@ -1,10 +1,9 @@
-[tool.poetry]
+[project]
 name = "isabelle-client"
-version = "0.5.6"
+version = "0.5.7"
 description = "A client to Isabelle proof assistant server"
-authors = ["Boris Shminke <boris@shminke.com>"]
+authors = [{name = "Boris Shminke", email = "<boris@shminke.com"}]
 license = "Apache-2.0"
-repository = "https://github.com/inpefess/isabelle-client"
 readme = "README.rst"
 classifiers=[
 	"Programming Language :: Python :: 3.13",
@@ -23,34 +22,19 @@ classifiers=[
 ]
 keywords = ["TCP client", "Isabelle proof assistant", "interactive theorem prover"]
 include = ["isabelle_client/py.typed"]
+requires-python = ">= 3.9.1, < 3.14"
 
-[tool.poetry.dependencies]
-python = ">= 3.9.1, < 3.14"
+[project.urls]
+Homepage = "https://github.com/inpefess/isabelle-client"
+Repository = "https://github.com/inpefess/isabelle-client.git"
+Issues = "https://github.com/inpefess/isabelle-client/issues"
 
-[tool.poetry.group.dev]
-optional = true
-
-[tool.poetry.group.dev.dependencies]
-mypy = "*"
-pre-commit = "*"
-sphinx-autodoc-typehints = "*"
-types-dataclasses = "*"
-tox = "*"
-tbump = "*"
-toml = "*"
-furo = "*"
-pyroma = "*"
-sphinx-gallery = "*"
-ruff = "*"
-python-lsp-server = {version = "*", extras = ["rope"]}
-pylsp-rope = "*"
-pylsp-mypy = "*"
-python-lsp-ruff = "*"
-pydoclint = "*"
-
-[tool.poetry.group.test.dependencies]
-coverage = "*"
-pytest = "*"
+[project.optional-dependencies]
+doc = ["furo", "sphinx-autodoc-typehints"]
+test = ["coverage", "pytest"]
+dev = ["pre-commit", "types-dataclasses", "tox", "tbump", "toml", "pyroma",
+       "ruff", "pydoclint", "pyright", "debugpy", "jedi-language-server",
+       "isort"]
 
 [tool.isort]
 profile = "black"
@@ -66,11 +50,6 @@ addopts = """--doctest-modules
     --junit-xml test-results/isabelle-client.xml"""
 testpaths = ["isabelle_client"]
 
-[tool.mypy]
-show_error_codes = true
-incremental = true
-disable_error_code = "no-redef"
-
 [tool.tox]
 legacy_tox_ini = """
 [tox]
@@ -81,7 +60,7 @@ envlist = py39,py310,py311,py312,py313
 deps =
     pytest
     coverage
-    mypy
+    pyright
     toml
     pyroma
     ruff
@@ -90,7 +69,7 @@ commands =
     ruff format
     ruff check
     pydoclint isabelle_client
-    mypy isabelle_client
+    pyright
     pyroma -n 10 .
     coverage run
     coverage xml
@@ -101,7 +80,7 @@ commands =
 github_url = "https://github.com/inpfess/isabelle-client/"
 
 [tool.tbump.version]
-current = "0.5.6"
+current = "0.5.7"
 regex = '''
   (?P<major>\d+)
   \.
@@ -115,13 +94,7 @@ message_template = "Bump to {new_version}"
 tag_template = "v{new_version}"
 
 [[tool.tbump.file]]
-src = "isabelle_client/__init__.py"
-
-[[tool.tbump.file]]
 src = "pyproject.toml"
-
-[[tool.tbump.file]]
-src = "doc/conf.py"
 
 [tool.coverage.run]
 command_line = "-m pytest"

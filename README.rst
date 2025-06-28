@@ -30,7 +30,10 @@ Docker contanier:
 .. code:: sh
 
    docker build -t isabelle-client https://github.com/inpefess/isabelle-client.git
-   docker run -it --rm -p 8888:8888 isabelle-client jupyter-lab --ip=0.0.0.0 --port=8888
+   docker run -d --rm -p 8888:8888 --name isabelle-client isabelle-client
+
+And navigate to `example page <http://localhost:8888/lab/tree/isabelle-client-examples/example.ipynb>`__
+in your browser.
 
 How to use
 ==========

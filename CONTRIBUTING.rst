@@ -84,7 +84,7 @@ installed and ready to go.
 
    .. code:: bash
 
-      poetry install --all-groups
+      poetry install --all-extras
       source .venv/bin/activate
       # recommended but not necessary
       pre-commit install
@@ -105,7 +105,7 @@ installed and ready to go.
       ruff format
       ruff check
       pydoclint isabelle_client
-      mypy isabelle_client
+      pyright isabelle_client
 
 1. The next step would be to run the test cases. `isabelle-client`
    uses pytest and all the existing tests are `doctests
