@@ -161,7 +161,7 @@ def start_isabelle_server_win32(
 class BuggyDummyTCPHandler(socketserver.BaseRequestHandler):
     """A dummy handler to mock bugs in Isabelle server response."""
 
-    def handle(self):
+    def handle(self) -> None:
         """Return something weird."""
         request = self.request.recv(4096).decode("utf-8").split("\n")[1]
         if request == IsabelleServerCommands.HELP.value:
@@ -177,7 +177,7 @@ class BuggyDummyTCPHandler(socketserver.BaseRequestHandler):
 class DummyTCPHandler(socketserver.BaseRequestHandler):
     """A dummy handler to mock Isabelle server."""
 
-    def _mock_command_execution(self, command: str, arguments: str):
+    def _mock_command_execution(self, command: str, arguments: str) -> None:
         filename = command
         if command == IsabelleServerCommands.USE_THEORIES.value:
             if (theory_name := json.loads(arguments)["theories"][0]) != "Mock":
@@ -192,7 +192,7 @@ class DummyTCPHandler(socketserver.BaseRequestHandler):
         ) as mock_response_file:
             self.request.sendall(mock_response_file.read().encode())
 
-    def handle(self):
+    def handle(self) -> None:
         """Return something similar to what Isabelle server does."""
         request = self.request.recv(4096).decode("utf-8").split("\n")[1]
         command = request.split(" ")[0]

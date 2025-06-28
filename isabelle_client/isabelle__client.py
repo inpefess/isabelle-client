@@ -61,7 +61,7 @@ class IsabelleClient:
         port: int,
         password: str,
         logger: Optional[Logger] = None,
-    ):
+    ) -> None:
         self.address = address
         self.port = port
         self.password = password
@@ -129,7 +129,7 @@ class IsabelleClient:
         session: str,
         dirs: Optional[list[str]] = None,
         verbose: bool = False,
-        **kwargs,
+        **kwargs: Any,
     ) -> list[IsabelleResponse]:
         r"""
         Build a session from ROOT file.
@@ -162,7 +162,7 @@ class IsabelleClient:
         )
         return response
 
-    def session_start(self, session: str = "Main", **kwargs) -> str:
+    def session_start(self, session: str = "Main", **kwargs: Any) -> str:
         r"""
         Start a new session.
 
@@ -218,7 +218,7 @@ class IsabelleClient:
         theories: list[str],
         session_id: Optional[str] = None,
         master_dir: Optional[str] = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> list[IsabelleResponse]:
         r"""
         Run the engine on theory files.
@@ -256,7 +256,7 @@ class IsabelleClient:
             self.session_stop(new_session_id)
         return response
 
-    def echo(self, message: Any) -> list[IsabelleResponse]:
+    def echo(self, message: str | list | dict) -> list[IsabelleResponse]:
         """
         Ask a server to echo a message.
 
