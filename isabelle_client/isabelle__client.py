@@ -234,7 +234,7 @@ class IsabelleClient:
             self.session_stop(new_session_id)
         return response
 
-    def echo(self, message: str | list | dict) -> list[IsabelleResponse]:
+    def echo(self, message: Union[str, list, dict]) -> list[IsabelleResponse]:
         """
         Ask a server to echo a message.
 
