@@ -22,6 +22,7 @@ import json
 from typing import Optional
 
 from isabelle_client.isabelle_connector import IsabelleConnector
+from isabelle_client.socket_communication import IsabelleResponseType
 
 
 class SledgehammerConnector(IsabelleConnector):
@@ -54,7 +55,10 @@ class SledgehammerConnector(IsabelleConnector):
         )
         messages = []
         for sledgehammer_response in sledgehammer_responses:
-            if sledgehammer_response.response_type == "FINISHED":
+            if (
+                sledgehammer_response.response_type
+                == IsabelleResponseType.FINISHED
+            ):
                 json_response = json.loads(sledgehammer_response.response_body)
                 messages = [
                     node["message"].split(": ")

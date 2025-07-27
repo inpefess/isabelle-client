@@ -26,6 +26,7 @@ from typing import Optional
 from uuid import uuid4
 
 from isabelle_client.utils import get_isabelle_client, start_isabelle_server
+from isabelle_client.socket_communication import IsabelleResponseType
 
 
 class IsabelleTheoryError(RuntimeError):
@@ -127,7 +128,10 @@ class IsabelleConnector:
             theories=[theory_name], master_dir=self._working_directory
         )
         for isabelle_response in validation_result:
-            if isabelle_response.response_type == "FINISHED":
+            if (
+                isabelle_response.response_type
+                == IsabelleResponseType.FINISHED
+            ):
                 json_response = json.loads(isabelle_response.response_body)
                 if errors := json_response["errors"]:
                     raise IsabelleTheoryError(errors[0]["message"])

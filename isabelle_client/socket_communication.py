@@ -24,6 +24,28 @@ from dataclasses import dataclass
 from logging import Logger
 from typing import Optional
 from collections.abc import AsyncGenerator
+from enum import Enum
+
+
+class IsabelleResponseType(Enum):
+    """Isabelle server response type."""
+
+    OK = "OK"
+    FINISHED = "FINISHED"
+    NOTE = "NOTE"
+    FAILED = "FAILED"
+    ERROR = "ERROR"
+
+
+ASYNCHRONOUS_FINAL_MESSAGES = {
+    IsabelleResponseType.FAILED,
+    IsabelleResponseType.FINISHED,
+    IsabelleResponseType.ERROR,
+}
+SYNCHRONOUS_FINAL_MESSAGES = {
+    IsabelleResponseType.OK,
+    IsabelleResponseType.ERROR,
+}
 
 
 @dataclass
@@ -44,7 +66,7 @@ class IsabelleResponse:
         a length of JSON response
     """
 
-    response_type: str
+    response_type: IsabelleResponseType
     response_body: str
     response_length: Optional[int] = None
 
@@ -60,7 +82,7 @@ class IsabelleResponse:
                 if self.response_length is not None
                 else ""
             )
-            + self.response_type
+            + self.response_type.value
             + (" " if self.response_body != "" else "")
             + self.response_body
         )
@@ -112,12 +134,14 @@ async def get_response_from_isabelle(
         response = (await reader.readexactly(length)).decode("utf-8")
     if (match := re.compile("(\\w+) ?(.*)").match(response)) is None:
         raise ValueError(f"Unexpected response from Isabelle: {response}")
-    return IsabelleResponse(match.group(1), match.group(2), length)
+    return IsabelleResponse(
+        IsabelleResponseType(match.group(1)), match.group(2), length
+    )
 
 
 async def get_final_message(
     reader: asyncio.StreamReader,
-    final_message: set[str],
+    final_message: set[IsabelleResponseType],
     logger: Optional[Logger] = None,
 ) -> AsyncGenerator[IsabelleResponse]:
     r"""
@@ -133,7 +157,7 @@ async def get_final_message(
     ...     test_writer.write(b"test_password\nhelp\n")
     ...     result = []
     ...     async for message in get_final_message(
-    ...         test_reader, {"OK"}, test_logger
+    ...         test_reader, {IsabelleResponseType.OK}, test_logger
     ...     ):
     ...         result.append(message)
     ...     return result
@@ -151,12 +175,12 @@ async def get_final_message(
     :param logger: a logger where to send all server replies
     :yields: the final response from Isabelle server
     """
-    response = IsabelleResponse("", "")
+    response = IsabelleResponse(IsabelleResponseType.NOTE, "")
     password_ok_received = False
     while (
         response.response_type not in final_message or not password_ok_received
     ):
-        if response.response_type == "OK":
+        if response.response_type == IsabelleResponseType.OK:
             password_ok_received = True
         response = await get_response_from_isabelle(reader)
         if logger is not None:
