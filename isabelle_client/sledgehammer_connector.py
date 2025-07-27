@@ -44,7 +44,7 @@ class SledgehammerConnector(IsabelleConnector):
         Verify a lemma statement using the Isabelle server.
 
         :param lemma_text: (hopefully) syntactically valid Isabelle lemma
-        :param theory: (for tests) fixed named for theory file
+        :param theory: (for tests) fixed name for theory file
         :returns: parsed Sledgehammer response
         """
         theory_name = self._write_temp_theory_file(
