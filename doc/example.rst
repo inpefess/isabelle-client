@@ -75,10 +75,10 @@ Isabelle client supports all the commands implemented in Isabelle server
 
 ::
 
-    [IsabelleResponse(response_type='OK',
+    [IsabelleResponse(response_type=<IsabelleResponseType.OK: 'OK'>,
                       response_body='{"isabelle_id":"4b875a4c83b0","isabelle_name":"Isabelle2025"}',
                       response_length=None),
-     IsabelleResponse(response_type='OK',
+     IsabelleResponse(response_type=<IsabelleResponseType.OK: 'OK'>,
                       response_body='["cancel","echo","help","purge_theories","session_build","session_start","session_stop","shutdown","use_theories"]',
                       response_length=118)]
 
@@ -105,31 +105,31 @@ We can send this theory file to the server and get a response
 
 ::
 
-    [IsabelleResponse(response_type='OK',
+    [IsabelleResponse(response_type=<IsabelleResponseType.OK: 'OK'>,
                       response_body='{"isabelle_id":"4b875a4c83b0","isabelle_name":"Isabelle2025"}',
                       response_length=None),
-     IsabelleResponse(response_type='OK',
-                      response_body='{"task":"dc1a5993-6c23-4e72-8e62-1c076b192bae"}',
+     IsabelleResponse(response_type=<IsabelleResponseType.OK: 'OK'>,
+                      response_body='{"task":"3ed0d564-ecb3-4241-8eb1-c40131bad8a4"}',
                       response_length=None),
-     IsabelleResponse(response_type='NOTE',
-                      response_body='{"percentage":85,"task":"dc1a5993-6c23-4e72-8e62-1c076b192bae","message":"theory '
+     IsabelleResponse(response_type=<IsabelleResponseType.NOTE: 'NOTE'>,
+                      response_body='{"percentage":71,"task":"3ed0d564-ecb3-4241-8eb1-c40131bad8a4","message":"theory '
                                     'Draft.Example '
-                                    '85%","kind":"writeln","session":"","theory":"Draft.Example"}',
+                                    '71%","kind":"writeln","session":"","theory":"Draft.Example"}',
                       response_length=161),
-     IsabelleResponse(response_type='NOTE',
-                      response_body='{"percentage":99,"task":"dc1a5993-6c23-4e72-8e62-1c076b192bae","message":"theory '
+     IsabelleResponse(response_type=<IsabelleResponseType.NOTE: 'NOTE'>,
+                      response_body='{"percentage":99,"task":"3ed0d564-ecb3-4241-8eb1-c40131bad8a4","message":"theory '
                                     'Draft.Example '
                                     '99%","kind":"writeln","session":"","theory":"Draft.Example"}',
                       response_length=161),
-     IsabelleResponse(response_type='NOTE',
-                      response_body='{"percentage":100,"task":"dc1a5993-6c23-4e72-8e62-1c076b192bae","message":"theory '
+     IsabelleResponse(response_type=<IsabelleResponseType.NOTE: 'NOTE'>,
+                      response_body='{"percentage":100,"task":"3ed0d564-ecb3-4241-8eb1-c40131bad8a4","message":"theory '
                                     'Draft.Example '
                                     '100%","kind":"writeln","session":"","theory":"Draft.Example"}',
                       response_length=163),
-     IsabelleResponse(response_type='FINISHED',
+     IsabelleResponse(response_type=<IsabelleResponseType.FINISHED: 'FINISHED'>,
                       response_body='{"ok":true,"errors":[],"nodes":[{"messages":[{"kind":"writeln","message":"theorem '
                                     '\\\\<forall>x. \\\\<exists>y. x = '
-                                    'y","pos":{"line":5,"offset":59,"end_offset":61,"file":"../examples/Example.thy"}}],"exports":[],"status":{"percentage":100,"unprocessed":0,"running":0,"finished":7,"failed":0,"total":7,"consolidated":true,"canceled":false,"ok":true,"warned":0},"theory_name":"Draft.Example","node_name":"../examples/Example.thy"}],"task":"dc1a5993-6c23-4e72-8e62-1c076b192bae"}',
+                                    'y","pos":{"line":5,"offset":59,"end_offset":61,"file":"../examples/Example.thy"}}],"exports":[],"status":{"percentage":100,"unprocessed":0,"running":0,"finished":7,"failed":0,"total":7,"consolidated":true,"canceled":false,"ok":true,"warned":0},"theory_name":"Draft.Example","node_name":"../examples/Example.thy"}],"task":"3ed0d564-ecb3-4241-8eb1-c40131bad8a4"}',
                       response_length=482)]
 
 or we can build a session document using ``./ROOT`` file
@@ -184,7 +184,7 @@ and ``./document/root.tex`` file
                    'session': 'examples',
                    'timeout': False,
                    'timing': {'cpu': 0, 'elapsed': 0, 'gc': 0}}],
-     'task': '2a68488b-be45-4348-bf1e-8fd721f8f5de'}
+     'task': '9aa6e7c3-79a0-401c-8292-6f870df5a02b'}
 
 One can also issue a free-form command, e.g.
 
@@ -196,10 +196,12 @@ One can also issue a free-form command, e.g.
 
 ::
 
-    [IsabelleResponse(response_type='OK',
+    [IsabelleResponse(response_type=<IsabelleResponseType.OK: 'OK'>,
                       response_body='{"isabelle_id":"4b875a4c83b0","isabelle_name":"Isabelle2025"}',
                       response_length=None),
-     IsabelleResponse(response_type='OK', response_body='42', response_length=None)]
+     IsabelleResponse(response_type=<IsabelleResponseType.OK: 'OK'>,
+                      response_body='42',
+                      response_length=None)]
 
 
 Finally, we can shut the server down.
@@ -210,7 +212,9 @@ Finally, we can shut the server down.
 
 ::
 
-    [IsabelleResponse(response_type='OK',
+    [IsabelleResponse(response_type=<IsabelleResponseType.OK: 'OK'>,
                       response_body='{"isabelle_id":"4b875a4c83b0","isabelle_name":"Isabelle2025"}',
                       response_length=None),
-     IsabelleResponse(response_type='OK', response_body='', response_length=None)]
+     IsabelleResponse(response_type=<IsabelleResponseType.OK: 'OK'>,
+                      response_body='',
+                      response_length=None)]
