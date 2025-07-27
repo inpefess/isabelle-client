@@ -54,10 +54,10 @@ How to use
    isabelle.shutdown()
 
 
-For more details, follow the `usage
-example <https://isabelle-client.readthedocs.io/en/latest/auto_examples/plot_example.html#basic-usage-example>`__
-from documentation or use ``isabelle-client`` from a
-`notebook <https://github.com/inpefess/isabelle-client/blob/master/examples/example.ipynb>`__.
+For more details, follow the `usage example
+<https://isabelle-client.readthedocs.io/en/latest/example.html>`__
+from documentation or a `notebook
+<https://github.com/inpefess/isabelle-client/blob/master/examples/example.ipynb>`__.
 
 More documentation
 ==================
@@ -83,6 +83,21 @@ parts of the `Proving for Fun
 There are also clients to Isabelle server in other programming
 languages, e.g. `this one in Rust
 <https://lib.rs/crates/isabelle-client>`__.
+
+Projects using the client
+=========================
+
+`isabelle-client` helped to build some cool LLM stuff (in reversed
+chronological order):
+
+* `StepProof: Step-by-step verification of natural language
+  mathematical proofs (Hu et al.)
+  <https://doi.org/10.48550/arXiv.2506.10558>`__ with `code
+  <https://github.com/r1nIGa/STEP-PROOF>`__
+* `Verification and Refinement of Natural Language Explanations
+  through LLM-Symbolic Theorem Proving (Quan et al., EMNLP 2024)
+  <https://doi.org/10.18653/v1/2024.emnlp-main.172>`__ with `code
+  <https://github.com/neuro-symbolic-ai/explanation_refinement>`__
 
 How to cite
 ===========
