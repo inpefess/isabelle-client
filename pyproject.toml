@@ -33,8 +33,8 @@ Issues = "https://github.com/inpefess/isabelle-client/issues"
 doc = ["furo", "sphinx-autodoc-typehints"]
 test = ["coverage", "pytest"]
 dev = ["pre-commit", "types-dataclasses", "tox", "tbump", "toml", "pyroma",
-       "ruff", "pydoclint", "pyright", "debugpy", "jedi-language-server",
-       "isort"]
+       "ruff", "pydoclint", "debugpy", "jedi-language-server", "isort",
+       "pyrefly"]
 
 [tool.isort]
 profile = "black"
@@ -60,7 +60,7 @@ envlist = py39,py310,py311,py312,py313
 deps =
     pytest
     coverage
-    pyright
+    pyrefly
     toml
     pyroma
     ruff
@@ -69,7 +69,7 @@ commands =
     ruff format
     ruff check
     pydoclint isabelle_client
-    pyright
+    pyrefly check isabelle_client
     pyroma -n 10 .
     coverage run
     coverage xml

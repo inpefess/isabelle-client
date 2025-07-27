@@ -9,7 +9,7 @@ cd ..
 ruff format
 ruff check
 pydoclint ${PACKAGE_NAME}
-pyright
+pyrefly check ${PACKAGE_NAME}
 pyroma -n 10 .
 coverage run
 coverage report
