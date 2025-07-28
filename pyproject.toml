@@ -1,6 +1,6 @@
 [project]
 name = "isabelle-client"
-version = "0.5.7"
+version = "0.5.8"
 description = "A client to Isabelle proof assistant server"
 authors = [{name = "Boris Shminke", email = "<boris@shminke.com"}]
 license = "Apache-2.0"
@@ -33,8 +33,8 @@ Issues = "https://github.com/inpefess/isabelle-client/issues"
 doc = ["furo", "sphinx-autodoc-typehints"]
 test = ["coverage", "pytest"]
 dev = ["pre-commit", "types-dataclasses", "tox", "tbump", "toml", "pyroma",
-       "ruff", "pydoclint", "pyright", "debugpy", "jedi-language-server",
-       "isort"]
+       "ruff", "pydoclint", "debugpy", "jedi-language-server", "isort",
+       "pyrefly"]
 
 [tool.isort]
 profile = "black"
@@ -60,7 +60,7 @@ envlist = py39,py310,py311,py312,py313
 deps =
     pytest
     coverage
-    pyright
+    pyrefly
     toml
     pyroma
     ruff
@@ -69,7 +69,7 @@ commands =
     ruff format
     ruff check
     pydoclint isabelle_client
-    pyright
+    pyrefly check isabelle_client
     pyroma -n 10 .
     coverage run
     coverage xml
@@ -80,7 +80,7 @@ commands =
 github_url = "https://github.com/inpfess/isabelle-client/"
 
 [tool.tbump.version]
-current = "0.5.7"
+current = "0.5.8"
 regex = '''
   (?P<major>\d+)
   \.
@@ -108,14 +108,12 @@ show_missing = true
 line-length = 79
 
 [tool.ruff.lint]
-select = ["F", "E", "W", "D", "S", "UP", "PL"]
+select = ["F", "E", "W", "D", "S", "UP", "PL", "ERA", "YTT", "ANN"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "pep257"
 
 [tool.ruff.lint.per-file-ignores]
-"doc/auto_examples/plot_example.py" = ["E402"]
-"examples/plot_example.py" = ["E402"]
 "examples/cicm2022_example.ipynb" = ["W605", "S311"]
 
 [tool.ruff.lint.pylint]
@@ -126,3 +124,6 @@ style = "sphinx"
 arg-type-hints-in-docstring = false
 check-return-types = false
 check-yield-types = false
+
+[tool.ruff.lint.flake8-annotations]
+allow-star-arg-any = true

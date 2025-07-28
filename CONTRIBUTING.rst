@@ -105,7 +105,7 @@ installed and ready to go.
       ruff format
       ruff check
       pydoclint isabelle_client
-      pyright isabelle_client
+      pyrefly check isabelle_client
 
 1. The next step would be to run the test cases. `isabelle-client`
    uses pytest and all the existing tests are `doctests

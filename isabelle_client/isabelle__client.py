@@ -20,28 +20,16 @@ A Python client to `Isabelle <https://isabelle.in.tum.de>`__ server
 
 import asyncio
 import json
-from enum import Enum
 from logging import Logger
 from typing import Any, Optional, Union
 
 from isabelle_client.socket_communication import (
     IsabelleResponse,
     get_final_message,
+    IsabelleResponseType,
+    ASYNCHRONOUS_FINAL_MESSAGES,
+    SYNCHRONOUS_FINAL_MESSAGES,
 )
-
-
-class SynchronousResultType(Enum):
-    """Synchronous results of a server reply."""
-
-    OK = "OK"
-    ERROR = "ERROR"
-
-
-class AsynchronousResultType(Enum):
-    """Asynchronous results of a server reply."""
-
-    FAILED = "FAILED"
-    FINISHED = "FINISHED"
 
 
 class IsabelleClient:
@@ -61,7 +49,7 @@ class IsabelleClient:
         port: int,
         password: str,
         logger: Optional[Logger] = None,
-    ):
+    ) -> None:
         self.address = address
         self.port = port
         self.password = password
@@ -82,7 +70,7 @@ class IsabelleClient:
         >>> test_response = asyncio.run(
         ...     isabelle_client.execute_command("unknown command")
         ... )
-        >>> print(test_response[-1].response_type)
+        >>> print(test_response[-1].response_type.value)
         ERROR
         >>> print(test_response[-1].response_body)
         "Bad command 'unknown'"
@@ -100,16 +88,9 @@ class IsabelleClient:
         :returns: a list of Isabelle server responses
         """
         final_message = (
-            {
-                AsynchronousResultType.FINISHED.value,
-                AsynchronousResultType.FAILED.value,
-                SynchronousResultType.ERROR.value,
-            }
+            ASYNCHRONOUS_FINAL_MESSAGES
             if asynchronous
-            else {
-                SynchronousResultType.OK.value,
-                SynchronousResultType.ERROR.value,
-            }
+            else SYNCHRONOUS_FINAL_MESSAGES
         )
         reader, writer = await asyncio.open_connection(self.address, self.port)
         command = f"{self.password}\n{command}\n"
@@ -129,7 +110,7 @@ class IsabelleClient:
         session: str,
         dirs: Optional[list[str]] = None,
         verbose: bool = False,
-        **kwargs,
+        **kwargs: Any,
     ) -> list[IsabelleResponse]:
         r"""
         Build a session from ROOT file.
@@ -162,7 +143,7 @@ class IsabelleClient:
         )
         return response
 
-    def session_start(self, session: str = "Main", **kwargs) -> str:
+    def session_start(self, session: str = "Main", **kwargs: Any) -> str:
         r"""
         Start a new session.
 
@@ -170,7 +151,7 @@ class IsabelleClient:
         >>> print(isabelle_client.session_start(verbose=True))
         Traceback (most recent call last):
             ...
-        ValueError: Unexpected response type: ERROR
+        ValueError: Unexpected response type: IsabelleResponseType.ERROR
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
         >>> print(isabelle_client.session_start())
         167dd6d8-1eeb-4315-8022-c8c527d9bd87
@@ -186,10 +167,7 @@ class IsabelleClient:
         response_list = asyncio.run(
             self.execute_command(f"session_start {json.dumps(arguments)}")
         )
-        if (
-            response_list[-1].response_type
-            == AsynchronousResultType.FINISHED.value
-        ):
+        if response_list[-1].response_type == IsabelleResponseType.FINISHED:
             return json.loads(response_list[-1].response_body)["session_id"]
         raise ValueError(
             f"Unexpected response type: {response_list[-1].response_type}"
@@ -201,7 +179,7 @@ class IsabelleClient:
 
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
         >>> test_response = isabelle_client.session_stop("test")
-        >>> print(test_response[-1].response_type)
+        >>> print(test_response[-1].response_type.value)
         FINISHED
 
         :param session_id: a string ID of a session
@@ -218,7 +196,7 @@ class IsabelleClient:
         theories: list[str],
         session_id: Optional[str] = None,
         master_dir: Optional[str] = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> list[IsabelleResponse]:
         r"""
         Run the engine on theory files.
@@ -227,7 +205,7 @@ class IsabelleClient:
         >>> test_response = isabelle_client.use_theories(
         ...     ["Mock"], master_dir="test", watchdog_timeout=0
         ... )
-        >>> print(test_response[-1].response_type)
+        >>> print(test_response[-1].response_type.value)
         FINISHED
 
         :param theories: names of theory files (without extensions!)
@@ -256,7 +234,7 @@ class IsabelleClient:
             self.session_stop(new_session_id)
         return response
 
-    def echo(self, message: Any) -> list[IsabelleResponse]:
+    def echo(self, message: Union[str, list, dict]) -> list[IsabelleResponse]:
         """
         Ask a server to echo a message.
 
