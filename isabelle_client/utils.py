@@ -20,10 +20,10 @@ A collection of different useful functions.
 
 import asyncio
 import json
-import os
 import re
 import socketserver
 import sys
+from pathlib import Path
 import tempfile
 from enum import Enum
 from importlib.resources import files
@@ -77,6 +77,7 @@ def start_isabelle_server(
     """
     Start Isabelle server.
 
+    >>> import os
     >>> os.environ["PATH"] = "isabelle_client/resources:$PATH"
     >>> print(start_isabelle_server()[0])
     server "isabelle" = 127.0.0.1:9999 (password "test_password")
@@ -142,7 +143,7 @@ def start_isabelle_server_win32(
         isabelle_server = await asyncio.create_subprocess_exec(
             str(
                 files("isabelle_client").joinpath(
-                    os.path.join("resources", "Cygwin-Isabelle.bat")
+                    "resources", "Cygwin-Isabelle.bat"
                 )
             ),
             args,
@@ -186,15 +187,12 @@ class DummyTCPHandler(socketserver.BaseRequestHandler):
             and (theory_name := json.loads(arguments)["theories"][0]) != "Mock"
         ):
             filename += f".{theory_name}"
-        with open(
-            str(
-                files("isabelle_client").joinpath(
-                    os.path.join("resources", "isabelle-responses", filename)
-                )
-            ),
-            encoding="utf8",
-        ) as mock_response_file:
-            self.request.sendall(mock_response_file.read().encode())
+        self.request.sendall(
+            files("isabelle_client")
+            .joinpath("resources", "isabelle-responses", filename)
+            .read_text()
+            .encode()
+        )
 
     def handle(self) -> None:
         """Return something similar to what Isabelle server does."""
@@ -216,7 +214,7 @@ class ReusableDummyTCPServer(socketserver.TCPServer):
     allow_reuse_address = True
 
 
-def get_or_create_working_directory(working_directory: Optional[str]) -> str:
+def get_or_create_working_directory(working_directory: Optional[str]) -> Path:
     """
     Get existing or create a randomly named directory.
 
@@ -224,10 +222,10 @@ def get_or_create_working_directory(working_directory: Optional[str]) -> str:
     :returns: (possibly new) directory name
     """
     new_working_directory = (
-        working_directory
+        Path(working_directory)
         if working_directory is not None
-        else os.path.join(tempfile.mkdtemp(), str(uuid4()))
+        else Path(tempfile.mkdtemp()) / str(uuid4())
     )
-    if not os.path.exists(new_working_directory):
-        os.mkdir(new_working_directory)
+    if not Path(new_working_directory).exists():
+        Path(new_working_directory).mkdir()
     return new_working_directory

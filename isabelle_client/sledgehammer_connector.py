@@ -51,7 +51,7 @@ class SledgehammerConnector(IsabelleConnector):
             lemma_text=lemma_text, theory=theory, task="sledgehammer\noops"
         )
         sledgehammer_responses = self._client.use_theories(
-            theories=[theory_name], master_dir=self._working_directory
+            theories=[theory_name], master_dir=str(self._working_directory)
         )
         messages = []
         for sledgehammer_response in sledgehammer_responses:

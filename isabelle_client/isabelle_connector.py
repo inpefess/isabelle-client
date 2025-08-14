@@ -20,7 +20,6 @@ A connector to the Isabelle server, hiding server interactions.
 
 import json
 import logging
-import os
 from typing import Optional
 from uuid import uuid4
 
@@ -43,6 +42,7 @@ class IsabelleConnector:
     :param working_directory: a directory for storing the server logs,
             temporary theory files etc.
 
+    >>> import os
     >>> os.environ["PATH"] = "isabelle_client/resources:$PATH"
     >>> connector = IsabelleConnector()
     >>> print(connector.working_directory)
@@ -64,17 +64,13 @@ class IsabelleConnector:
             working_directory
         )
         server_info, self._server_process = start_isabelle_server(
-            log_file=os.path.join(
-                self._working_directory, "isabelle-server.log"
-            )
+            log_file=str(self._working_directory / "isabelle-server.log")
         )
         self._client = get_isabelle_client(server_info=server_info)
         self._client.logger = logging.getLogger()
         self._client.logger.setLevel(logging.INFO)
         self._client.logger.addHandler(
-            logging.FileHandler(
-                os.path.join(self._working_directory, "session.log")
-            )
+            logging.FileHandler(str(self._working_directory / "session.log"))
         )
 
     def _write_temp_theory_file(
@@ -86,17 +82,14 @@ class IsabelleConnector:
         theory_name = (
             "T" + str(uuid4()).replace("-", "") if theory is None else theory
         )
-        with open(
-            os.path.join(self._working_directory, f"{theory_name}.thy"),
-            "w",
-            encoding="utf8",
-        ) as theory_file:
-            theory_file.write(f"theory {theory_name}\n")
-            theory_file.write("imports Main\n")
-            theory_file.write("begin\n")
-            theory_file.write(f'lemma "{lemma_text}"\n')
-            theory_file.write(f"{task}\n")
-            theory_file.write("end\n")
+        (self._working_directory / f"{theory_name}.thy").write_text(
+            f"theory {theory_name}\n"
+            "imports Main\n"
+            "begin\n"
+            f'lemma "{lemma_text}"\n'
+            f"{task}\n"
+            "end\n"
+        )
         return theory_name
 
     def verify_lemma(
@@ -116,7 +109,7 @@ class IsabelleConnector:
         """
         theory_name = self._write_temp_theory_file(lemma_text, task, theory)
         validation_result = self._client.use_theories(
-            theories=[theory_name], master_dir=self._working_directory
+            theories=[theory_name], master_dir=str(self._working_directory)
         )
         for isabelle_response in validation_result:
             if (
@@ -131,4 +124,4 @@ class IsabelleConnector:
     @property
     def working_directory(self) -> str:
         """Get working directory."""
-        return self._working_directory
+        return str(self._working_directory)
