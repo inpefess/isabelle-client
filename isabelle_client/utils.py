@@ -92,7 +92,7 @@ def start_isabelle_server(
     args = (
         "server"
         + (f" -L {log_file}" if log_file is not None else "")
-        + (f" -p {str(port)}" if port is not None else "")
+        + (f" -p {port!s}" if port is not None else "")
         + (f" -n {name}" if name is not None else "")
     )
     if sys.platform == MS_WINDOWS:
