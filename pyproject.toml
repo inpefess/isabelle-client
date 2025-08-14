@@ -109,7 +109,8 @@ line-length = 79
 
 [tool.ruff.lint]
 select = ["F", "E", "W", "D", "S", "UP", "PL", "ERA", "YTT", "ANN", "ASYNC",
-    "BLE", "B", "A", "C4", "CPY", "DTZ", "T10", "EM"]
+    "BLE", "B", "A", "C4", "CPY", "DTZ", "T10", "EM", "EXE", "FIX", "INT",
+    "ISC", "ICN", "LOG", "G", "PIE", "T20", "PYI", "PT", "Q", "RSE"]
 exclude = ["examples/cicm2022_example.ipynb", "examples/example.ipynb"]
 preview = true
 
