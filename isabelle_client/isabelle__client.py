@@ -24,11 +24,11 @@ from logging import Logger
 from typing import Any, Optional, Union
 
 from isabelle_client.socket_communication import (
-    IsabelleResponse,
-    get_final_message,
-    IsabelleResponseType,
     ASYNCHRONOUS_FINAL_MESSAGES,
     SYNCHRONOUS_FINAL_MESSAGES,
+    IsabelleResponse,
+    IsabelleResponseType,
+    get_final_message,
 )
 
 

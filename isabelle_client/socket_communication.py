@@ -20,11 +20,11 @@ A collection of functions for TCP communication.
 
 import asyncio
 import re
+from collections.abc import AsyncGenerator
 from dataclasses import dataclass
+from enum import Enum
 from logging import Logger
 from typing import Optional
-from collections.abc import AsyncGenerator
-from enum import Enum
 
 
 class IsabelleResponseType(Enum):

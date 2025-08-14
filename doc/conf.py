@@ -14,6 +14,7 @@
 """Sphinx doc config."""
 
 from importlib.metadata import distribution
+
 import isabelle_client
 
 distribution_metadata = distribution(isabelle_client.__name__).metadata

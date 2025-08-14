@@ -23,12 +23,12 @@ import logging
 from typing import Optional
 from uuid import uuid4
 
+from isabelle_client.socket_communication import IsabelleResponseType
 from isabelle_client.utils import (
     get_isabelle_client,
-    start_isabelle_server,
     get_or_create_working_directory,
+    start_isabelle_server,
 )
-from isabelle_client.socket_communication import IsabelleResponseType
 
 
 class IsabelleTheoryError(RuntimeError):
