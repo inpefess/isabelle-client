@@ -1,4 +1,3 @@
-# type: ignore
 # Copyright 2021-2025 Boris Shminke
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
