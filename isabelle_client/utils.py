@@ -63,7 +63,8 @@ def get_isabelle_client(server_info: str) -> IsabelleClient:
         r"server \".*\" = (.*):(.*) \(password \"(.*)\"\)"
     ).match(server_info)
     if match is None:
-        raise ValueError(f"Unexpected server info: {server_info}")
+        msg = f"Unexpected server info: {server_info}"
+        raise ValueError(msg)
     address, port, password = match.groups()
     isabelle_client = IsabelleClient(address, int(port), password)
     return isabelle_client
@@ -111,9 +112,8 @@ def start_isabelle_server(
             return (await isabelle_server.stdout.readline()).decode(
                 "utf-8"
             ), isabelle_server
-        raise ValueError(
-            "No stdout while starting the server."
-        )  # pragma: no cover
+        msg = "No stdout while starting the server."
+        raise ValueError(msg)  # pragma: no cover
 
     return asyncio.run(async_call())
 
@@ -155,7 +155,8 @@ def start_isabelle_server_win32(
                 "utf-8"
             )
             return server_info, isabelle_server
-        raise ValueError("No stdout while starting the server.")
+        msg = "No stdout while starting the server."
+        raise ValueError(msg)
 
     return asyncio.run(async_call())
 

@@ -169,9 +169,8 @@ class IsabelleClient:
         )
         if response_list[-1].response_type == IsabelleResponseType.FINISHED:
             return json.loads(response_list[-1].response_body)["session_id"]
-        raise ValueError(
-            f"Unexpected response type: {response_list[-1].response_type}"
-        )
+        msg = f"Unexpected response type: {response_list[-1].response_type}"
+        raise ValueError(msg)
 
     def session_stop(self, session_id: str) -> list[IsabelleResponse]:
         """

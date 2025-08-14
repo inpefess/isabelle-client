@@ -133,7 +133,8 @@ async def get_response_from_isabelle(
     if length is not None:
         response = (await reader.readexactly(length)).decode("utf-8")
     if (match := re.compile("(\\w+) ?(.*)").match(response)) is None:
-        raise ValueError(f"Unexpected response from Isabelle: {response}")
+        msg = f"Unexpected response from Isabelle: {response}"
+        raise ValueError(msg)
     return IsabelleResponse(
         IsabelleResponseType(match.group(1)), match.group(2), length
     )
