@@ -66,8 +66,7 @@ def get_isabelle_client(server_info: str) -> IsabelleClient:
         msg = f"Unexpected server info: {server_info}"
         raise ValueError(msg)
     address, port, password = match.groups()
-    isabelle_client = IsabelleClient(address, int(port), password)
-    return isabelle_client
+    return IsabelleClient(address, int(port), password)
 
 
 def start_isabelle_server(
@@ -112,7 +111,7 @@ def start_isabelle_server(
             return (await isabelle_server.stdout.readline()).decode(
                 "utf-8"
             ), isabelle_server
-        msg = "No stdout while starting the server."
+        msg = "No stdout while starting the server."  # pragma: no cover
         raise ValueError(msg)  # pragma: no cover
 
     return asyncio.run(async_call())
@@ -182,9 +181,11 @@ class DummyTCPHandler(socketserver.BaseRequestHandler):
 
     def _mock_command_execution(self, command: str, arguments: str) -> None:
         filename = command
-        if command == IsabelleServerCommands.USE_THEORIES.value:
-            if (theory_name := json.loads(arguments)["theories"][0]) != "Mock":
-                filename += f".{theory_name}"
+        if (
+            command == IsabelleServerCommands.USE_THEORIES.value
+            and (theory_name := json.loads(arguments)["theories"][0]) != "Mock"
+        ):
+            filename += f".{theory_name}"
         with open(
             str(
                 files("isabelle_client").joinpath(
