@@ -110,7 +110,7 @@ def start_isabelle_server(
                 "utf-8"
             ), isabelle_server
         raise ValueError(
-            "No stdout while startnig the server."
+            "No stdout while starting the server."
         )  # pragma: no cover
 
     return asyncio.run(async_call())
@@ -153,7 +153,7 @@ def start_isabelle_server_win32(
                 "utf-8"
             )
             return server_info, isabelle_server
-        raise ValueError("No stdout while startnig the server.")
+        raise ValueError("No stdout while starting the server.")
 
     return asyncio.run(async_call())
 
