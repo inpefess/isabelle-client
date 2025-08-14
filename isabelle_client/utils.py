@@ -24,9 +24,11 @@ import os
 import re
 import socketserver
 import sys
+import tempfile
 from enum import Enum
 from importlib.resources import files
 from typing import Optional
+from uuid import uuid4
 
 from isabelle_client.isabelle__client import IsabelleClient
 
@@ -210,3 +212,20 @@ class ReusableDummyTCPServer(socketserver.TCPServer):
     """Ignore TIME-WAIT during testing."""
 
     allow_reuse_address = True
+
+
+def get_or_create_working_directory(working_directory: Optional[str]) -> str:
+    """
+    Get existing or create a randomly named directory.
+
+    :param working_directory: directory name
+    :returns: (possibly new) directory name
+    """
+    new_working_directory = (
+        working_directory
+        if working_directory is not None
+        else os.path.join(tempfile.mkdtemp(), str(uuid4()))
+    )
+    if not os.path.exists(new_working_directory):
+        os.mkdir(new_working_directory)
+    return new_working_directory

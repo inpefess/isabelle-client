@@ -83,7 +83,7 @@ class IsabelleResponse:
                 else ""
             )
             + self.response_type.value
-            + (" " if self.response_body != "" else "")
+            + (" " if self.response_body else "")
             + self.response_body
         )
 

@@ -21,11 +21,14 @@ A connector to the Isabelle server, hiding server interactions.
 import json
 import logging
 import os
-import tempfile
 from typing import Optional
 from uuid import uuid4
 
-from isabelle_client.utils import get_isabelle_client, start_isabelle_server
+from isabelle_client.utils import (
+    get_isabelle_client,
+    start_isabelle_server,
+    get_or_create_working_directory,
+)
 from isabelle_client.socket_communication import IsabelleResponseType
 
 
@@ -56,20 +59,8 @@ class IsabelleConnector:
      1. \<And>x y. x = y
     """
 
-    def _get_or_create_working_directory(
-        self, working_directory: Optional[str]
-    ) -> str:
-        new_working_directory = (
-            working_directory
-            if working_directory is not None
-            else os.path.join(tempfile.mkdtemp(), str(uuid4()))
-        )
-        if not os.path.exists(new_working_directory):
-            os.mkdir(new_working_directory)
-        return new_working_directory
-
     def __init__(self, working_directory: Optional[str] = None) -> None:  # noqa: D107
-        self._working_directory = self._get_or_create_working_directory(
+        self._working_directory = get_or_create_working_directory(
             working_directory
         )
         server_info, self._server_process = start_isabelle_server(
