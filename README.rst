@@ -59,6 +59,38 @@ For more details, follow the `usage example
 from documentation or a `notebook
 <https://github.com/inpefess/isabelle-client/blob/master/examples/example.ipynb>`__.
 
+
+High-level connector
+====================
+
+You can also pass a theory file body (something you typically put
+between ``begin`` and ``end`` keywords) to a high-level connector
+that will generate a temporary file for you, send it to the Isabelle
+server and get the result for you. For example, this snippet:
+
+.. code:: python
+
+   from isabelle_client.isabelle_connector import IsabelleConnector
+   from isabelle_client.isabelle_connector import IsabelleTheoryError
+
+   isabelle_connector = IsabelleConnector()
+   try:
+       isabelle_connector.build_theory(
+           r'lemma "\<forall> x. \<forall> y. x = y"' "\nby auto"
+       )
+       print("Theory is validated!")
+   except IsabelleTheoryError as error:
+       print(error.args[0])
+
+
+will produce something like:
+
+.. code::
+
+   : Failed to finish proof\<^here>:
+   : goal (1 subgoal):
+   :  1. \<And>x y. x = y
+
 More documentation
 ==================
 
