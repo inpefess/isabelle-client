@@ -142,9 +142,9 @@ def start_isabelle_server_win32(
         """
         isabelle_server = await asyncio.create_subprocess_exec(
             str(
-                files("isabelle_client").joinpath(
-                    "resources", "Cygwin-Isabelle.bat"
-                )
+                files("isabelle_client")
+                .joinpath("resources")
+                .joinpath("Cygwin-Isabelle.bat")
             ),
             args,
             stdout=asyncio.subprocess.PIPE,
@@ -189,7 +189,9 @@ class DummyTCPHandler(socketserver.BaseRequestHandler):
             filename += f".{theory_name}"
         self.request.sendall(
             files("isabelle_client")
-            .joinpath("resources", "isabelle-responses", filename)
+            .joinpath("resources")
+            .joinpath("isabelle-responses")
+            .joinpath(filename)
             .read_text()
             .encode()
         )
