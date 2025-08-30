@@ -17,7 +17,7 @@ import threading
 from collections.abc import Generator
 from unittest.mock import Mock
 
-from pytest import fixture
+import pytest
 
 from isabelle_client.utils import (
     BuggyDummyTCPHandler,
@@ -26,7 +26,7 @@ from isabelle_client.utils import (
 )
 
 
-@fixture(autouse=True, scope="session")
+@pytest.fixture(autouse=True, scope="session")
 def tcp_servers() -> Generator[
     tuple[ReusableDummyTCPServer, ReusableDummyTCPServer], None, None
 ]:
@@ -50,7 +50,7 @@ def tcp_servers() -> Generator[
         yield server, buggy_server
 
 
-@fixture
+@pytest.fixture
 def mock_logger() -> Mock:
     """
     Get a mock for logger to spy on ``info`` calls.

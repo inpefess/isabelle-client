@@ -20,11 +20,11 @@ A collection of functions for TCP communication.
 
 import asyncio
 import re
+from collections.abc import AsyncGenerator
 from dataclasses import dataclass
+from enum import Enum
 from logging import Logger
 from typing import Optional
-from collections.abc import AsyncGenerator
-from enum import Enum
 
 
 class IsabelleResponseType(Enum):
@@ -83,7 +83,7 @@ class IsabelleResponse:
                 else ""
             )
             + self.response_type.value
-            + (" " if self.response_body != "" else "")
+            + (" " if self.response_body else "")
             + self.response_body
         )
 
@@ -132,8 +132,9 @@ async def get_response_from_isabelle(
     length = int(match.group(1)) if match is not None else None
     if length is not None:
         response = (await reader.readexactly(length)).decode("utf-8")
-    if (match := re.compile("(\\w+) ?(.*)").match(response)) is None:
-        raise ValueError(f"Unexpected response from Isabelle: {response}")
+    if (match := re.compile(r"(\w+) ?(.*)").match(response)) is None:
+        msg = f"Unexpected response from Isabelle: {response}"
+        raise ValueError(msg)
     return IsabelleResponse(
         IsabelleResponseType(match.group(1)), match.group(2), length
     )

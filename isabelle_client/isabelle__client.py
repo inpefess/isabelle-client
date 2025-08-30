@@ -24,11 +24,11 @@ from logging import Logger
 from typing import Any, Optional, Union
 
 from isabelle_client.socket_communication import (
-    IsabelleResponse,
-    get_final_message,
-    IsabelleResponseType,
     ASYNCHRONOUS_FINAL_MESSAGES,
     SYNCHRONOUS_FINAL_MESSAGES,
+    IsabelleResponse,
+    IsabelleResponseType,
+    get_final_message,
 )
 
 
@@ -98,12 +98,12 @@ class IsabelleClient:
         await writer.drain()
         if self.logger is not None:
             self.logger.info(command)
-        response = []
-        async for message in get_final_message(
-            reader, final_message, self.logger
-        ):
-            response.append(message)
-        return response
+        return [
+            message
+            async for message in get_final_message(
+                reader, final_message, self.logger
+            )
+        ]
 
     def session_build(
         self,
@@ -138,10 +138,9 @@ class IsabelleClient:
         if dirs is not None:
             arguments["dirs"] = dirs
         arguments.update(kwargs)
-        response = asyncio.run(
+        return asyncio.run(
             self.execute_command(f"session_build {json.dumps(arguments)}")
         )
-        return response
 
     def session_start(self, session: str = "Main", **kwargs: Any) -> str:
         r"""
@@ -169,9 +168,8 @@ class IsabelleClient:
         )
         if response_list[-1].response_type == IsabelleResponseType.FINISHED:
             return json.loads(response_list[-1].response_body)["session_id"]
-        raise ValueError(
-            f"Unexpected response type: {response_list[-1].response_type}"
-        )
+        msg = f"Unexpected response type: {response_list[-1].response_type}"
+        raise ValueError(msg)
 
     def session_stop(self, session_id: str) -> list[IsabelleResponse]:
         """
@@ -186,10 +184,7 @@ class IsabelleClient:
         :returns: Isabelle server response
         """
         arguments = json.dumps({"session_id": session_id})
-        response = asyncio.run(
-            self.execute_command(f"session_stop {arguments}")
-        )
-        return response
+        return asyncio.run(self.execute_command(f"session_stop {arguments}"))
 
     def use_theories(
         self,
@@ -246,12 +241,11 @@ class IsabelleClient:
         :param message: any text
         :returns: Isabelle server response
         """
-        response = asyncio.run(
+        return asyncio.run(
             self.execute_command(
                 f"echo {json.dumps(message)}", asynchronous=False
             )
         )
-        return response
 
     def help(self) -> list[IsabelleResponse]:
         """
@@ -264,10 +258,7 @@ class IsabelleClient:
 
         :returns: Isabelle server response
         """
-        response = asyncio.run(
-            self.execute_command("help", asynchronous=False)
-        )
-        return response
+        return asyncio.run(self.execute_command("help", asynchronous=False))
 
     def purge_theories(
         self,
@@ -301,12 +292,11 @@ class IsabelleClient:
             arguments["master_dir"] = master_dir
         if purge_all is not None:
             arguments["all"] = purge_all
-        response = asyncio.run(
+        return asyncio.run(
             self.execute_command(
                 f"purge_theories {json.dumps(arguments)}", asynchronous=False
             )
         )
-        return response
 
     def cancel(self, task: str) -> list[IsabelleResponse]:
         """
@@ -321,12 +311,11 @@ class IsabelleClient:
         :returns: Isabelle server response
         """
         arguments = {"task": task}
-        response = asyncio.run(
+        return asyncio.run(
             self.execute_command(
                 f"cancel {json.dumps(arguments)}", asynchronous=False
             )
         )
-        return response
 
     def shutdown(self) -> list[IsabelleResponse]:
         """
@@ -339,7 +328,6 @@ class IsabelleClient:
 
         :returns: Isabelle server response
         """
-        response = asyncio.run(
+        return asyncio.run(
             self.execute_command("shutdown", asynchronous=False)
         )
-        return response

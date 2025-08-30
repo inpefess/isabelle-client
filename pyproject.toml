@@ -1,6 +1,6 @@
 [project]
 name = "isabelle-client"
-version = "0.5.8"
+version = "0.5.9"
 description = "A client to Isabelle proof assistant server"
 authors = [{name = "Boris Shminke", email = "<boris@shminke.com"}]
 license = "Apache-2.0"
@@ -80,7 +80,7 @@ commands =
 github_url = "https://github.com/inpfess/isabelle-client/"
 
 [tool.tbump.version]
-current = "0.5.8"
+current = "0.5.9"
 regex = '''
   (?P<major>\d+)
   \.
@@ -108,13 +108,16 @@ show_missing = true
 line-length = 79
 
 [tool.ruff.lint]
-select = ["F", "E", "W", "D", "S", "UP", "PL", "ERA", "YTT", "ANN"]
+select = ["F", "E", "W", "D", "S", "UP", "PL", "ERA", "YTT", "ANN", "ASYNC",
+    "BLE", "B", "A", "C4", "CPY", "DTZ", "T10", "EM", "EXE", "FIX", "INT",
+    "ISC", "ICN", "LOG", "G", "PIE", "T20", "PYI", "PT", "Q", "RSE", "RET",
+    "SLF", "SIM", "SLOT", "TID", "TD", "TC", "ARG", "PTH", "FLY", "I", "C90",
+    "N", "PERF", "FURB", "RUF", "TRY"]
+exclude = ["examples/cicm2022_example.ipynb", "examples/example.ipynb"]
+preview = true
 
 [tool.ruff.lint.pydocstyle]
 convention = "pep257"
-
-[tool.ruff.lint.per-file-ignores]
-"examples/cicm2022_example.ipynb" = ["W605", "S311"]
 
 [tool.ruff.lint.pylint]
 max-statements = 10

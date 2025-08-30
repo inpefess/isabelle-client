@@ -20,13 +20,15 @@ A collection of different useful functions.
 
 import asyncio
 import json
-import os
 import re
 import socketserver
 import sys
+import tempfile
 from enum import Enum
 from importlib.resources import files
+from pathlib import Path
 from typing import Optional
+from uuid import uuid4
 
 from isabelle_client.isabelle__client import IsabelleClient
 
@@ -61,10 +63,10 @@ def get_isabelle_client(server_info: str) -> IsabelleClient:
         r"server \".*\" = (.*):(.*) \(password \"(.*)\"\)"
     ).match(server_info)
     if match is None:
-        raise ValueError(f"Unexpected server info: {server_info}")
+        msg = f"Unexpected server info: {server_info}"
+        raise ValueError(msg)
     address, port, password = match.groups()
-    isabelle_client = IsabelleClient(address, int(port), password)
-    return isabelle_client
+    return IsabelleClient(address, int(port), password)
 
 
 def start_isabelle_server(
@@ -75,6 +77,7 @@ def start_isabelle_server(
     """
     Start Isabelle server.
 
+    >>> import os
     >>> os.environ["PATH"] = "isabelle_client/resources:$PATH"
     >>> print(start_isabelle_server()[0])
     server "isabelle" = 127.0.0.1:9999 (password "test_password")
@@ -89,7 +92,7 @@ def start_isabelle_server(
     args = (
         "server"
         + (f" -L {log_file}" if log_file is not None else "")
-        + (f" -p {str(port)}" if port is not None else "")
+        + (f" -p {port!s}" if port is not None else "")
         + (f" -n {name}" if name is not None else "")
     )
     if sys.platform == MS_WINDOWS:
@@ -109,9 +112,8 @@ def start_isabelle_server(
             return (await isabelle_server.stdout.readline()).decode(
                 "utf-8"
             ), isabelle_server
-        raise ValueError(
-            "No stdout while startnig the server."
-        )  # pragma: no cover
+        msg = "No stdout while starting the server."  # pragma: no cover
+        raise ValueError(msg)  # pragma: no cover
 
     return asyncio.run(async_call())
 
@@ -140,9 +142,9 @@ def start_isabelle_server_win32(
         """
         isabelle_server = await asyncio.create_subprocess_exec(
             str(
-                files("isabelle_client").joinpath(
-                    os.path.join("resources", "Cygwin-Isabelle.bat")
-                )
+                files("isabelle_client")
+                .joinpath("resources")
+                .joinpath("Cygwin-Isabelle.bat")
             ),
             args,
             stdout=asyncio.subprocess.PIPE,
@@ -153,7 +155,8 @@ def start_isabelle_server_win32(
                 "utf-8"
             )
             return server_info, isabelle_server
-        raise ValueError("No stdout while startnig the server.")
+        msg = "No stdout while starting the server."
+        raise ValueError(msg)
 
     return asyncio.run(async_call())
 
@@ -179,18 +182,19 @@ class DummyTCPHandler(socketserver.BaseRequestHandler):
 
     def _mock_command_execution(self, command: str, arguments: str) -> None:
         filename = command
-        if command == IsabelleServerCommands.USE_THEORIES.value:
-            if (theory_name := json.loads(arguments)["theories"][0]) != "Mock":
-                filename += f".{theory_name}"
-        with open(
-            str(
-                files("isabelle_client").joinpath(
-                    os.path.join("resources", "isabelle-responses", filename)
-                )
-            ),
-            encoding="utf8",
-        ) as mock_response_file:
-            self.request.sendall(mock_response_file.read().encode())
+        if (
+            command == IsabelleServerCommands.USE_THEORIES.value
+            and (theory_name := json.loads(arguments)["theories"][0]) != "Mock"
+        ):
+            filename += f".{theory_name}"
+        self.request.sendall(
+            files("isabelle_client")
+            .joinpath("resources")
+            .joinpath("isabelle-responses")
+            .joinpath(filename)
+            .read_text()
+            .encode()
+        )
 
     def handle(self) -> None:
         """Return something similar to what Isabelle server does."""
@@ -210,3 +214,20 @@ class ReusableDummyTCPServer(socketserver.TCPServer):
     """Ignore TIME-WAIT during testing."""
 
     allow_reuse_address = True
+
+
+def get_or_create_working_directory(working_directory: Optional[str]) -> Path:
+    """
+    Get existing or create a randomly named directory.
+
+    :param working_directory: directory name
+    :returns: (possibly new) directory name
+    """
+    new_working_directory = (
+        Path(working_directory)
+        if working_directory is not None
+        else Path(tempfile.mkdtemp()) / str(uuid4())
+    )
+    if not Path(new_working_directory).exists():
+        Path(new_working_directory).mkdir()
+    return new_working_directory
