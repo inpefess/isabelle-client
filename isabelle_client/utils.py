@@ -186,7 +186,7 @@ class DummyTCPHandler(socketserver.BaseRequestHandler):
             command == IsabelleServerCommands.USE_THEORIES.value
             and (theory_name := json.loads(arguments)["theories"][0]) != "Mock"
         ):
-            filename += f".{theory_name}"
+            filename += f".{theory_name}"  # type: ignore
         self.request.sendall(
             files("isabelle_client")
             .joinpath("resources")
