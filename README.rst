@@ -59,6 +59,38 @@ For more details, follow the `usage example
 from documentation or a `notebook
 <https://github.com/inpefess/isabelle-client/blob/master/examples/example.ipynb>`__.
 
+
+High-level connector
+====================
+
+You can also pass a theory file body (something you typically put
+between ``begin`` and ``end`` keywords) to a high-level connector
+that will generate a temporary file for you, send it to the Isabelle
+server and get the result for you. For example, this snippet:
+
+.. code:: python
+
+   from isabelle_client.isabelle_connector import IsabelleConnector
+   from isabelle_client.isabelle_connector import IsabelleTheoryError
+
+   isabelle_connector = IsabelleConnector()
+   try:
+       isabelle_connector.build_theory(
+           r'lemma "\<forall> x. \<forall> y. x = y"' "\nby auto"
+       )
+       print("Theory is validated!")
+   except IsabelleTheoryError as error:
+       print(error.args[0])
+
+
+will produce something like:
+
+.. code::
+
+   : Failed to finish proof\<^here>:
+   : goal (1 subgoal):
+   :  1. \<And>x y. x = y
+
 More documentation
 ==================
 
@@ -94,6 +126,9 @@ chronological order):
   mathematical proofs (Hu et al.)
   <https://doi.org/10.48550/arXiv.2506.10558>`__ with `code
   <https://github.com/r1nIGa/STEP-PROOF>`__
+* `HybridProver: Augmenting Theorem Proving with LLM-Driven Proof
+  Synthesis and Refinement (Hu et al.)
+  <https://doi.org/10.48550/arXiv.2505.15740>`__
 * `Verification and Refinement of Natural Language Explanations
   through LLM-Symbolic Theorem Proving (Quan et al., EMNLP 2024)
   <https://doi.org/10.18653/v1/2024.emnlp-main.172>`__ with `code
@@ -105,7 +140,7 @@ How to cite
 If you’re writing a research paper, you can cite the Isabelle client
 using the `following DOI
 <https://doi.org/10.1007/978-3-031-16681-5_24>`__. You can also cite
-Isabelle 2021 (and the earlier version of the client) with `this DOI
+Isabelle 2021 (and an earlier version of the client) with `this DOI
 <https://doi.org/10.1007/978-3-030-81097-9_20>`__. There also is a
 somewhat more complete (but unpublished) `pre-print
 <https://arxiv.org/abs/2212.11173>`__.
