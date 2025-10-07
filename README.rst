@@ -94,6 +94,9 @@ chronological order):
   mathematical proofs (Hu et al.)
   <https://doi.org/10.48550/arXiv.2506.10558>`__ with `code
   <https://github.com/r1nIGa/STEP-PROOF>`__
+* `HybridProver: Augmenting Theorem Proving with LLM-Driven Proof
+  Synthesis and Refinement (Hu et al.)
+  <https://doi.org/10.48550/arXiv.2505.15740>`__
 * `Verification and Refinement of Natural Language Explanations
   through LLM-Symbolic Theorem Proving (Quan et al., EMNLP 2024)
   <https://doi.org/10.18653/v1/2024.emnlp-main.172>`__ with `code
