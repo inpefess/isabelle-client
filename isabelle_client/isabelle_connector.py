@@ -48,11 +48,10 @@ class IsabelleConnector:
     >>> connector = IsabelleConnector()
     >>> print(connector.working_directory)
     /...
-    >>> connector.verify_lemma(
-    ...     "\<forall> x. \<exists> y. x = y", theory="Mock")
-    True
-    >>> connector.verify_lemma(
-    ...     "\<forall> x. \<forall> y. x = y", theory="Fail")
+    >>> connector.build_theory(
+    ...     'lemma "\<forall> x. \<exists> y. x = y" by auto', theory="Mock")
+    >>> connector.build_theory(
+    ...     'lemma "\<forall> x. \<forall> y. x = y" by auto', theory="Fail")
     Traceback (most recent call last):
      ...
     isabelle...Error: Failed to finish proof\<^here>:
@@ -76,9 +75,8 @@ class IsabelleConnector:
 
     def _write_temp_theory_file(
         self,
-        lemma_text: str,
+        theory_body: str,
         imports: Sequence[str],
-        task: str,
         theory: Optional[str] = None,
     ) -> str:
         theory_name = (
@@ -87,32 +85,28 @@ class IsabelleConnector:
         (self._working_directory / f"{theory_name}.thy").write_text(
             f"theory {theory_name}\n"
             f"imports {', '.join(imports)}\n"
-            "begin\n"
-            f'lemma "{lemma_text}"\n'
-            f"{task}\n"
-            "end\n"
+            f"begin\n{theory_body}\nend\n"
         )
         return theory_name
 
-    def verify_lemma(
+    def build_theory(
         self,
-        lemma_text: str,
+        theory_body: str,
         imports: Sequence[str] = ("Main",),
-        task: str = "by auto",
         theory: Optional[str] = None,
-    ) -> bool:
+    ) -> None:
         """
-        Verify a lemma statement using the Isabelle server.
+        Build a theory using the Isabelle server.
 
-        :param lemma_text: (hopefully) syntactically valid Isabelle lemma
+        :param theory_body: theory body (goes between begin and end keywords)
         :param imports: which theories to import
-        :param task: how to prove lemma. ``"by auto"`` by default
         :param theory: (for tests) fixed named for theory file
-        :returns: True if validation successful
         :raises IsabelleTheoryError: if validation failed
         """
         theory_name = self._write_temp_theory_file(
-            lemma_text=lemma_text, imports=imports, task=task, theory=theory
+            theory_body=theory_body,
+            imports=imports,
+            theory=theory,
         )
         validation_result = self._client.use_theories(
             theories=[theory_name], master_dir=str(self._working_directory)
@@ -125,7 +119,6 @@ class IsabelleConnector:
                 json_response = json.loads(isabelle_response.response_body)
                 if errors := json_response["errors"]:
                     raise IsabelleTheoryError(errors[0]["message"])
-        return True
 
     @property
     def working_directory(self) -> str:
