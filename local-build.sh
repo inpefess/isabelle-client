@@ -7,7 +7,7 @@ make clean html coverage
 cat _build/coverage/python.txt
 cd ..
 ruff format
-ruff check
+ruff check --fix
 pydoclint ${PACKAGE_NAME}
 pyrefly check ${PACKAGE_NAME}
 pyroma -n 10 .
