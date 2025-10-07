@@ -19,6 +19,7 @@ A connector to the Isabelle server, hiding server interactions.
 """  # noqa: D205, D400
 
 import json
+from collections.abc import Sequence
 from typing import Optional
 
 from isabelle_client.isabelle_connector import IsabelleConnector
@@ -38,17 +39,24 @@ class SledgehammerConnector(IsabelleConnector):
     """
 
     def parse_sledgehammer_response(
-        self, lemma_text: str, theory: Optional[str] = None
+        self,
+        lemma_text: str,
+        imports: Sequence[str] = ("Main",),
+        theory: Optional[str] = None,
     ) -> dict[str, str]:
         """
         Verify a lemma statement using the Isabelle server.
 
         :param lemma_text: (hopefully) syntactically valid Isabelle lemma
+        :param imports: which theories to import
         :param theory: (for tests) fixed name for theory file
         :returns: parsed Sledgehammer response
         """
         theory_name = self._write_temp_theory_file(
-            lemma_text=lemma_text, theory=theory, task="sledgehammer\noops"
+            lemma_text=lemma_text,
+            imports=imports,
+            theory=theory,
+            task="sledgehammer\noops",
         )
         sledgehammer_responses = self._client.use_theories(
             theories=[theory_name], master_dir=str(self._working_directory)

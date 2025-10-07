@@ -20,6 +20,7 @@ A connector to the Isabelle server, hiding server interactions.
 
 import json
 import logging
+from collections.abc import Sequence
 from typing import Optional
 from uuid import uuid4
 
@@ -76,6 +77,7 @@ class IsabelleConnector:
     def _write_temp_theory_file(
         self,
         lemma_text: str,
+        imports: Sequence[str],
         task: str,
         theory: Optional[str] = None,
     ) -> str:
@@ -84,7 +86,7 @@ class IsabelleConnector:
         )
         (self._working_directory / f"{theory_name}.thy").write_text(
             f"theory {theory_name}\n"
-            "imports Main\n"
+            f"imports {', '.join(imports)}\n"
             "begin\n"
             f'lemma "{lemma_text}"\n'
             f"{task}\n"
@@ -95,6 +97,7 @@ class IsabelleConnector:
     def verify_lemma(
         self,
         lemma_text: str,
+        imports: Sequence[str] = ("Main",),
         task: str = "by auto",
         theory: Optional[str] = None,
     ) -> bool:
@@ -102,12 +105,15 @@ class IsabelleConnector:
         Verify a lemma statement using the Isabelle server.
 
         :param lemma_text: (hopefully) syntactically valid Isabelle lemma
+        :param imports: which theories to import
         :param task: how to prove lemma. ``"by auto"`` by default
         :param theory: (for tests) fixed named for theory file
         :returns: True if validation successful
         :raises IsabelleTheoryError: if validation failed
         """
-        theory_name = self._write_temp_theory_file(lemma_text, task, theory)
+        theory_name = self._write_temp_theory_file(
+            lemma_text=lemma_text, imports=imports, task=task, theory=theory
+        )
         validation_result = self._client.use_theories(
             theories=[theory_name], master_dir=str(self._working_directory)
         )
