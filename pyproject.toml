@@ -107,6 +107,9 @@ show_missing = true
 [tool.ruff]
 line-length = 79
 
+[tool.ruff.format]
+preview = true
+
 [tool.ruff.lint]
 select = ["F", "E", "W", "D", "S", "UP", "PL", "ERA", "YTT", "ANN", "ASYNC",
     "BLE", "B", "A", "C4", "CPY", "DTZ", "T10", "EM", "EXE", "FIX", "INT",
