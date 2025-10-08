@@ -44,7 +44,7 @@ class IsabelleConnector:
             temporary theory files etc.
 
     >>> import os
-    >>> os.environ["PATH"] = "isabelle_client/resources:$PATH"
+    >>> os.environ["PATH"] = "src/isabelle_client/resources:$PATH"
     >>> connector = IsabelleConnector()
     >>> print(connector.working_directory)
     /...

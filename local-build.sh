@@ -1,16 +1,15 @@
 #!/bin/sh
 
 set -e
-PACKAGE_NAME=isabelle_client
 cd doc
 make clean html coverage
 cat _build/coverage/python.txt
 cd ..
 ruff format
 ruff check --fix
-pydoclint ${PACKAGE_NAME}
-pyrefly check ${PACKAGE_NAME}
+pydoclint src
+pyrefly check
 pyroma -n 10 .
 coverage run
 coverage report
-scc --no-cocomo --by-file -i py ${PACKAGE_NAME}
+scc --no-cocomo --by-file -i py src

@@ -17,7 +17,7 @@
 Package Documentation
 **********************
 
-.. automodule:: isabelle_client.isabelle__client
+.. automodule:: isabelle_client.isabelle_client
    :members:
 .. automodule:: isabelle_client.socket_communication
    :members:

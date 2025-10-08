@@ -30,7 +30,7 @@ from pathlib import Path
 from typing import Optional
 from uuid import uuid4
 
-from isabelle_client.isabelle__client import IsabelleClient
+from isabelle_client.isabelle_client import IsabelleClient
 
 MS_WINDOWS = "win32"
 
@@ -78,7 +78,7 @@ def start_isabelle_server(
     Start Isabelle server.
 
     >>> import os
-    >>> os.environ["PATH"] = "isabelle_client/resources:$PATH"
+    >>> os.environ["PATH"] = "src/isabelle_client/resources:$PATH"
     >>> print(start_isabelle_server()[0])
     server "isabelle" = 127.0.0.1:9999 (password "test_password")
     <BLANKLINE>
