@@ -22,10 +22,11 @@ import asyncio
 import json
 import re
 from collections.abc import AsyncGenerator
-from dataclasses import dataclass
 from enum import Enum
 from logging import Logger
 from typing import Any, Optional
+
+from pydantic import BaseModel
 
 
 class IsabelleResponseType(Enum):
@@ -49,8 +50,7 @@ SYNCHRONOUS_FINAL_MESSAGES = {
 }
 
 
-@dataclass
-class IsabelleResponse:
+class IsabelleResponse(BaseModel):
     """
     A response from an Isabelle server.
 
@@ -181,7 +181,9 @@ async def get_final_message(
     :param logger: a logger where to send all server replies
     :yields: the final response from Isabelle server
     """
-    response = IsabelleResponse(IsabelleResponseType.NOTE, "")
+    response = IsabelleResponse(
+        response_type=IsabelleResponseType.NOTE, response_body=""
+    )
     password_ok_received = False
     while (
         response.response_type not in final_message or not password_ok_received
