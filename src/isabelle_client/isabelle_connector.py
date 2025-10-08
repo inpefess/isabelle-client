@@ -18,7 +18,6 @@ Isabelle Connector
 A connector to the Isabelle server, hiding server interactions.
 """  # noqa: D205, D400
 
-import json
 import logging
 from collections.abc import Sequence
 from typing import Optional
@@ -115,10 +114,9 @@ class IsabelleConnector:
             if (
                 isabelle_response.response_type
                 == IsabelleResponseType.FINISHED
+                and (errors := isabelle_response.response_body["errors"])
             ):
-                json_response = json.loads(isabelle_response.response_body)
-                if errors := json_response["errors"]:
-                    raise IsabelleTheoryError(errors[0]["message"])
+                raise IsabelleTheoryError(errors[0]["message"])  # type: ignore
 
     @property
     def working_directory(self) -> str:

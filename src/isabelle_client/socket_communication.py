@@ -19,12 +19,13 @@ A collection of functions for TCP communication.
 """  # noqa: D205, D400
 
 import asyncio
+import json
 import re
 from collections.abc import AsyncGenerator
 from dataclasses import dataclass
 from enum import Enum
 from logging import Logger
-from typing import Optional
+from typing import Any, Optional
 
 
 class IsabelleResponseType(Enum):
@@ -67,7 +68,7 @@ class IsabelleResponse:
     """
 
     response_type: IsabelleResponseType
-    response_body: str
+    response_body: Any
     response_length: Optional[int] = None
 
     def __str__(self) -> str:
@@ -84,7 +85,7 @@ class IsabelleResponse:
             )
             + self.response_type.value
             + (" " if self.response_body else "")
-            + self.response_body
+            + json.dumps(self.response_body)
         )
 
 
@@ -109,7 +110,7 @@ async def get_response_from_isabelle(
     ...     result += [str(await get_response_from_isabelle(test_reader))]
     ...     return result
     >>> print(asyncio.run(awaiter()))
-    ['OK {"isabelle_id":"mock","isabelle_name":"Isabelle2024"}', '118\nOK [...]
+    ['OK {"isabelle_id": "mock", "isabelle_name": "Isabelle2024"}', '118\nO...]
     >>> async def awaiter():
     ...     test_reader, test_writer = await asyncio.open_connection(
     ...     "localhost", 9998
@@ -136,7 +137,11 @@ async def get_response_from_isabelle(
         msg = f"Unexpected response from Isabelle: {response}"
         raise ValueError(msg)
     return IsabelleResponse(
-        IsabelleResponseType(match.group(1)), match.group(2), length
+        response_type=IsabelleResponseType(match.group(1)),
+        response_body=json.loads(match.group(2))
+        if match.group(2)
+        else match.group(2),
+        response_length=length,
     )
 
 
@@ -164,12 +169,12 @@ async def get_final_message(
     ...     return result
     >>> for response in asyncio.run(awaiter()):
     ...     print(response)
-    OK {"isabelle_id":"mock","isabelle_name":"Isabelle2024"}
+    OK {"isabelle_id": "mock", "isabelle_name": "Isabelle2024"}
     118
-    OK ["cancel","echo","help","purge_theories","session_build",...]
+    OK ["cancel", "echo", "help", "purge_theories", "session_build", ...]
     >>> print(test_logger.info.mock_calls)
-    [call('OK {"isabelle_id":"mock","isabelle_name":"Isabelle2024"}'),
-     call('118\nOK ["cancel","echo","help","purge_theories","session_buil...')]
+    [call('OK {"isabelle_id": "mock", "isabelle_name": "Isabelle2024"}'),
+     call('118\nOK ["cancel", "echo", "help", "purge_theories", "session_...')]
 
     :param reader: a ``StreamReader`` connected to Isabelle server
     :param final_message: a set of possible final message types

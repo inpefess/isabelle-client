@@ -73,13 +73,13 @@ class IsabelleClient:
         >>> print(test_response[-1].response_type.value)
         ERROR
         >>> print(test_response[-1].response_body)
-        "Bad command 'unknown'"
+        Bad command 'unknown'
         >>> # error messages don't return the response length
         >>> print(test_response[-1].response_length)
         None
         >>> print(logger.info.mock_calls)
         [call('test_password\nunknown command\n'),
-         call('OK {"isabelle_id":"mock","isabelle_name":"Isabelle2024"}'),
+         call('OK {"isabelle_id": "mock", "isabelle_name": "Isabelle2024"}'),
          call('ERROR "Bad command \'unknown\'"')]
 
         :param command: a full text of a command to Isabelle
@@ -122,7 +122,7 @@ class IsabelleClient:
         ...     session="test_session", dirs=["."], verbose=True, options=[]
         ... )[-1])
         400
-        FINISHED {"ok":true,"return_code":0,"sessions":[{"session":"Pure",...}
+        FINISHED {"ok": true, "return_code": 0, "sessions": [{"session": "Pu...
 
         :param session: a name of the session from ROOT file
         :param dirs: where to look for ROOT files
@@ -167,7 +167,7 @@ class IsabelleClient:
             self.execute_command(f"session_start {json.dumps(arguments)}")
         )
         if response_list[-1].response_type == IsabelleResponseType.FINISHED:
-            return json.loads(response_list[-1].response_body)["session_id"]
+            return response_list[-1].response_body["session_id"]
         msg = f"Unexpected response type: {response_list[-1].response_type}"
         raise ValueError(msg)
 
@@ -236,7 +236,7 @@ class IsabelleClient:
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
         >>> test_response = isabelle_client.echo("test_message")
         >>> print(test_response[-1].response_body)
-        "test_message"
+        test_message
 
         :param message: any text
         :returns: Isabelle server response
@@ -254,7 +254,7 @@ class IsabelleClient:
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
         >>> test_response = isabelle_client.help()
         >>> print(test_response[-1].response_body)
-        ["cancel","echo","help","purge_theories","session_build",...]
+        ['cancel', 'echo', 'help', 'purge_theories', 'session_build', ...]
 
         :returns: Isabelle server response
         """
@@ -275,7 +275,7 @@ class IsabelleClient:
         ...     "test", [], "dir", True
         ... )
         >>> print(test_response[-1].response_body)
-        {"purged":[{"node_name":"/tmp/Mock.thy",...}],"retained":[]}
+        {'purged': [{'node_name': '/tmp/Mock.thy', ...}], 'retained': []}
 
         :param session_id: an ID of the session from which to purge theories
         :param theories: a list of theory names to purge from the server

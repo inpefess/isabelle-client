@@ -174,7 +174,7 @@ class BuggyDummyTCPHandler(socketserver.BaseRequestHandler):
             self.request.sendall(
                 b'OK {"isabelle_id":"mock","isabelle_name":"Isabelle2024"}\n'
             )
-            self.request.sendall(b"ERROR UNEXPECTED\n")
+            self.request.sendall(b'ERROR "UNEXPECTED"\n')
 
 
 class DummyTCPHandler(socketserver.BaseRequestHandler):
