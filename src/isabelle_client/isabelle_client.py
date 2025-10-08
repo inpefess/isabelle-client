@@ -26,6 +26,7 @@ from typing import Any, Optional, Union
 from isabelle_client.socket_communication import (
     ASYNCHRONOUS_FINAL_MESSAGES,
     SYNCHRONOUS_FINAL_MESSAGES,
+    HelpResult,
     IsabelleResponse,
     IsabelleResponseType,
     get_final_message,
@@ -247,7 +248,7 @@ class IsabelleClient:
             )
         )
 
-    def help(self) -> list[IsabelleResponse]:
+    def help(self) -> list[HelpResult | IsabelleResponse]:
         """
         Ask a server to display the list of available commands.
 
@@ -258,7 +259,16 @@ class IsabelleClient:
 
         :returns: Isabelle server response
         """
-        return asyncio.run(self.execute_command("help", asynchronous=False))
+        raw_results = asyncio.run(
+            self.execute_command("help", asynchronous=False)
+        )
+        return [
+            HelpResult(**raw_result.model_dump())
+            if raw_result.response_type == IsabelleResponseType.OK
+            and raw_result.response_length is not None
+            else raw_result
+            for raw_result in raw_results
+        ]
 
     def purge_theories(
         self,

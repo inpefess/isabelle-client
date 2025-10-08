@@ -89,6 +89,12 @@ class IsabelleResponse(BaseModel):
         )
 
 
+class HelpResult(IsabelleResponse):
+    """Result of the ``help`` command."""
+
+    response_body: list[str]
+
+
 async def get_response_from_isabelle(
     reader: asyncio.StreamReader,
 ) -> IsabelleResponse:
