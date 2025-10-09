@@ -24,7 +24,7 @@ import re
 from collections.abc import AsyncGenerator
 from enum import Enum
 from logging import Logger
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -69,7 +69,7 @@ class IsabelleResponse(BaseModel):
 
     response_type: IsabelleResponseType
     response_body: Any
-    response_length: Optional[int] = None
+    response_length: int | None = None
 
     def __str__(self) -> str:
         """
@@ -154,7 +154,7 @@ async def get_response_from_isabelle(
 async def get_final_message(
     reader: asyncio.StreamReader,
     final_message: set[IsabelleResponseType],
-    logger: Optional[Logger] = None,
+    logger: Logger | None = None,
 ) -> AsyncGenerator[IsabelleResponse]:
     r"""
     Get responses from Isabelle server.

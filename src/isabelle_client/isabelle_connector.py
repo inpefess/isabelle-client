@@ -20,7 +20,6 @@ A connector to the Isabelle server, hiding server interactions.
 
 import logging
 from collections.abc import Sequence
-from typing import Optional
 from uuid import uuid4
 
 from isabelle_client.socket_communication import IsabelleResponseType
@@ -58,7 +57,7 @@ class IsabelleConnector:
      1. \<And>x y. x = y
     """
 
-    def __init__(self, working_directory: Optional[str] = None) -> None:  # noqa: D107
+    def __init__(self, working_directory: str | None = None) -> None:  # noqa: D107
         self._working_directory = get_or_create_working_directory(
             working_directory
         )
@@ -76,7 +75,7 @@ class IsabelleConnector:
         self,
         theory_body: str,
         imports: Sequence[str],
-        theory: Optional[str] = None,
+        theory: str | None = None,
     ) -> str:
         theory_name = (
             "T" + str(uuid4()).replace("-", "") if theory is None else theory
@@ -92,7 +91,7 @@ class IsabelleConnector:
         self,
         theory_body: str,
         imports: Sequence[str] = ("Main",),
-        theory: Optional[str] = None,
+        theory: str | None = None,
     ) -> None:
         """
         Build a theory using the Isabelle server.

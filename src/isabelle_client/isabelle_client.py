@@ -21,7 +21,7 @@ A Python client to `Isabelle <https://isabelle.in.tum.de>`__ server
 import asyncio
 import json
 from logging import Logger
-from typing import Any, Optional, Union
+from typing import Any
 
 from isabelle_client.socket_communication import (
     ASYNCHRONOUS_FINAL_MESSAGES,
@@ -49,7 +49,7 @@ class IsabelleClient:
         address: str,
         port: int,
         password: str,
-        logger: Optional[Logger] = None,
+        logger: Logger | None = None,
     ) -> None:
         self.address = address
         self.port = port
@@ -109,7 +109,7 @@ class IsabelleClient:
     def session_build(
         self,
         session: str,
-        dirs: Optional[list[str]] = None,
+        dirs: list[str] | None = None,
         verbose: bool = False,
         **kwargs: Any,
     ) -> list[IsabelleResponse]:
@@ -132,7 +132,7 @@ class IsabelleClient:
             (see Isabelle System manual for details)
         :returns: an Isabelle response
         """
-        arguments: dict[str, Union[str, list[str], bool]] = {
+        arguments: dict[str, str | list[str] | bool] = {
             "session": session,
             "verbose": verbose,
         }
@@ -190,8 +190,8 @@ class IsabelleClient:
     def use_theories(
         self,
         theories: list[str],
-        session_id: Optional[str] = None,
-        master_dir: Optional[str] = None,
+        session_id: str | None = None,
+        master_dir: str | None = None,
         **kwargs: Any,
     ) -> list[IsabelleResponse]:
         r"""
@@ -216,7 +216,7 @@ class IsabelleClient:
         new_session_id = (
             self.session_start() if session_id is None else session_id
         )
-        arguments: dict[str, Union[list[str], int, str]] = {
+        arguments: dict[str, list[str] | int | str] = {
             "session_id": new_session_id,
             "theories": theories,
         }
@@ -230,7 +230,7 @@ class IsabelleClient:
             self.session_stop(new_session_id)
         return response
 
-    def echo(self, message: Union[str, list, dict]) -> list[IsabelleResponse]:
+    def echo(self, message: str | list | dict) -> list[IsabelleResponse]:
         """
         Ask a server to echo a message.
 
@@ -274,8 +274,8 @@ class IsabelleClient:
         self,
         session_id: str,
         theories: list[str],
-        master_dir: Optional[str] = None,
-        purge_all: Optional[bool] = None,
+        master_dir: str | None = None,
+        purge_all: bool | None = None,
     ) -> list[IsabelleResponse]:
         """
         Ask a server to purge listed theories from it.
@@ -294,7 +294,7 @@ class IsabelleClient:
             loaded theories
         :returns: Isabelle server response
         """
-        arguments: dict[str, Union[str, list[str], bool]] = {
+        arguments: dict[str, str | list[str] | bool] = {
             "session_id": session_id,
             "theories": theories,
         }

@@ -27,7 +27,6 @@ import tempfile
 from enum import Enum
 from importlib.resources import files
 from pathlib import Path
-from typing import Optional
 from uuid import uuid4
 
 from isabelle_client.isabelle_client import IsabelleClient
@@ -70,9 +69,9 @@ def get_isabelle_client(server_info: str) -> IsabelleClient:
 
 
 def start_isabelle_server(
-    log_file: Optional[str] = None,
-    name: Optional[str] = None,
-    port: Optional[int] = None,
+    log_file: str | None = None,
+    name: str | None = None,
+    port: int | None = None,
 ) -> tuple[str, asyncio.subprocess.Process]:
     """
     Start Isabelle server.
@@ -216,7 +215,7 @@ class ReusableDummyTCPServer(socketserver.TCPServer):
     allow_reuse_address = True
 
 
-def get_or_create_working_directory(working_directory: Optional[str]) -> Path:
+def get_or_create_working_directory(working_directory: str | None) -> Path:
     """
     Get existing or create a randomly named directory.
 
