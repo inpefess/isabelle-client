@@ -23,14 +23,14 @@ import json
 from logging import Logger
 from typing import Any
 
-from isabelle_client.socket_communication import (
+from isabelle_client.data_models import (
     ASYNCHRONOUS_FINAL_MESSAGES,
     SYNCHRONOUS_FINAL_MESSAGES,
     HelpResult,
     IsabelleResponse,
     IsabelleResponseType,
-    get_final_message,
 )
+from isabelle_client.socket_communication import get_final_message
 
 
 class IsabelleClient:

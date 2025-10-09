@@ -22,77 +22,9 @@ import asyncio
 import json
 import re
 from collections.abc import AsyncGenerator
-from enum import Enum
 from logging import Logger
-from typing import Any
 
-from pydantic import BaseModel
-
-
-class IsabelleResponseType(Enum):
-    """Isabelle server response type."""
-
-    OK = "OK"
-    FINISHED = "FINISHED"
-    NOTE = "NOTE"
-    FAILED = "FAILED"
-    ERROR = "ERROR"
-
-
-ASYNCHRONOUS_FINAL_MESSAGES = {
-    IsabelleResponseType.FAILED,
-    IsabelleResponseType.FINISHED,
-    IsabelleResponseType.ERROR,
-}
-SYNCHRONOUS_FINAL_MESSAGES = {
-    IsabelleResponseType.OK,
-    IsabelleResponseType.ERROR,
-}
-
-
-class IsabelleResponse(BaseModel):
-    """
-    A response from an Isabelle server.
-
-    .. attribute :: response_type
-
-        an all capitals word like ``FINISHED`` or ``ERROR``
-
-    .. attribute :: response_body
-
-         a JSON-formatted response
-
-    .. attribute :: response_length
-
-        a length of JSON response
-    """
-
-    response_type: IsabelleResponseType
-    response_body: Any
-    response_length: int | None = None
-
-    def __str__(self) -> str:
-        """
-        Pretty print Isabelle server response.
-
-        :returns: a string representation of Isabelle server response
-        """
-        return (
-            (
-                f"{self.response_length}\n"
-                if self.response_length is not None
-                else ""
-            )
-            + self.response_type.value
-            + (" " if self.response_body else "")
-            + json.dumps(self.response_body)
-        )
-
-
-class HelpResult(IsabelleResponse):
-    """Result of the ``help`` command."""
-
-    response_body: list[str]
+from isabelle_client.data_models import IsabelleResponse, IsabelleResponseType
 
 
 async def get_response_from_isabelle(

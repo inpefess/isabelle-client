@@ -25,3 +25,5 @@ Package Documentation
    :members:
 .. automodule:: isabelle_client.isabelle_connector
    :members:
+.. automodule:: isabelle_client.data_models
+   :members:
