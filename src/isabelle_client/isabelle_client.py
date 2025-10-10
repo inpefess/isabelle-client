@@ -21,14 +21,24 @@ A Python client to `Isabelle <https://isabelle.in.tum.de>`__ server
 import asyncio
 import json
 from logging import Logger
-from typing import Any, Optional, Union
+from typing import Any
 
-from isabelle_client.socket_communication import (
+from isabelle_client.data_models import (
     ASYNCHRONOUS_FINAL_MESSAGES,
     SYNCHRONOUS_FINAL_MESSAGES,
+    HelpResult,
     IsabelleResponse,
     IsabelleResponseType,
+    NotificationResponse,
+    PurgeTheoriesResponse,
+    SessionBuildErrorResponse,
+    SessionBuildRegularResponse,
+    TaskOK,
+    UseTheoriesResponse,
+)
+from isabelle_client.socket_communication import (
     get_final_message,
+    get_response_from_isabelle,
 )
 
 
@@ -48,7 +58,7 @@ class IsabelleClient:
         address: str,
         port: int,
         password: str,
-        logger: Optional[Logger] = None,
+        logger: Logger | None = None,
     ) -> None:
         self.address = address
         self.port = port
@@ -73,13 +83,13 @@ class IsabelleClient:
         >>> print(test_response[-1].response_type.value)
         ERROR
         >>> print(test_response[-1].response_body)
-        "Bad command 'unknown'"
+        Bad command 'unknown'
         >>> # error messages don't return the response length
         >>> print(test_response[-1].response_length)
         None
         >>> print(logger.info.mock_calls)
         [call('test_password\nunknown command\n'),
-         call('OK {"isabelle_id":"mock","isabelle_name":"Isabelle2024"}'),
+         call('OK {"isabelle_id": "mock", "isabelle_name": "Isabelle2024"}'),
          call('ERROR "Bad command \'unknown\'"')]
 
         :param command: a full text of a command to Isabelle
@@ -96,8 +106,10 @@ class IsabelleClient:
         command = f"{self.password}\n{command}\n"
         writer.write(command.encode("utf-8"))
         await writer.drain()
+        password_ok = await get_response_from_isabelle(reader)
         if self.logger is not None:
             self.logger.info(command)
+            self.logger.info(str(password_ok))
         return [
             message
             async for message in get_final_message(
@@ -108,10 +120,15 @@ class IsabelleClient:
     def session_build(
         self,
         session: str,
-        dirs: Optional[list[str]] = None,
+        dirs: list[str] | None = None,
         verbose: bool = False,
         **kwargs: Any,
-    ) -> list[IsabelleResponse]:
+    ) -> list[
+        TaskOK
+        | SessionBuildRegularResponse
+        | SessionBuildErrorResponse
+        | NotificationResponse
+    ]:
         r"""
         Build a session from ROOT file.
 
@@ -131,16 +148,30 @@ class IsabelleClient:
             (see Isabelle System manual for details)
         :returns: an Isabelle response
         """
-        arguments: dict[str, Union[str, list[str], bool]] = {
+        arguments: dict[str, str | list[str] | bool] = {
             "session": session,
             "verbose": verbose,
         }
         if dirs is not None:
             arguments["dirs"] = dirs
         arguments.update(kwargs)
-        return asyncio.run(
+        raw_responses = asyncio.run(
             self.execute_command(f"session_build {json.dumps(arguments)}")
         )
+        return [
+            SessionBuildRegularResponse(**raw_response.model_dump())
+            if raw_response.response_type == IsabelleResponseType.FINISHED
+            else (
+                SessionBuildErrorResponse(**raw_response.model_dump())
+                if raw_response.response_type == IsabelleResponseType.ERROR
+                else (
+                    TaskOK(**raw_response.model_dump())
+                    if raw_response.response_type == IsabelleResponseType.OK
+                    else NotificationResponse(**raw_response.model_dump())
+                )
+            )
+            for raw_response in raw_responses
+        ]
 
     def session_start(self, session: str = "Main", **kwargs: Any) -> str:
         r"""
@@ -167,7 +198,7 @@ class IsabelleClient:
             self.execute_command(f"session_start {json.dumps(arguments)}")
         )
         if response_list[-1].response_type == IsabelleResponseType.FINISHED:
-            return json.loads(response_list[-1].response_body)["session_id"]
+            return response_list[-1].response_body["session_id"]
         msg = f"Unexpected response type: {response_list[-1].response_type}"
         raise ValueError(msg)
 
@@ -189,10 +220,10 @@ class IsabelleClient:
     def use_theories(
         self,
         theories: list[str],
-        session_id: Optional[str] = None,
-        master_dir: Optional[str] = None,
+        session_id: str | None = None,
+        master_dir: str | None = None,
         **kwargs: Any,
-    ) -> list[IsabelleResponse]:
+    ) -> list[TaskOK | UseTheoriesResponse]:
         r"""
         Run the engine on theory files.
 
@@ -215,28 +246,33 @@ class IsabelleClient:
         new_session_id = (
             self.session_start() if session_id is None else session_id
         )
-        arguments: dict[str, Union[list[str], int, str]] = {
+        arguments: dict[str, list[str] | int | str] = {
             "session_id": new_session_id,
             "theories": theories,
         }
         arguments.update(kwargs)
         if master_dir is not None:
             arguments["master_dir"] = master_dir
-        response = asyncio.run(
+        raw_responses = asyncio.run(
             self.execute_command(f"use_theories {json.dumps(arguments)}")
         )
         if session_id is None:
             self.session_stop(new_session_id)
-        return response
+        return [
+            UseTheoriesResponse(**raw_response.model_dump())
+            if raw_response.response_type == IsabelleResponseType.FINISHED
+            else TaskOK(**raw_response.model_dump())
+            for raw_response in raw_responses
+        ]
 
-    def echo(self, message: Union[str, list, dict]) -> list[IsabelleResponse]:
+    def echo(self, message: str | list | dict) -> list[IsabelleResponse]:
         """
         Ask a server to echo a message.
 
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
         >>> test_response = isabelle_client.echo("test_message")
         >>> print(test_response[-1].response_body)
-        "test_message"
+        test_message
 
         :param message: any text
         :returns: Isabelle server response
@@ -247,26 +283,31 @@ class IsabelleClient:
             )
         )
 
-    def help(self) -> list[IsabelleResponse]:
+    def help(self) -> list[HelpResult]:
         """
         Ask a server to display the list of available commands.
 
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
         >>> test_response = isabelle_client.help()
         >>> print(test_response[-1].response_body)
-        ["cancel","echo","help","purge_theories","session_build",...]
+        ['cancel', 'echo', 'help', 'purge_theories', 'session_build', ...]
 
         :returns: Isabelle server response
         """
-        return asyncio.run(self.execute_command("help", asynchronous=False))
+        raw_results = asyncio.run(
+            self.execute_command("help", asynchronous=False)
+        )
+        return [
+            HelpResult(**raw_result.model_dump()) for raw_result in raw_results
+        ]
 
     def purge_theories(
         self,
         session_id: str,
         theories: list[str],
-        master_dir: Optional[str] = None,
-        purge_all: Optional[bool] = None,
-    ) -> list[IsabelleResponse]:
+        master_dir: str | None = None,
+        purge_all: bool | None = None,
+    ) -> list[PurgeTheoriesResponse]:
         """
         Ask a server to purge listed theories from it.
 
@@ -274,8 +315,8 @@ class IsabelleClient:
         >>> test_response = isabelle_client.purge_theories(
         ...     "test", [], "dir", True
         ... )
-        >>> print(test_response[-1].response_body)
-        {"purged":[{"node_name":"/tmp/Mock.thy",...}],"retained":[]}
+        >>> print(test_response[-1].response_body.model_dump())
+        {'purged': [{'node_name': '/tmp/Mock.thy', ...}], 'retained': []}
 
         :param session_id: an ID of the session from which to purge theories
         :param theories: a list of theory names to purge from the server
@@ -284,7 +325,7 @@ class IsabelleClient:
             loaded theories
         :returns: Isabelle server response
         """
-        arguments: dict[str, Union[str, list[str], bool]] = {
+        arguments: dict[str, str | list[str] | bool] = {
             "session_id": session_id,
             "theories": theories,
         }
@@ -292,11 +333,15 @@ class IsabelleClient:
             arguments["master_dir"] = master_dir
         if purge_all is not None:
             arguments["all"] = purge_all
-        return asyncio.run(
+        raw_responses = asyncio.run(
             self.execute_command(
                 f"purge_theories {json.dumps(arguments)}", asynchronous=False
             )
         )
+        return [
+            PurgeTheoriesResponse(**raw_response.model_dump())
+            for raw_response in raw_responses
+        ]
 
     def cancel(self, task: str) -> list[IsabelleResponse]:
         """
