@@ -87,3 +87,80 @@ class HelpResult(IsabelleResponse):
     """Result of the ``help`` command."""
 
     response_body: list[str]
+
+
+class Task(BaseModel):
+    """Identifies a newly created asynchronous task."""
+
+    task: str
+
+
+class TaskOK(IsabelleResponse):
+    """Immediate result of task creation."""
+
+    response_body: Task
+
+
+class Position(BaseModel):
+    """Describes a source position within Isabelle text."""
+
+    line: int | None = None
+    offset: int | None = None
+    end_offset: int | None = None
+    file: str | None = None
+    id: int | None = None
+
+
+class Export(BaseModel):
+    """Export."""
+
+    name: str
+    base64: bool
+    body: str
+
+
+class Message(BaseModel):
+    """Message."""
+
+    kind: str
+    message: str
+    pos: Position | None = None
+
+
+class NodeStatus(BaseModel):
+    """Represents a formal theory node status."""
+
+    ok: bool
+    total: int
+    unprocessed: int
+    running: int
+    warned: int
+    failed: int
+    finished: int
+    canceled: bool
+    consolidated: bool
+    percentage: int
+
+
+class NodeResult(BaseModel):
+    """Node result."""
+
+    node_name: str
+    theory_name: str
+    status: NodeStatus
+    messages: list[Message]
+    exports: list[Export]
+
+
+class UseTheoriesResults(BaseModel):
+    """Regular result of ``use_theories`` command."""
+
+    ok: bool
+    errors: list[Message]
+    nodes: list[NodeResult]
+
+
+class UseTheoriesResponse(IsabelleResponse):
+    """Final response of ``use_theories`` command."""
+
+    response_body: UseTheoriesResults

@@ -22,7 +22,7 @@ import logging
 from collections.abc import Sequence
 from uuid import uuid4
 
-from isabelle_client.socket_communication import IsabelleResponseType
+from isabelle_client.data_models import UseTheoriesResponse
 from isabelle_client.utils import (
     get_isabelle_client,
     get_or_create_working_directory,
@@ -110,12 +110,10 @@ class IsabelleConnector:
             theories=[theory_name], master_dir=str(self._working_directory)
         )
         for isabelle_response in validation_result:
-            if (
-                isabelle_response.response_type
-                == IsabelleResponseType.FINISHED
-                and (errors := isabelle_response.response_body["errors"])
+            if isinstance(isabelle_response, UseTheoriesResponse) and (
+                errors := isabelle_response.response_body.errors
             ):
-                raise IsabelleTheoryError(errors[0]["message"])  # type: ignore
+                raise IsabelleTheoryError(errors[0].message)  # type: ignore
 
     @property
     def working_directory(self) -> str:

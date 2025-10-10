@@ -29,6 +29,8 @@ from isabelle_client.data_models import (
     HelpResult,
     IsabelleResponse,
     IsabelleResponseType,
+    TaskOK,
+    UseTheoriesResponse,
 )
 from isabelle_client.socket_communication import (
     get_final_message,
@@ -198,7 +200,7 @@ class IsabelleClient:
         session_id: str | None = None,
         master_dir: str | None = None,
         **kwargs: Any,
-    ) -> list[IsabelleResponse]:
+    ) -> list[TaskOK | UseTheoriesResponse]:
         r"""
         Run the engine on theory files.
 
@@ -228,12 +230,17 @@ class IsabelleClient:
         arguments.update(kwargs)
         if master_dir is not None:
             arguments["master_dir"] = master_dir
-        response = asyncio.run(
+        raw_responses = asyncio.run(
             self.execute_command(f"use_theories {json.dumps(arguments)}")
         )
         if session_id is None:
             self.session_stop(new_session_id)
-        return response
+        return [
+            UseTheoriesResponse(**raw_response.model_dump())
+            if raw_response.response_type == IsabelleResponseType.FINISHED
+            else TaskOK(**raw_response.model_dump())
+            for raw_response in raw_responses
+        ]
 
     def echo(self, message: str | list | dict) -> list[IsabelleResponse]:
         """
