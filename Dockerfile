@@ -16,9 +16,10 @@ ENV HOME /home/${NB_USER}
 ENV ISABELLE_BIN /home/isabelle/Isabelle/bin/
 ENV PATH=${HOME}/.local/bin/:${ISABELLE_BIN}:${PATH}
 COPY examples/ ${HOME}/isabelle-client-examples/
+COPY src/ pyproject.toml poetry.lock README.rst ${HOME}
 RUN chown -R ${NB_USER}:${NB_USER} ${HOME}/isabelle-client-examples/
 RUN chown -R ${NB_USER}:${NB_USER} ${ISABELLE_BIN}
 USER ${NB_USER}
 WORKDIR ${HOME}
-RUN python3 -m pip install --no-cache-dir notebook jupyterlab isabelle-client
+RUN python3 -m pip install --no-cache-dir notebook jupyterlab -e .
 ENTRYPOINT ["jupyter", "lab", "--ip", "0.0.0.0", "--NotebookApp.token=''"]
