@@ -29,6 +29,7 @@ from isabelle_client.data_models import (
     HelpResult,
     IsabelleResponse,
     IsabelleResponseType,
+    PurgeTheoriesResponse,
     TaskOK,
     UseTheoriesResponse,
 )
@@ -284,7 +285,7 @@ class IsabelleClient:
         theories: list[str],
         master_dir: str | None = None,
         purge_all: bool | None = None,
-    ) -> list[IsabelleResponse]:
+    ) -> list[PurgeTheoriesResponse]:
         """
         Ask a server to purge listed theories from it.
 
@@ -292,7 +293,7 @@ class IsabelleClient:
         >>> test_response = isabelle_client.purge_theories(
         ...     "test", [], "dir", True
         ... )
-        >>> print(test_response[-1].response_body)
+        >>> print(test_response[-1].response_body.model_dump())
         {'purged': [{'node_name': '/tmp/Mock.thy', ...}], 'retained': []}
 
         :param session_id: an ID of the session from which to purge theories
@@ -310,11 +311,15 @@ class IsabelleClient:
             arguments["master_dir"] = master_dir
         if purge_all is not None:
             arguments["all"] = purge_all
-        return asyncio.run(
+        raw_responses = asyncio.run(
             self.execute_command(
                 f"purge_theories {json.dumps(arguments)}", asynchronous=False
             )
         )
+        return [
+            PurgeTheoriesResponse(**raw_response.model_dump())
+            for raw_response in raw_responses
+        ]
 
     def cancel(self, task: str) -> list[IsabelleResponse]:
         """

@@ -127,6 +127,13 @@ class Message(BaseModel):
     pos: Position | None = None
 
 
+class Node(BaseModel):
+    """Theory node."""
+
+    node_name: str
+    theory_name: str
+
+
 class NodeStatus(BaseModel):
     """Represents a formal theory node status."""
 
@@ -164,3 +171,16 @@ class UseTheoriesResponse(IsabelleResponse):
     """Final response of ``use_theories`` command."""
 
     response_body: UseTheoriesResults
+
+
+class PurgeTheoriesResult(BaseModel):
+    """Result of ``purge_theories`` command."""
+
+    purged: list[Node]
+    retained: list[Node]
+
+
+class PurgeTheoriesResponse(IsabelleResponse):
+    """Response of ``purge_theories`` command."""
+
+    response_body: PurgeTheoriesResult
