@@ -99,6 +99,7 @@ async def get_final_message(
     ...     "localhost", 9999
     ... )
     ...     test_writer.write(b"test_password\nhelp\n")
+    ...     await get_response_from_isabelle(test_reader)
     ...     result = []
     ...     async for message in get_final_message(
     ...         test_reader, {IsabelleResponseType.OK}, test_logger
@@ -107,27 +108,18 @@ async def get_final_message(
     ...     return result
     >>> for response in asyncio.run(awaiter()):
     ...     print(response)
-    OK {"isabelle_id": "mock", "isabelle_name": "Isabelle2024"}
     118
     OK ["cancel", "echo", "help", "purge_theories", "session_build", ...]
     >>> print(test_logger.info.mock_calls)
-    [call('OK {"isabelle_id": "mock", "isabelle_name": "Isabelle2024"}'),
-     call('118\nOK ["cancel", "echo", "help", "purge_theories", "session_...')]
+    [call('118\nOK ["cancel", "echo", "help", "purge_theories", "session_...')]
 
     :param reader: a ``StreamReader`` connected to Isabelle server
     :param final_message: a set of possible final message types
     :param logger: a logger where to send all server replies
     :yields: the final response from Isabelle server
     """
-    response = IsabelleResponse(
-        response_type=IsabelleResponseType.NOTE, response_body=""
-    )
-    password_ok_received = False
-    while (
-        response.response_type not in final_message or not password_ok_received
-    ):
-        if response.response_type == IsabelleResponseType.OK:
-            password_ok_received = True
+    response = None
+    while response is None or response.response_type not in final_message:
         response = await get_response_from_isabelle(reader)
         if logger is not None:
             logger.info(str(response))

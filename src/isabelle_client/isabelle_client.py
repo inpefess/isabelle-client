@@ -30,7 +30,10 @@ from isabelle_client.data_models import (
     IsabelleResponse,
     IsabelleResponseType,
 )
-from isabelle_client.socket_communication import get_final_message
+from isabelle_client.socket_communication import (
+    get_final_message,
+    get_response_from_isabelle,
+)
 
 
 class IsabelleClient:
@@ -97,8 +100,10 @@ class IsabelleClient:
         command = f"{self.password}\n{command}\n"
         writer.write(command.encode("utf-8"))
         await writer.drain()
+        password_ok = await get_response_from_isabelle(reader)
         if self.logger is not None:
             self.logger.info(command)
+            self.logger.info(str(password_ok))
         return [
             message
             async for message in get_final_message(
@@ -248,7 +253,7 @@ class IsabelleClient:
             )
         )
 
-    def help(self) -> list[HelpResult | IsabelleResponse]:
+    def help(self) -> list[HelpResult]:
         """
         Ask a server to display the list of available commands.
 
@@ -263,11 +268,7 @@ class IsabelleClient:
             self.execute_command("help", asynchronous=False)
         )
         return [
-            HelpResult(**raw_result.model_dump())
-            if raw_result.response_type == IsabelleResponseType.OK
-            and raw_result.response_length is not None
-            else raw_result
-            for raw_result in raw_results
+            HelpResult(**raw_result.model_dump()) for raw_result in raw_results
         ]
 
     def purge_theories(
