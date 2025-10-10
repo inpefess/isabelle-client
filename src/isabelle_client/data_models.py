@@ -79,7 +79,11 @@ class IsabelleResponse(BaseModel):
             )
             + self.response_type.value
             + (" " if self.response_body else "")
-            + json.dumps(self.response_body)
+            + (
+                self.response_body.model_dump_json()
+                if isinstance(self.response_body, BaseModel)
+                else json.dumps(self.response_body)
+            )
         )
 
 
@@ -184,3 +188,84 @@ class PurgeTheoriesResponse(IsabelleResponse):
     """Response of ``purge_theories`` command."""
 
     response_body: PurgeTheoriesResult
+
+
+class Timing(BaseModel):
+    """Isabelle timing information in seconds."""
+
+    elapsed: float
+    cpu: float
+    gc: float
+
+
+class SessionBuildResult(BaseModel):
+    """Session build result."""
+
+    session: str
+    ok: bool
+    return_code: int
+    timeout: bool
+    timing: Timing
+
+
+class SessionBuildResults(BaseModel):
+    """Session build results."""
+
+    ok: bool
+    return_code: int
+    sessions: list[SessionBuildResult]
+
+
+class ErrorMessage(BaseModel):
+    """Error message."""
+
+    kind: str = "error"
+    message: str
+
+
+class SessionBuildRegularResult(Task, SessionBuildResults):
+    """Session build regular result."""
+
+    response_type: IsabelleResponseType = IsabelleResponseType.FINISHED
+
+
+class SessionBuildErrorResult(Task, ErrorMessage, SessionBuildResults):
+    """Session build error result."""
+
+    response_type: IsabelleResponseType = IsabelleResponseType.FAILED
+
+
+class SessionBuildRegularResponse(IsabelleResponse):
+    """Regular response of ``session_build`` command."""
+
+    response_body: SessionBuildRegularResult
+
+
+class SessionBuildErrorResponse(IsabelleResponse):
+    """Error response of ``session_build`` command."""
+
+    response_body: SessionBuildErrorResult
+
+
+class TheoryProgress(BaseModel):
+    """Theory progress."""
+
+    kind: str = "writeln"
+    message: str
+    theory: str
+    session: str
+    percentage: int | None = None
+
+
+class TheoryProgressNotification(Task, TheoryProgress):
+    """Theory progress notification."""
+
+
+class MessageNotification(Task, Message):
+    """Message notification."""
+
+
+class NotificationResponse(IsabelleResponse):
+    """Notification response."""
+
+    response_body: TheoryProgressNotification | MessageNotification

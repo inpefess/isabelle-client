@@ -29,7 +29,10 @@ from isabelle_client.data_models import (
     HelpResult,
     IsabelleResponse,
     IsabelleResponseType,
+    NotificationResponse,
     PurgeTheoriesResponse,
+    SessionBuildErrorResponse,
+    SessionBuildRegularResponse,
     TaskOK,
     UseTheoriesResponse,
 )
@@ -120,7 +123,12 @@ class IsabelleClient:
         dirs: list[str] | None = None,
         verbose: bool = False,
         **kwargs: Any,
-    ) -> list[IsabelleResponse]:
+    ) -> list[
+        TaskOK
+        | SessionBuildRegularResponse
+        | SessionBuildErrorResponse
+        | NotificationResponse
+    ]:
         r"""
         Build a session from ROOT file.
 
@@ -131,7 +139,7 @@ class IsabelleClient:
         ...     session="test_session", dirs=["."], verbose=True, options=[]
         ... )[-1])
         400
-        FINISHED {"ok": true, "return_code": 0, "sessions": [{"session": "Pu...
+        FINISHED {"ok":true,"return_code":0,"sessions":[{"session":"Pure",...}
 
         :param session: a name of the session from ROOT file
         :param dirs: where to look for ROOT files
@@ -147,9 +155,23 @@ class IsabelleClient:
         if dirs is not None:
             arguments["dirs"] = dirs
         arguments.update(kwargs)
-        return asyncio.run(
+        raw_responses = asyncio.run(
             self.execute_command(f"session_build {json.dumps(arguments)}")
         )
+        return [
+            SessionBuildRegularResponse(**raw_response.model_dump())
+            if raw_response.response_type == IsabelleResponseType.FINISHED
+            else (
+                SessionBuildErrorResponse(**raw_response.model_dump())
+                if raw_response.response_type == IsabelleResponseType.ERROR
+                else (
+                    TaskOK(**raw_response.model_dump())
+                    if raw_response.response_type == IsabelleResponseType.OK
+                    else NotificationResponse(**raw_response.model_dump())
+                )
+            )
+            for raw_response in raw_responses
+        ]
 
     def session_start(self, session: str = "Main", **kwargs: Any) -> str:
         r"""
