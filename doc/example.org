@@ -69,9 +69,7 @@ We will log all the messages from the server to a file
 
 Isabelle client supports all the commands implemented in Isabelle server
 #+begin_src python
-  from pprint import pprint
-
-  pprint(isabelle.help())
+  print(isabelle.help())
 #+end_src
 
 #+RESULTS:
@@ -81,20 +79,29 @@ Let's suppose we have a ~Example.thy~ theory file in our working directory which
 
 #+INCLUDE: "../examples/Example.thy" example
 
-We can send this theory file to the server and get a response
+First, we start a session:
+
 #+begin_src python
-  pprint(isabelle.use_theories(
+  session_start_responses = isabelle.session_start()
+  print(session_start_responses)
+#+end_src
+
+#+RESULTS:
+: [TaskOK(response_type=<IsabelleResponseType.OK: 'OK'>, response_body=Task(task='689b8a72-d2a8-4aff-bcb6-663cf60a2bcd'), response_length=None), NotificationResponse(response_type=<IsabelleResponseType.NOTE: 'NOTE'>, response_body=MessageNotification(kind='writeln', message='Session Pure/Pure', pos=None, task='689b8a72-d2a8-4aff-bcb6-663cf60a2bcd'), response_length=117), NotificationResponse(response_type=<IsabelleResponseType.NOTE: 'NOTE'>, response_body=MessageNotification(kind='writeln', message='Session Misc/Tools', pos=None, task='689b8a72-d2a8-4aff-bcb6-663cf60a2bcd'), response_length=118), NotificationResponse(response_type=<IsabelleResponseType.NOTE: 'NOTE'>, response_body=MessageNotification(kind='writeln', message='Session HOL/HOL (main)', pos=None, task='689b8a72-d2a8-4aff-bcb6-663cf60a2bcd'), response_length=122), NotificationResponse(response_type=<IsabelleResponseType.NOTE: 'NOTE'>, response_body=MessageNotification(kind='writeln', message='Session Doc/Main (doc)', pos=None, task='689b8a72-d2a8-4aff-bcb6-663cf60a2bcd'), response_length=122), NotificationResponse(response_type=<IsabelleResponseType.NOTE: 'NOTE'>, response_body=MessageNotification(kind='writeln', message='Session Pure/Pure', pos=None, task='689b8a72-d2a8-4aff-bcb6-663cf60a2bcd'), response_length=117), NotificationResponse(response_type=<IsabelleResponseType.NOTE: 'NOTE'>, response_body=MessageNotification(kind='writeln', message='Session Misc/Tools', pos=None, task='689b8a72-d2a8-4aff-bcb6-663cf60a2bcd'), response_length=118), NotificationResponse(response_type=<IsabelleResponseType.NOTE: 'NOTE'>, response_body=MessageNotification(kind='writeln', message='Session HOL/HOL (main)', pos=None, task='689b8a72-d2a8-4aff-bcb6-663cf60a2bcd'), response_length=122), NotificationResponse(response_type=<IsabelleResponseType.NOTE: 'NOTE'>, response_body=MessageNotification(kind='writeln', message='Session Doc/Main (doc)', pos=None, task='689b8a72-d2a8-4aff-bcb6-663cf60a2bcd'), response_length=122), NotificationResponse(response_type=<IsabelleResponseType.NOTE: 'NOTE'>, response_body=MessageNotification(kind='writeln', message='Starting session Main ...', pos=None, task='689b8a72-d2a8-4aff-bcb6-663cf60a2bcd'), response_length=126), SessionStartRegularResponse(response_type=<IsabelleResponseType.FINISHED: 'FINISHED'>, response_body=SessionStartRegularResult(task='689b8a72-d2a8-4aff-bcb6-663cf60a2bcd', session_id='81da682a-dec6-4ae8-9d05-ae4ceeaa52ec', tmp_dir='/tmp/isabelle-boris/server_session10075248010333581955'), response_length=176)]
+
+Then we can send this theory file to the server and get a response
+
+#+begin_src python
+  session_id = session_start_responses[-1].response_body.session_id
+  print(isabelle.use_theories(
+      session_id=session_id,
       theories=["Example"],
       master_dir="../examples"
   ))
 #+end_src
 
 #+RESULTS:
-: [TaskOK(response_type=<IsabelleResponseType.OK: 'OK'>, response_body=Task(task='c7354756-560c-4d1b-b644-ba4edeb169d9'), response_length=None),
-:  TaskOK(response_type=<IsabelleResponseType.NOTE: 'NOTE'>, response_body=Task(task='c7354756-560c-4d1b-b644-ba4edeb169d9'), response_length=161),
-:  TaskOK(response_type=<IsabelleResponseType.NOTE: 'NOTE'>, response_body=Task(task='c7354756-560c-4d1b-b644-ba4edeb169d9'), response_length=161),
-:  TaskOK(response_type=<IsabelleResponseType.NOTE: 'NOTE'>, response_body=Task(task='c7354756-560c-4d1b-b644-ba4edeb169d9'), response_length=163),
-:  UseTheoriesResponse(response_type=<IsabelleResponseType.FINISHED: 'FINISHED'>, response_body=UseTheoriesResults(ok=True, errors=[], nodes=[NodeResult(node_name='../examples/Example.thy', theory_name='Draft.Example', status=NodeStatus(ok=True, total=7, unprocessed=0, running=0, warned=0, failed=0, finished=7, canceled=False, consolidated=True, percentage=100), messages=[Message(kind='writeln', message='theorem \\<forall>x. \\<exists>y. x = y', pos=Position(line=5, offset=59, end_offset=61, file='../examples/Example.thy', id=None))], exports=[])]), response_length=482)]
+: [TaskOK(response_type=<IsabelleResponseType.OK: 'OK'>, response_body=Task(task='7a5d299d-b22c-49e7-81ec-e61eb45c3694'), response_length=None), TaskOK(response_type=<IsabelleResponseType.NOTE: 'NOTE'>, response_body=Task(task='7a5d299d-b22c-49e7-81ec-e61eb45c3694'), response_length=161), TaskOK(response_type=<IsabelleResponseType.NOTE: 'NOTE'>, response_body=Task(task='7a5d299d-b22c-49e7-81ec-e61eb45c3694'), response_length=161), TaskOK(response_type=<IsabelleResponseType.NOTE: 'NOTE'>, response_body=Task(task='7a5d299d-b22c-49e7-81ec-e61eb45c3694'), response_length=163), UseTheoriesResponse(response_type=<IsabelleResponseType.FINISHED: 'FINISHED'>, response_body=UseTheoriesResults(ok=True, errors=[], nodes=[NodeResult(node_name='../examples/Example.thy', theory_name='Draft.Example', status=NodeStatus(ok=True, total=7, unprocessed=0, running=0, warned=0, failed=0, finished=7, canceled=False, consolidated=True, percentage=100), messages=[Message(kind='writeln', message='theorem \\<forall>x. \\<exists>y. x = y', pos=Position(line=5, offset=59, end_offset=61, file='../examples/Example.thy', id=None))], exports=[])]), response_length=482)]
 
 or we can build a session document using ~./ROOT~ file
 
@@ -107,40 +114,21 @@ and ~./document/root.tex~ file
 #+begin_src python
   import json
 
-  pprint(
+  print(
       isabelle.session_build(
           dirs=["../examples/"], session="examples"
-      )[-1].response_body
+      )
   )
 #+end_src
 
 #+RESULTS:
-#+begin_example
-{'ok': True,
- 'return_code': 0,
- 'sessions': [{'ok': True,
-               'return_code': 0,
-               'session': 'Pure',
-               'timeout': False,
-               'timing': {'cpu': 0, 'elapsed': 0, 'gc': 0}},
-              {'ok': True,
-               'return_code': 0,
-               'session': 'HOL',
-               'timeout': False,
-               'timing': {'cpu': 0, 'elapsed': 0, 'gc': 0}},
-              {'ok': True,
-               'return_code': 0,
-               'session': 'examples',
-               'timeout': False,
-               'timing': {'cpu': 0, 'elapsed': 0, 'gc': 0}}],
- 'task': 'fc75ad40-4320-4288-95d1-85c951f57ac2'}
-#+end_example
+: [TaskOK(response_type=<IsabelleResponseType.OK: 'OK'>, response_body=Task(task='0b86e5dc-84e7-4900-b393-49d3d70ce721'), response_length=None), NotificationResponse(response_type=<IsabelleResponseType.NOTE: 'NOTE'>, response_body=MessageNotification(kind='writeln', message='Session Pure/Pure', pos=None, task='0b86e5dc-84e7-4900-b393-49d3d70ce721'), response_length=117), NotificationResponse(response_type=<IsabelleResponseType.NOTE: 'NOTE'>, response_body=MessageNotification(kind='writeln', message='Session Misc/Tools', pos=None, task='0b86e5dc-84e7-4900-b393-49d3d70ce721'), response_length=118), NotificationResponse(response_type=<IsabelleResponseType.NOTE: 'NOTE'>, response_body=MessageNotification(kind='writeln', message='Session HOL/HOL (main)', pos=None, task='0b86e5dc-84e7-4900-b393-49d3d70ce721'), response_length=122), NotificationResponse(response_type=<IsabelleResponseType.NOTE: 'NOTE'>, response_body=MessageNotification(kind='writeln', message='Session Unsorted/examples', pos=None, task='0b86e5dc-84e7-4900-b393-49d3d70ce721'), response_length=125), NotificationResponse(response_type=<IsabelleResponseType.NOTE: 'NOTE'>, response_body=MessageNotification(kind='writeln', message='Session Pure/Pure', pos=None, task='0b86e5dc-84e7-4900-b393-49d3d70ce721'), response_length=117), NotificationResponse(response_type=<IsabelleResponseType.NOTE: 'NOTE'>, response_body=MessageNotification(kind='writeln', message='Session Misc/Tools', pos=None, task='0b86e5dc-84e7-4900-b393-49d3d70ce721'), response_length=118), NotificationResponse(response_type=<IsabelleResponseType.NOTE: 'NOTE'>, response_body=MessageNotification(kind='writeln', message='Session HOL/HOL (main)', pos=None, task='0b86e5dc-84e7-4900-b393-49d3d70ce721'), response_length=122), NotificationResponse(response_type=<IsabelleResponseType.NOTE: 'NOTE'>, response_body=MessageNotification(kind='writeln', message='Session Unsorted/examples', pos=None, task='0b86e5dc-84e7-4900-b393-49d3d70ce721'), response_length=125), SessionBuildRegularResponse(response_type=<IsabelleResponseType.FINISHED: 'FINISHED'>, response_body=SessionBuildRegularResult(ok=True, return_code=0, sessions=[SessionBuildResult(session='Pure', ok=True, return_code=0, timeout=False, timing=Timing(elapsed=0.0, cpu=0.0, gc=0.0)), SessionBuildResult(session='HOL', ok=True, return_code=0, timeout=False, timing=Timing(elapsed=0.0, cpu=0.0, gc=0.0)), SessionBuildResult(session='examples', ok=True, return_code=0, timeout=False, timing=Timing(elapsed=0.0, cpu=0.0, gc=0.0))], task='0b86e5dc-84e7-4900-b393-49d3d70ce721', response_type=<IsabelleResponseType.FINISHED: 'FINISHED'>), response_length=396)]
 
 One can also issue a free-form command, e.g.
 #+begin_src python
   import asyncio
 
-  pprint(asyncio.run(isabelle.execute_command("echo 42", asynchronous=False)))
+  print(asyncio.run(isabelle.execute_command("echo 42", asynchronous=False)))
 #+end_src
 
 #+RESULTS:
@@ -148,7 +136,7 @@ One can also issue a free-form command, e.g.
 
 Finally, we can shut the server down.
 #+begin_src python
-  pprint(isabelle.shutdown())
+  print(isabelle.shutdown())
 #+end_src
 
 #+RESULTS:

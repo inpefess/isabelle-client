@@ -229,10 +229,14 @@ class SessionBuildRegularResult(Task, SessionBuildResults):
     response_type: IsabelleResponseType = IsabelleResponseType.FINISHED
 
 
-class SessionBuildErrorResult(Task, ErrorMessage, SessionBuildResults):
-    """Session build error result."""
+class SessionStartErrorResult(Task, ErrorMessage):
+    """Session start error result."""
 
     response_type: IsabelleResponseType = IsabelleResponseType.FAILED
+
+
+class SessionBuildErrorResult(SessionStartErrorResult, SessionBuildResults):
+    """Session build error result."""
 
 
 class SessionBuildRegularResponse(IsabelleResponse):
@@ -241,10 +245,29 @@ class SessionBuildRegularResponse(IsabelleResponse):
     response_body: SessionBuildRegularResult
 
 
+class SessionStartRegularResult(Task):
+    """Regular result of ``session_start`` command."""
+
+    session_id: str
+    tmp_dir: str
+
+
+class SessionStartRegularResponse(IsabelleResponse):
+    """Regular response of ``session_start`` command."""
+
+    response_body: SessionStartRegularResult
+
+
 class SessionBuildErrorResponse(IsabelleResponse):
     """Error response of ``session_build`` command."""
 
     response_body: SessionBuildErrorResult
+
+
+class SessionStartErrorResponse(IsabelleResponse):
+    """Error response of ``session_start`` command."""
+
+    response_body: SessionStartErrorResult
 
 
 class TheoryProgress(BaseModel):

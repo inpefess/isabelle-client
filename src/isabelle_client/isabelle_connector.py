@@ -106,14 +106,18 @@ class IsabelleConnector:
             imports=imports,
             theory=theory,
         )
+        session_id = self._client.session_start()[-1].response_body.session_id  # type: ignore
         validation_result = self._client.use_theories(
-            theories=[theory_name], master_dir=str(self._working_directory)
+            session_id=session_id,
+            theories=[theory_name],
+            master_dir=str(self._working_directory),
         )
         for isabelle_response in validation_result:
             if isinstance(isabelle_response, UseTheoriesResponse) and (
                 errors := isabelle_response.response_body.errors
             ):
                 raise IsabelleTheoryError(errors[0].message)  # type: ignore
+        self._client.session_stop(session_id=session_id)
 
     @property
     def working_directory(self) -> str:

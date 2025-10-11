@@ -33,6 +33,8 @@ from isabelle_client.data_models import (
     PurgeTheoriesResponse,
     SessionBuildErrorResponse,
     SessionBuildRegularResponse,
+    SessionStartErrorResponse,
+    SessionStartRegularResponse,
     TaskOK,
     UseTheoriesResponse,
 )
@@ -173,34 +175,45 @@ class IsabelleClient:
             for raw_response in raw_responses
         ]
 
-    def session_start(self, session: str = "Main", **kwargs: Any) -> str:
+    def session_start(
+        self, session: str = "Main", **kwargs: Any
+    ) -> list[
+        TaskOK
+        | SessionStartRegularResponse
+        | SessionStartErrorResponse
+        | NotificationResponse
+    ]:
         r"""
         Start a new session.
 
-        >>> isabelle_client = IsabelleClient("localhost", 9998, "test")
-        >>> print(isabelle_client.session_start(verbose=True))
-        Traceback (most recent call last):
-            ...
-        ValueError: Unexpected response type: IsabelleResponseType.ERROR
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
-        >>> print(isabelle_client.session_start())
+        >>> print(isabelle_client.session_start()[-1].response_body.session_id)
         167dd6d8-1eeb-4315-8022-c8c527d9bd87
 
         :param session: a name of a session to start
         :param \**kwargs: additional arguments
             (see Isabelle System manual for details)
-        :returns: a ``session_id``
-        :raises ValueError: if the server response is malformed
+        :returns: Isabelle server response
         """
         arguments = {"session": session}
         arguments.update(kwargs)
-        response_list = asyncio.run(
+        raw_responses = asyncio.run(
             self.execute_command(f"session_start {json.dumps(arguments)}")
         )
-        if response_list[-1].response_type == IsabelleResponseType.FINISHED:
-            return response_list[-1].response_body["session_id"]
-        msg = f"Unexpected response type: {response_list[-1].response_type}"
-        raise ValueError(msg)
+        return [
+            SessionStartRegularResponse(**raw_response.model_dump())
+            if raw_response.response_type == IsabelleResponseType.FINISHED
+            else (
+                SessionStartErrorResponse(**raw_response.model_dump())
+                if raw_response.response_type == IsabelleResponseType.ERROR
+                else (
+                    TaskOK(**raw_response.model_dump())
+                    if raw_response.response_type == IsabelleResponseType.OK
+                    else NotificationResponse(**raw_response.model_dump())
+                )
+            )
+            for raw_response in raw_responses
+        ]
 
     def session_stop(self, session_id: str) -> list[IsabelleResponse]:
         """
@@ -220,7 +233,7 @@ class IsabelleClient:
     def use_theories(
         self,
         theories: list[str],
-        session_id: str | None = None,
+        session_id: str,
         master_dir: str | None = None,
         **kwargs: Any,
     ) -> list[TaskOK | UseTheoriesResponse]:
@@ -229,7 +242,7 @@ class IsabelleClient:
 
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
         >>> test_response = isabelle_client.use_theories(
-        ...     ["Mock"], master_dir="test", watchdog_timeout=0
+        ...     session_id="test", theories=["Mock"], master_dir="test"
         ... )
         >>> print(test_response[-1].response_type.value)
         FINISHED
@@ -243,11 +256,8 @@ class IsabelleClient:
             (see Isabelle System manual for details)
         :returns: Isabelle server response
         """
-        new_session_id = (
-            self.session_start() if session_id is None else session_id
-        )
         arguments: dict[str, list[str] | int | str] = {
-            "session_id": new_session_id,
+            "session_id": session_id,
             "theories": theories,
         }
         arguments.update(kwargs)
@@ -256,8 +266,6 @@ class IsabelleClient:
         raw_responses = asyncio.run(
             self.execute_command(f"use_theories {json.dumps(arguments)}")
         )
-        if session_id is None:
-            self.session_stop(new_session_id)
         return [
             UseTheoriesResponse(**raw_response.model_dump())
             if raw_response.response_type == IsabelleResponseType.FINISHED

@@ -165,15 +165,9 @@ class BuggyDummyTCPHandler(socketserver.BaseRequestHandler):
 
     def handle(self) -> None:
         """Return something weird."""
-        request = self.request.recv(4096).decode("utf-8").split("\n")[1]
-        if request == IsabelleServerCommands.HELP.value:
-            self.request.sendall(b"5\n")
-            self.request.sendall(b"# !!!")
-        else:
-            self.request.sendall(
-                b'OK {"isabelle_id":"mock","isabelle_name":"Isabelle2024"}\n'
-            )
-            self.request.sendall(b'ERROR "UNEXPECTED"\n')
+        self.request.recv(4096).decode("utf-8").split("\n")[1]
+        self.request.sendall(b"5\n")
+        self.request.sendall(b"# !!!")
 
 
 class DummyTCPHandler(socketserver.BaseRequestHandler):
