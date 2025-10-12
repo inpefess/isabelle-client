@@ -27,10 +27,9 @@ import tempfile
 from enum import Enum
 from importlib.resources import files
 from pathlib import Path
-from typing import Optional
 from uuid import uuid4
 
-from isabelle_client.isabelle__client import IsabelleClient
+from isabelle_client.isabelle_client import IsabelleClient
 
 MS_WINDOWS = "win32"
 
@@ -70,15 +69,15 @@ def get_isabelle_client(server_info: str) -> IsabelleClient:
 
 
 def start_isabelle_server(
-    log_file: Optional[str] = None,
-    name: Optional[str] = None,
-    port: Optional[int] = None,
+    log_file: str | None = None,
+    name: str | None = None,
+    port: int | None = None,
 ) -> tuple[str, asyncio.subprocess.Process]:
     """
     Start Isabelle server.
 
     >>> import os
-    >>> os.environ["PATH"] = "isabelle_client/resources:$PATH"
+    >>> os.environ["PATH"] = "src/isabelle_client/resources:$PATH"
     >>> print(start_isabelle_server()[0])
     server "isabelle" = 127.0.0.1:9999 (password "test_password")
     <BLANKLINE>
@@ -166,15 +165,9 @@ class BuggyDummyTCPHandler(socketserver.BaseRequestHandler):
 
     def handle(self) -> None:
         """Return something weird."""
-        request = self.request.recv(4096).decode("utf-8").split("\n")[1]
-        if request == IsabelleServerCommands.HELP.value:
-            self.request.sendall(b"5\n")
-            self.request.sendall(b"# !!!")
-        else:
-            self.request.sendall(
-                b'OK {"isabelle_id":"mock","isabelle_name":"Isabelle2024"}\n'
-            )
-            self.request.sendall(b"ERROR UNEXPECTED\n")
+        self.request.recv(4096).decode("utf-8").split("\n")[1]
+        self.request.sendall(b"5\n")
+        self.request.sendall(b"# !!!")
 
 
 class DummyTCPHandler(socketserver.BaseRequestHandler):
@@ -216,7 +209,7 @@ class ReusableDummyTCPServer(socketserver.TCPServer):
     allow_reuse_address = True
 
 
-def get_or_create_working_directory(working_directory: Optional[str]) -> Path:
+def get_or_create_working_directory(working_directory: str | None) -> Path:
     """
     Get existing or create a randomly named directory.
 

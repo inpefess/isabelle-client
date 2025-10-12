@@ -19,73 +19,12 @@ A collection of functions for TCP communication.
 """  # noqa: D205, D400
 
 import asyncio
+import json
 import re
 from collections.abc import AsyncGenerator
-from dataclasses import dataclass
-from enum import Enum
 from logging import Logger
-from typing import Optional
 
-
-class IsabelleResponseType(Enum):
-    """Isabelle server response type."""
-
-    OK = "OK"
-    FINISHED = "FINISHED"
-    NOTE = "NOTE"
-    FAILED = "FAILED"
-    ERROR = "ERROR"
-
-
-ASYNCHRONOUS_FINAL_MESSAGES = {
-    IsabelleResponseType.FAILED,
-    IsabelleResponseType.FINISHED,
-    IsabelleResponseType.ERROR,
-}
-SYNCHRONOUS_FINAL_MESSAGES = {
-    IsabelleResponseType.OK,
-    IsabelleResponseType.ERROR,
-}
-
-
-@dataclass
-class IsabelleResponse:
-    """
-    A response from an Isabelle server.
-
-    .. attribute :: response_type
-
-        an all capitals word like ``FINISHED`` or ``ERROR``
-
-    .. attribute :: response_body
-
-         a JSON-formatted response
-
-    .. attribute :: response_length
-
-        a length of JSON response
-    """
-
-    response_type: IsabelleResponseType
-    response_body: str
-    response_length: Optional[int] = None
-
-    def __str__(self) -> str:
-        """
-        Pretty print Isabelle server response.
-
-        :returns: a string representation of Isabelle server response
-        """
-        return (
-            (
-                f"{self.response_length}\n"
-                if self.response_length is not None
-                else ""
-            )
-            + self.response_type.value
-            + (" " if self.response_body else "")
-            + self.response_body
-        )
+from isabelle_client.data_models import IsabelleResponse, IsabelleResponseType
 
 
 async def get_response_from_isabelle(
@@ -109,7 +48,7 @@ async def get_response_from_isabelle(
     ...     result += [str(await get_response_from_isabelle(test_reader))]
     ...     return result
     >>> print(asyncio.run(awaiter()))
-    ['OK {"isabelle_id":"mock","isabelle_name":"Isabelle2024"}', '118\nOK [...]
+    ['OK {"isabelle_id": "mock", "isabelle_name": "Isabelle2024"}', '118\nO...]
     >>> async def awaiter():
     ...     test_reader, test_writer = await asyncio.open_connection(
     ...     "localhost", 9998
@@ -136,14 +75,18 @@ async def get_response_from_isabelle(
         msg = f"Unexpected response from Isabelle: {response}"
         raise ValueError(msg)
     return IsabelleResponse(
-        IsabelleResponseType(match.group(1)), match.group(2), length
+        response_type=IsabelleResponseType(match.group(1)),
+        response_body=json.loads(match.group(2))
+        if match.group(2)
+        else match.group(2),
+        response_length=length,
     )
 
 
 async def get_final_message(
     reader: asyncio.StreamReader,
     final_message: set[IsabelleResponseType],
-    logger: Optional[Logger] = None,
+    logger: Logger | None = None,
 ) -> AsyncGenerator[IsabelleResponse]:
     r"""
     Get responses from Isabelle server.
@@ -156,6 +99,7 @@ async def get_final_message(
     ...     "localhost", 9999
     ... )
     ...     test_writer.write(b"test_password\nhelp\n")
+    ...     await get_response_from_isabelle(test_reader)
     ...     result = []
     ...     async for message in get_final_message(
     ...         test_reader, {IsabelleResponseType.OK}, test_logger
@@ -164,25 +108,18 @@ async def get_final_message(
     ...     return result
     >>> for response in asyncio.run(awaiter()):
     ...     print(response)
-    OK {"isabelle_id":"mock","isabelle_name":"Isabelle2024"}
     118
-    OK ["cancel","echo","help","purge_theories","session_build",...]
+    OK ["cancel", "echo", "help", "purge_theories", "session_build", ...]
     >>> print(test_logger.info.mock_calls)
-    [call('OK {"isabelle_id":"mock","isabelle_name":"Isabelle2024"}'),
-     call('118\nOK ["cancel","echo","help","purge_theories","session_buil...')]
+    [call('118\nOK ["cancel", "echo", "help", "purge_theories", "session_...')]
 
     :param reader: a ``StreamReader`` connected to Isabelle server
     :param final_message: a set of possible final message types
     :param logger: a logger where to send all server replies
     :yields: the final response from Isabelle server
     """
-    response = IsabelleResponse(IsabelleResponseType.NOTE, "")
-    password_ok_received = False
-    while (
-        response.response_type not in final_message or not password_ok_received
-    ):
-        if response.response_type == IsabelleResponseType.OK:
-            password_ok_received = True
+    response = None
+    while response is None or response.response_type not in final_message:
         response = await get_response_from_isabelle(reader)
         if logger is not None:
             logger.info(str(response))
