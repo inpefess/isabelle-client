@@ -44,13 +44,22 @@ SYNCHRONOUS_FINAL_MESSAGES = {
 }
 
 
-class IsabelleResponse(BaseModel):
+class SimpleIsabelleResponse(BaseModel):
     """
-    A response from an Isabelle server.
+    Isabelle response with no body.
 
     .. attribute :: response_type
 
-        an all capitals word like ``FINISHED`` or ``ERROR``
+    an all capitals word like ``FINISHED`` or ``ERROR``
+
+    """
+
+    response_type: IsabelleResponseType
+
+
+class IsabelleResponse(SimpleIsabelleResponse):
+    """
+    A response from an Isabelle server.
 
     .. attribute :: response_body
 
@@ -61,7 +70,6 @@ class IsabelleResponse(BaseModel):
         a length of JSON response
     """
 
-    response_type: IsabelleResponseType
     response_body: Any
     response_length: int | None = None
 

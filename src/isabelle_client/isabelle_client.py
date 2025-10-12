@@ -37,6 +37,7 @@ from isabelle_client.data_models import (
     SessionStartRegularResponse,
     SessionStopErrorResponse,
     SessionStopRegularResponse,
+    SimpleIsabelleResponse,
     TaskOK,
     UseTheoriesResponse,
 )
@@ -376,36 +377,40 @@ class IsabelleClient:
             for raw_response in raw_responses
         ]
 
-    def cancel(self, task: str) -> list[IsabelleResponse]:
+    def cancel(self, task: str) -> SimpleIsabelleResponse:
         """
         Ask a server to try to cancel a task with a given ID.
 
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
         >>> test_response = isabelle_client.cancel("test_task")
-        >>> print(test_response[-1].response_body)
-        <BLANKLINE>
+        >>> print(test_response)
+        response_type=<IsabelleResponseType.OK: 'OK'>
 
         :param task: a task ID
         :returns: Isabelle server response
         """
         arguments = {"task": task}
-        return asyncio.run(
-            self.execute_command(
-                f"cancel {json.dumps(arguments)}", asynchronous=False
-            )
+        return SimpleIsabelleResponse(
+            response_type=asyncio.run(
+                self.execute_command(
+                    f"cancel {json.dumps(arguments)}", asynchronous=False
+                )
+            )[0].response_type
         )
 
-    def shutdown(self) -> list[IsabelleResponse]:
+    def shutdown(self) -> SimpleIsabelleResponse:
         """
         Ask a server to shutdown immediately.
 
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
         >>> test_response = isabelle_client.shutdown()
-        >>> print(test_response[-1].response_body)
-        <BLANKLINE>
+        >>> print(test_response)
+        response_type=<IsabelleResponseType.OK: 'OK'>
 
         :returns: Isabelle server response
         """
-        return asyncio.run(
-            self.execute_command("shutdown", asynchronous=False)
+        return SimpleIsabelleResponse(
+            response_type=asyncio.run(
+                self.execute_command("shutdown", asynchronous=False)
+            )[0].response_type
         )
