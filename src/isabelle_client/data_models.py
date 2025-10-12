@@ -292,3 +292,34 @@ class NotificationResponse(IsabelleResponse):
     """Notification response."""
 
     response_body: TheoryProgressNotification | MessageNotification
+
+
+class SessionStopResult:
+    """Session stop result."""
+
+    ok: bool
+    return_code: int
+
+
+class SessionStopRegularResult(Task, SessionStopResult):
+    """Session stop regular result."""
+
+    response_type: IsabelleResponseType = IsabelleResponseType.FINISHED
+
+
+class SessionStopErrorResult(Task, ErrorMessage, SessionStopResult):
+    """Session stop regular result."""
+
+    response_type: IsabelleResponseType = IsabelleResponseType.FAILED
+
+
+class SessionStopErrorResponse(IsabelleResponse):
+    """Error response of ``session_stop`` command."""
+
+    response_body: SessionStopErrorResult
+
+
+class SessionStopRegularResponse(IsabelleResponse):
+    """Regular response of ``session_stop`` command."""
+
+    response_body: SessionStopRegularResult

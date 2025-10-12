@@ -35,6 +35,8 @@ from isabelle_client.data_models import (
     SessionBuildRegularResponse,
     SessionStartErrorResponse,
     SessionStartRegularResponse,
+    SessionStopErrorResponse,
+    SessionStopRegularResponse,
     TaskOK,
     UseTheoriesResponse,
 )
@@ -205,7 +207,7 @@ class IsabelleClient:
             if raw_response.response_type == IsabelleResponseType.FINISHED
             else (
                 SessionStartErrorResponse(**raw_response.model_dump())
-                if raw_response.response_type == IsabelleResponseType.ERROR
+                if raw_response.response_type == IsabelleResponseType.FAILED
                 else (
                     TaskOK(**raw_response.model_dump())
                     if raw_response.response_type == IsabelleResponseType.OK
@@ -215,7 +217,14 @@ class IsabelleClient:
             for raw_response in raw_responses
         ]
 
-    def session_stop(self, session_id: str) -> list[IsabelleResponse]:
+    def session_stop(
+        self, session_id: str
+    ) -> list[
+        TaskOK
+        | SessionStopErrorResponse
+        | SessionStopRegularResponse
+        | NotificationResponse
+    ]:
         """
         Stop session with given ID.
 
@@ -228,7 +237,23 @@ class IsabelleClient:
         :returns: Isabelle server response
         """
         arguments = json.dumps({"session_id": session_id})
-        return asyncio.run(self.execute_command(f"session_stop {arguments}"))
+        raw_responses = asyncio.run(
+            self.execute_command(f"session_stop {arguments}")
+        )
+        return [
+            SessionStopRegularResponse(**raw_response.model_dump())
+            if raw_response.response_type == IsabelleResponseType.FINISHED
+            else (
+                SessionStopErrorResponse(**raw_response.model_dump())
+                if raw_response.response_type == IsabelleResponseType.FAILED
+                else (
+                    TaskOK(**raw_response.model_dump())
+                    if raw_response.response_type == IsabelleResponseType.OK
+                    else NotificationResponse(**raw_response.model_dump())
+                )
+            )
+            for raw_response in raw_responses
+        ]
 
     def use_theories(
         self,
