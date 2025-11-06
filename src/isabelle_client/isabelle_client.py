@@ -39,6 +39,7 @@ from isabelle_client.data_models import (
     SessionStopRegularResponse,
     SimpleIsabelleResponse,
     TaskOK,
+    UseTheoriesErrorResponse,
     UseTheoriesResponse,
 )
 from isabelle_client.socket_communication import (
@@ -262,7 +263,7 @@ class IsabelleClient:
         session_id: str,
         master_dir: str | None = None,
         **kwargs: Any,
-    ) -> list[TaskOK | UseTheoriesResponse]:
+    ) -> list[TaskOK | UseTheoriesResponse | UseTheoriesErrorResponse]:
         r"""
         Run the engine on theory files.
 
@@ -295,7 +296,11 @@ class IsabelleClient:
         return [
             UseTheoriesResponse(**raw_response.model_dump())
             if raw_response.response_type == IsabelleResponseType.FINISHED
-            else TaskOK(**raw_response.model_dump())
+            else (
+                UseTheoriesErrorResponse(**raw_response.model_dump())
+                if raw_response.response_type == IsabelleResponseType.FAILED
+                else TaskOK(**raw_response.model_dump())
+            )
             for raw_response in raw_responses
         ]
 

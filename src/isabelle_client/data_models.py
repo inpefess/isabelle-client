@@ -243,6 +243,10 @@ class SessionStartErrorResult(Task, ErrorMessage):
     response_type: IsabelleResponseType = IsabelleResponseType.FAILED
 
 
+class UseTheoriesErrorResult(SessionStartErrorResult):
+    """Error result of ``use_theories`` command."""
+
+
 class SessionBuildErrorResult(SessionStartErrorResult, SessionBuildResults):
     """Session build error result."""
 
@@ -276,6 +280,12 @@ class SessionStartErrorResponse(IsabelleResponse):
     """Error response of ``session_start`` command."""
 
     response_body: SessionStartErrorResult
+
+
+class UseTheoriesErrorResponse(IsabelleResponse):
+    """Error response of ``use_theories`` command."""
+
+    response_body: UseTheoriesErrorResult
 
 
 class TheoryProgress(BaseModel):
