@@ -18,13 +18,11 @@ Isabelle Connector
 A connector to the Isabelle server, hiding server interactions.
 """  # noqa: D205, D400
 
-import json
 import logging
 from collections.abc import Sequence
-from typing import Optional
 from uuid import uuid4
 
-from isabelle_client.socket_communication import IsabelleResponseType
+from isabelle_client.data_models import UseTheoriesResponse
 from isabelle_client.utils import (
     get_isabelle_client,
     get_or_create_working_directory,
@@ -44,7 +42,7 @@ class IsabelleConnector:
             temporary theory files etc.
 
     >>> import os
-    >>> os.environ["PATH"] = "isabelle_client/resources:$PATH"
+    >>> os.environ["PATH"] = "src/isabelle_client/resources:$PATH"
     >>> connector = IsabelleConnector()
     >>> print(connector.working_directory)
     /...
@@ -59,7 +57,7 @@ class IsabelleConnector:
      1. \<And>x y. x = y
     """
 
-    def __init__(self, working_directory: Optional[str] = None) -> None:  # noqa: D107
+    def __init__(self, working_directory: str | None = None) -> None:  # noqa: D107
         self._working_directory = get_or_create_working_directory(
             working_directory
         )
@@ -77,7 +75,7 @@ class IsabelleConnector:
         self,
         theory_body: str,
         imports: Sequence[str],
-        theory: Optional[str] = None,
+        theory: str | None = None,
     ) -> str:
         theory_name = (
             "T" + str(uuid4()).replace("-", "") if theory is None else theory
@@ -93,7 +91,7 @@ class IsabelleConnector:
         self,
         theory_body: str,
         imports: Sequence[str] = ("Main",),
-        theory: Optional[str] = None,
+        theory: str | None = None,
     ) -> None:
         """
         Build a theory using the Isabelle server.
@@ -108,17 +106,18 @@ class IsabelleConnector:
             imports=imports,
             theory=theory,
         )
+        session_id = self._client.session_start()[-1].response_body.session_id  # type: ignore
         validation_result = self._client.use_theories(
-            theories=[theory_name], master_dir=str(self._working_directory)
+            session_id=session_id,
+            theories=[theory_name],
+            master_dir=str(self._working_directory),
         )
         for isabelle_response in validation_result:
-            if (
-                isabelle_response.response_type
-                == IsabelleResponseType.FINISHED
+            if isinstance(isabelle_response, UseTheoriesResponse) and (
+                errors := isabelle_response.response_body.errors
             ):
-                json_response = json.loads(isabelle_response.response_body)
-                if errors := json_response["errors"]:
-                    raise IsabelleTheoryError(errors[0]["message"])
+                raise IsabelleTheoryError(errors[0].message)  # type: ignore
+        self._client.session_stop(session_id=session_id)
 
     @property
     def working_directory(self) -> str:
