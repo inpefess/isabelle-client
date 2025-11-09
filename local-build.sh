@@ -12,4 +12,4 @@ pyrefly check src
 pyroma -n 10 .
 coverage run
 coverage report
-scc --no-cocomo --by-file -i py src
+cloc --fmt 3 --include-lang python src
