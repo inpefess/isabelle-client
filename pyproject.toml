@@ -49,30 +49,16 @@ addopts = """--doctest-modules
 testpaths = ["src"]
 
 [tool.tox]
-legacy_tox_ini = """
-[tox]
-isolated_build = True
-envlist = py310,py311,py312,py313,py314
+isolated_build_env = true
+env_list = ["py310", "py311", "py312", "py313", "py314"]
 
-[testenv]
-deps =
-    pytest
-    coverage
-    pyrefly
-    toml
-    pyroma
-    ruff
-    pydoclint
-commands =
-    ruff format
-    ruff check
-    pydoclint src
-    pyrefly check src
-    pyroma -n 10 .
-    coverage run
-    coverage xml
-    coverage report
-"""
+[tool.tox.env_run_base]
+deps = ["pytest", "coverage", "pyrefly", "toml", "pyroma", "ruff", "pydoclint"]
+commands =[
+    ["ruff", "format"], ["ruff", "check"], ["pydoclint", "src"],
+    ["pyrefly", "check", "src"], ["pyroma", "-n", "10", "."],
+    ["coverage", "run"], ["coverage", "xml"], ["coverage", "report"]
+]
 
 [tool.tbump]
 github_url = "https://github.com/inpfess/isabelle-client/"
