@@ -25,7 +25,7 @@ Another option is to use Anaconda:
    conda install -c conda-forge isabelle-client 
 
 One can also download and run the client together with Isabelle in a
-Docker contanier:
+Docker container:
 
 .. code:: sh
 
@@ -108,7 +108,7 @@ example:
 * `for Coq <https://github.com/IBM/pycoq>`__
 * `another one for Coq <https://github.com/ejgallego/pycoq>`__
 
-Modules helping to inetract with Isabelle server from Python are
+Modules helping to interact with Isabelle server from Python are
 parts of the `Proving for Fun
 <https://github.com/maxhaslbeck/proving-contest-backends>`__ project.
 
