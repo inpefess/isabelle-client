@@ -123,12 +123,14 @@ class IsabelleClient:
             )
         ]
 
-    def session_build(
+    def session_build(  # noqa: PLR0913, PLR0917
         self,
         session: str,
+        preferences: str | None = None,
+        options: list[str] | None = None,
         dirs: list[str] | None = None,
+        include_sessions: list[str] | None = None,
         verbose: bool = False,
-        **kwargs: Any,
     ) -> list[
         TaskOK
         | SessionBuildRegularResponse
@@ -142,25 +144,35 @@ class IsabelleClient:
         ...     "localhost", 9999, "test_password"
         ... )
         >>> print(isabelle_client.session_build(
-        ...     session="test_session", dirs=["."], verbose=True, options=[]
+        ...     session="test_session", preferences=""
         ... )[-1])
         400
         FINISHED {"ok":true,"return_code":0,"sessions":[{"session":"Pure",...}
 
         :param session: a name of the session from ROOT file
-        :param dirs: where to look for ROOT files
+        :param preferences: references are loaded from the file
+            ``$ISABELLE_HOME_USER/etc/preferences`` by default
+        :param options: individual updates to ``preferences`` of the
+            form the name=value or name (the latter abbreviates name=true);
+            see also command-line option -o for isabelle build.
+        :param dirs: additional directories for session ROOT and ROOTS files
+        :param include_sessions: field specifies sessions whose theories should
+            be included in the overall name space of session-qualified theory
+            names.
         :param verbose: set to ``True`` for extra verbosity
-        :param \**kwargs: additional arguments
-            (see Isabelle System manual for details)
         :returns: an Isabelle response
         """
         arguments: dict[str, str | list[str] | bool] = {
             "session": session,
+            "options": [] if options is None else options,
+            "dirs": [] if dirs is None else dirs,
+            "include_sessions": []
+            if include_sessions is None
+            else include_sessions,
             "verbose": verbose,
         }
-        if dirs is not None:
-            arguments["dirs"] = dirs
-        arguments.update(kwargs)
+        if preferences is not None:
+            arguments["preferences"] = preferences
         raw_responses = asyncio.run(
             self.execute_command(f"session_build {json.dumps(arguments)}")
         )
