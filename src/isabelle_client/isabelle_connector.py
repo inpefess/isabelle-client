@@ -106,7 +106,8 @@ class IsabelleConnector:
             imports=imports,
             theory=theory,
         )
-        session_id = self._client.session_start()[-1].response_body.session_id  # type: ignore
+        # pyrefly: ignore [missing-attribute]
+        session_id = self._client.session_start()[-1].response_body.session_id
         validation_result = self._client.use_theories(
             session_id=session_id,
             theories=[theory_name],
@@ -116,7 +117,7 @@ class IsabelleConnector:
             if isinstance(isabelle_response, UseTheoriesResponse) and (
                 errors := isabelle_response.response_body.errors
             ):
-                raise IsabelleTheoryError(errors[0].message)  # type: ignore
+                raise IsabelleTheoryError(errors[0].message)
         self._client.session_stop(session_id=session_id)
 
     @property
