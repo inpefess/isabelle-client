@@ -21,7 +21,6 @@ A Python client to `Isabelle <https://isabelle.in.tum.de>`__ server
 import asyncio
 import json
 from logging import Logger
-from typing import Any
 
 from isabelle_client.data_models import (
     ASYNCHRONOUS_FINAL_MESSAGES,
@@ -123,12 +122,14 @@ class IsabelleClient:
             )
         ]
 
-    def session_build(
+    def session_build(  # noqa: PLR0913, PLR0917
         self,
         session: str,
+        preferences: str | None = None,
+        options: list[str] | None = None,
         dirs: list[str] | None = None,
+        include_sessions: list[str] | None = None,
         verbose: bool = False,
-        **kwargs: Any,
     ) -> list[
         TaskOK
         | SessionBuildRegularResponse
@@ -142,25 +143,35 @@ class IsabelleClient:
         ...     "localhost", 9999, "test_password"
         ... )
         >>> print(isabelle_client.session_build(
-        ...     session="test_session", dirs=["."], verbose=True, options=[]
+        ...     session="test_session", preferences=""
         ... )[-1])
         400
         FINISHED {"ok":true,"return_code":0,"sessions":[{"session":"Pure",...}
 
         :param session: a name of the session from ROOT file
-        :param dirs: where to look for ROOT files
+        :param preferences: references are loaded from the file
+            ``$ISABELLE_HOME_USER/etc/preferences`` by default
+        :param options: individual updates to ``preferences`` of the
+            form the name=value or name (the latter abbreviates name=true);
+            see also command-line option -o for isabelle build.
+        :param dirs: additional directories for session ROOT and ROOTS files
+        :param include_sessions: field specifies sessions whose theories should
+            be included in the overall name space of session-qualified theory
+            names.
         :param verbose: set to ``True`` for extra verbosity
-        :param \**kwargs: additional arguments
-            (see Isabelle System manual for details)
         :returns: an Isabelle response
         """
         arguments: dict[str, str | list[str] | bool] = {
             "session": session,
+            "options": [] if options is None else options,
+            "dirs": [] if dirs is None else dirs,
+            "include_sessions": []
+            if include_sessions is None
+            else include_sessions,
             "verbose": verbose,
         }
-        if dirs is not None:
-            arguments["dirs"] = dirs
-        arguments.update(kwargs)
+        if preferences is not None:
+            arguments["preferences"] = preferences
         raw_responses = asyncio.run(
             self.execute_command(f"session_build {json.dumps(arguments)}")
         )
@@ -179,8 +190,15 @@ class IsabelleClient:
             for raw_response in raw_responses
         ]
 
-    def session_start(
-        self, session: str = "Main", **kwargs: Any
+    def session_start(  # noqa: PLR0913, PLR0917
+        self,
+        session: str = "Main",
+        preferences: str | None = None,
+        options: list[str] | None = None,
+        dirs: list[str] | None = None,
+        include_sessions: list[str] | None = None,
+        verbose: bool = False,
+        print_mode: list[str] | None = None,
     ) -> list[
         TaskOK
         | SessionStartRegularResponse
@@ -191,16 +209,38 @@ class IsabelleClient:
         Start a new session.
 
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
-        >>> print(isabelle_client.session_start()[-1].response_body.session_id)
+        >>> print(
+        ...    isabelle_client.session_start(
+        ...        preferences=[])[-1].response_body.session_id)
         167dd6d8-1eeb-4315-8022-c8c527d9bd87
 
         :param session: a name of a session to start
-        :param \**kwargs: additional arguments
-            (see Isabelle System manual for details)
+        :param preferences: references are loaded from the file
+            ``$ISABELLE_HOME_USER/etc/preferences`` by default
+        :param options: individual updates to ``preferences`` of the
+            form the name=value or name (the latter abbreviates name=true);
+            see also command-line option -o for isabelle build.
+        :param dirs: additional directories for session ROOT and ROOTS files
+        :param include_sessions: field specifies sessions whose theories should
+            be included in the overall name space of session-qualified theory
+            names.
+        :param verbose: set to ``True`` for extra verbosity
+        :param print_mode: identifiers of print modes to be made active for
+            this session
         :returns: Isabelle server response
         """
-        arguments = {"session": session}
-        arguments.update(kwargs)
+        arguments: dict[str, str | list[str] | bool] = {
+            "session": session,
+            "options": [] if options is None else options,
+            "dirs": [] if dirs is None else dirs,
+            "include_sessions": []
+            if include_sessions is None
+            else include_sessions,
+            "verbose": verbose,
+            "print_mode": [] if print_mode is None else print_mode,
+        }
+        if preferences is not None:
+            arguments["preferences"] = preferences
         raw_responses = asyncio.run(
             self.execute_command(f"session_start {json.dumps(arguments)}")
         )
@@ -257,12 +297,18 @@ class IsabelleClient:
             for raw_response in raw_responses
         ]
 
-    def use_theories(
+    def use_theories(  # noqa: PLR0913, PLR0917
         self,
-        theories: list[str],
         session_id: str,
+        theories: list[str],
         master_dir: str | None = None,
-        **kwargs: Any,
+        pretty_margin: float = 76.0,
+        unicode_symbols: bool | None = None,
+        export_pattern: str | None = None,
+        check_delay: float = 0.5,
+        check_limit: int | None = None,
+        watchdog_timeout: float = 600.0,
+        nodes_status_delay: float = -1.0,
     ) -> list[TaskOK | UseTheoriesResponse | UseTheoriesErrorResponse]:
         r"""
         Run the engine on theory files.
@@ -274,22 +320,41 @@ class IsabelleClient:
         >>> print(test_response[-1].response_type.value)
         FINISHED
 
-        :param theories: names of theory files (without extensions!)
         :param session_id: an ID of a session; if ``None``, a new session is
             created and then destroyed after trying to process theories
+        :param theories: names of theory files (without extensions!)
         :param master_dir: where to look for theory files; if ``None``, uses a
             temp folder of the session
-        :param \**kwargs: additional arguments
-            (see Isabelle System manual for details)
+        :param pretty_margin: pretty formatting of emitted messages
+        :param unicode_symbols: use Unicode symbols in emitted messages
+        :param export_pattern: see the Isabelle server manual for details
+        :param check_delay: status of PIDE processing is checked every
+            ``check_delay`` seconds
+        :param check_limit: bound on PIDE processing check attempts, ``0`` for
+            unbounded
+        :param watchdog_timeout: the timespan (in seconds) after the last
+            command status change of Isabelle/PIDE, before finishing with a
+            potentially non-terminating or deadlocked execution
+        :param nodes_status_delay: enables continuous notifications if positive
+            (in seconds)
         :returns: Isabelle server response
         """
-        arguments: dict[str, list[str] | int | str] = {
-            "session_id": session_id,
-            "theories": theories,
+        arguments = {
+            key: value
+            for key, value in {
+                "session_id": session_id,
+                "theories": theories,
+                "master_dir": master_dir,
+                "pretty_margin": pretty_margin,
+                "unicode_symbols": unicode_symbols,
+                "export_pattern": export_pattern,
+                "check_delay": check_delay,
+                "check_limit": check_limit,
+                "watchdog_timeout": watchdog_timeout,
+                "nodes_status_delay": nodes_status_delay,
+            }.items()
+            if value is not None
         }
-        arguments.update(kwargs)
-        if master_dir is not None:
-            arguments["master_dir"] = master_dir
         raw_responses = asyncio.run(
             self.execute_command(f"use_theories {json.dumps(arguments)}")
         )

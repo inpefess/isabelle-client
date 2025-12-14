@@ -128,9 +128,8 @@ def start_isabelle_server_win32(
     """
     # this line enables asyncio.create_subprocess_exec on Windows:
     # https://docs.python.org/3/library/asyncio-platforms.html#asyncio-windows-subprocess
-    asyncio.set_event_loop_policy(
-        asyncio.WindowsProactorEventLoopPolicy()  # type: ignore
-    )
+    # pyrefly: ignore [deprecated, missing-attribute]
+    asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
 
     async def async_call() -> tuple[str, asyncio.subprocess.Process]:
         """
@@ -179,7 +178,7 @@ class DummyTCPHandler(socketserver.BaseRequestHandler):
             command == IsabelleServerCommands.USE_THEORIES.value
             and (theory_name := json.loads(arguments)["theories"][0]) != "Mock"
         ):
-            filename += f".{theory_name}"  # type: ignore
+            filename += f".{theory_name}"
         self.request.sendall(
             files("isabelle_client")
             .joinpath("resources")

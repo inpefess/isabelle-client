@@ -1,6 +1,6 @@
 [project]
 name = "isabelle-client"
-version = "1.0.0"
+version = "1.0.1"
 description = "A client to Isabelle proof assistant server"
 authors = [{name = "Boris Shminke", email = "<boris@shminke.com"}]
 license = "Apache-2.0"
@@ -39,7 +39,7 @@ dev = ["pre-commit", "tox", "tbump", "toml", "pyroma", "ruff", "pydoclint",
 profile = "black"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=1.0.1"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
@@ -49,36 +49,22 @@ addopts = """--doctest-modules
 testpaths = ["src"]
 
 [tool.tox]
-legacy_tox_ini = """
-[tox]
-isolated_build = True
-envlist = py310,py311,py312,py313,py314
+isolated_build_env = "true"
+env_list = ["py310", "py311", "py312", "py313", "py314"]
 
-[testenv]
-deps =
-    pytest
-    coverage
-    pyrefly
-    toml
-    pyroma
-    ruff
-    pydoclint
-commands =
-    ruff format
-    ruff check
-    pydoclint src
-    pyrefly check src
-    pyroma -n 10 .
-    coverage run
-    coverage xml
-    coverage report
-"""
+[tool.tox.env_run_base]
+deps = ["pytest", "coverage", "pyrefly", "toml", "pyroma", "ruff", "pydoclint"]
+commands =[
+    ["ruff", "format"], ["ruff", "check"], ["pydoclint", "src"],
+    ["pyrefly", "check", "src"], ["pyroma", "-n", "10", "."],
+    ["coverage", "run"], ["coverage", "xml"], ["coverage", "report"]
+]
 
 [tool.tbump]
 github_url = "https://github.com/inpfess/isabelle-client/"
 
 [tool.tbump.version]
-current = "1.0.0"
+current = "1.0.1"
 regex = '''
   (?P<major>\d+)
   \.
