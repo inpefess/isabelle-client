@@ -191,8 +191,15 @@ class IsabelleClient:
             for raw_response in raw_responses
         ]
 
-    def session_start(
-        self, session: str = "Main", **kwargs: Any
+    def session_start(  # noqa: PLR0913, PLR0917
+        self,
+        session: str = "Main",
+        preferences: str | None = None,
+        options: list[str] | None = None,
+        dirs: list[str] | None = None,
+        include_sessions: list[str] | None = None,
+        verbose: bool = False,
+        print_mode: list[str] | None = None,
     ) -> list[
         TaskOK
         | SessionStartRegularResponse
@@ -203,16 +210,38 @@ class IsabelleClient:
         Start a new session.
 
         >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
-        >>> print(isabelle_client.session_start()[-1].response_body.session_id)
+        >>> print(
+        ...    isabelle_client.session_start(
+        ...        preferences=[])[-1].response_body.session_id)
         167dd6d8-1eeb-4315-8022-c8c527d9bd87
 
         :param session: a name of a session to start
-        :param \**kwargs: additional arguments
-            (see Isabelle System manual for details)
+        :param preferences: references are loaded from the file
+            ``$ISABELLE_HOME_USER/etc/preferences`` by default
+        :param options: individual updates to ``preferences`` of the
+            form the name=value or name (the latter abbreviates name=true);
+            see also command-line option -o for isabelle build.
+        :param dirs: additional directories for session ROOT and ROOTS files
+        :param include_sessions: field specifies sessions whose theories should
+            be included in the overall name space of session-qualified theory
+            names.
+        :param verbose: set to ``True`` for extra verbosity
+        :param print_mode: identifiers of print modes to be made active for
+            this session
         :returns: Isabelle server response
         """
-        arguments = {"session": session}
-        arguments.update(kwargs)
+        arguments: dict[str, str | list[str] | bool] = {
+            "session": session,
+            "options": [] if options is None else options,
+            "dirs": [] if dirs is None else dirs,
+            "include_sessions": []
+            if include_sessions is None
+            else include_sessions,
+            "verbose": verbose,
+            "print_mode": [] if print_mode is None else print_mode,
+        }
+        if preferences is not None:
+            arguments["preferences"] = preferences
         raw_responses = asyncio.run(
             self.execute_command(f"session_start {json.dumps(arguments)}")
         )
