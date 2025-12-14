@@ -49,7 +49,7 @@ addopts = """--doctest-modules
 testpaths = ["src"]
 
 [tool.tox]
-isolated_build_env = true
+isolated_build_env = "true"
 env_list = ["py310", "py311", "py312", "py313", "py314"]
 
 [tool.tox.env_run_base]
