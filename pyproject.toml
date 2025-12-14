@@ -1,6 +1,6 @@
 [project]
 name = "isabelle-client"
-version = "1.0.0"
+version = "1.0.1"
 description = "A client to Isabelle proof assistant server"
 authors = [{name = "Boris Shminke", email = "<boris@shminke.com"}]
 license = "Apache-2.0"
@@ -39,7 +39,7 @@ dev = ["pre-commit", "tox", "tbump", "toml", "pyroma", "ruff", "pydoclint",
 profile = "black"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=1.0.1"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
@@ -64,7 +64,7 @@ commands =[
 github_url = "https://github.com/inpfess/isabelle-client/"
 
 [tool.tbump.version]
-current = "1.0.0"
+current = "1.0.1"
 regex = '''
   (?P<major>\d+)
   \.
