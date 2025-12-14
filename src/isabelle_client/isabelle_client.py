@@ -21,7 +21,6 @@ A Python client to `Isabelle <https://isabelle.in.tum.de>`__ server
 import asyncio
 import json
 from logging import Logger
-from typing import Any
 
 from isabelle_client.data_models import (
     ASYNCHRONOUS_FINAL_MESSAGES,
@@ -298,12 +297,18 @@ class IsabelleClient:
             for raw_response in raw_responses
         ]
 
-    def use_theories(
+    def use_theories(  # noqa: PLR0913, PLR0917
         self,
-        theories: list[str],
         session_id: str,
+        theories: list[str],
         master_dir: str | None = None,
-        **kwargs: Any,
+        pretty_margin: float = 76.0,
+        unicode_symbols: bool | None = None,
+        export_pattern: str | None = None,
+        check_delay: float = 0.5,
+        check_limit: int | None = None,
+        watchdog_timeout: float = 600.0,
+        nodes_status_delay: float = -1.0,
     ) -> list[TaskOK | UseTheoriesResponse | UseTheoriesErrorResponse]:
         r"""
         Run the engine on theory files.
@@ -315,22 +320,41 @@ class IsabelleClient:
         >>> print(test_response[-1].response_type.value)
         FINISHED
 
-        :param theories: names of theory files (without extensions!)
         :param session_id: an ID of a session; if ``None``, a new session is
             created and then destroyed after trying to process theories
+        :param theories: names of theory files (without extensions!)
         :param master_dir: where to look for theory files; if ``None``, uses a
             temp folder of the session
-        :param \**kwargs: additional arguments
-            (see Isabelle System manual for details)
+        :param pretty_margin: pretty formatting of emitted messages
+        :param unicode_symbols: use Unicode symbols in emitted messages
+        :param export_pattern: see the Isabelle server manual for details
+        :param check_delay: status of PIDE processing is checked every
+            ``check_delay`` seconds
+        :param check_limit: bound on PIDE processing check attempts, ``0`` for
+            unbounded
+        :param watchdog_timeout: the timespan (in seconds) after the last
+            command status change of Isabelle/PIDE, before finishing with a
+            potentially non-terminating or deadlocked execution
+        :param nodes_status_delay: enables continuous notifications if positive
+            (in seconds)
         :returns: Isabelle server response
         """
-        arguments: dict[str, list[str] | int | str] = {
-            "session_id": session_id,
-            "theories": theories,
+        arguments = {
+            key: value
+            for key, value in {
+                "session_id": session_id,
+                "theories": theories,
+                "master_dir": master_dir,
+                "pretty_margin": pretty_margin,
+                "unicode_symbols": unicode_symbols,
+                "export_pattern": export_pattern,
+                "check_delay": check_delay,
+                "check_limit": check_limit,
+                "watchdog_timeout": watchdog_timeout,
+                "nodes_status_delay": nodes_status_delay,
+            }.items()
+            if value is not None
         }
-        arguments.update(kwargs)
-        if master_dir is not None:
-            arguments["master_dir"] = master_dir
         raw_responses = asyncio.run(
             self.execute_command(f"use_theories {json.dumps(arguments)}")
         )
