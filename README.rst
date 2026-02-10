@@ -103,10 +103,8 @@ Similar Software
 There are Python clients to other interactive theorem provers, for
 example:
 
-* `for Lean
-  <https://github.com/leanprover-community/lean-client-python>`__
-* `for Coq <https://github.com/IBM/pycoq>`__
-* `another one for Coq <https://github.com/ejgallego/pycoq>`__
+* `for Lean <https://pypi.org/project/lean-interact/>`__
+* `for Rocq <https://github.com/LLM4Rocq/pytanque>`__
 
 Modules helping to interact with Isabelle server from Python are
 parts of the `Proving for Fun
