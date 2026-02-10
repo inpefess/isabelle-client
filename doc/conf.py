@@ -1,4 +1,4 @@
-# Copyright 2021-2025 Boris Shminke
+# Copyright 2021-2026 Boris Shminke
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,6 +22,6 @@ distribution_metadata = distribution(isabelle_client.__name__).metadata
 project = distribution_metadata["Name"]
 version = distribution_metadata["Version"]
 author = distribution_metadata["Author"]
-copyright = f"2021-2025, {author}"  # noqa: A001
+copyright = f"2021-2026, {author}"  # noqa: A001
 extensions = ["sphinx.ext.autodoc", "sphinx.ext.coverage"]
 html_theme = "furo"
