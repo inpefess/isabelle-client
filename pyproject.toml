@@ -39,8 +39,8 @@ dev = ["pre-commit", "tox", "tbump", "toml", "pyroma", "ruff", "pydoclint",
 profile = "black"
 
 [build-system]
-requires = ["poetry-core>=1.0.1"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build"]
+build-backend = "uv_build"
 
 [tool.pytest.ini_options]
 minversion = "6.0"

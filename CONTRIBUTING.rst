@@ -76,16 +76,20 @@ installed and ready to go.
       git clone git@github.com:YOUR_NAME/isabelle-client.git
 
 1. Install
-   [poetry](https://python-poetry.org/docs/#installing-with-the-official-installer).
+   [uv](https://docs.astral.sh/uv/getting-started/installation/#standalone-installer).
       
-1. Now you can install all the things you need for development (this
-   command will also create a virtual environment in `.venv`
-   subfolder):
+1. Create and activate a virtual environment in `.venv` subfolder:
 
    .. code:: bash
 
-      poetry install --all-extras
+      uv venv
       source .venv/bin/activate
+
+1. Now you can install all the things you need for development:
+
+   .. code:: bash
+
+      uv sync --all-extras
       # recommended but not necessary
       pre-commit install
 
