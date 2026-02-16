@@ -32,8 +32,19 @@ Issues = "https://github.com/inpefess/isabelle-client/issues"
 [project.optional-dependencies]
 doc = ["furo", "sphinx-autodoc-typehints"]
 test = ["coverage", "pytest"]
-dev = ["pre-commit", "tox", "tbump", "toml", "pyroma", "ruff", "pydoclint",
-       "debugpy", "jedi-language-server", "isort", "pyrefly"]
+dev = [
+    "pre-commit",
+    "tox",
+    "tbump",
+    "toml",
+    "pyroma",
+    "ruff",
+    "pydoclint",
+    "debugpy",
+    "isort",
+    "pyrefly",
+    "ty",
+]
 
 [tool.isort]
 profile = "black"
