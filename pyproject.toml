@@ -1,6 +1,6 @@
 [project]
 name = "isabelle-client"
-version = "1.0.1"
+version = "1.0.2"
 description = "A client to Isabelle proof assistant server"
 authors = [{name = "Boris Shminke", email = "<boris@shminke.com"}]
 license = "Apache-2.0"
@@ -32,15 +32,26 @@ Issues = "https://github.com/inpefess/isabelle-client/issues"
 [project.optional-dependencies]
 doc = ["furo", "sphinx-autodoc-typehints"]
 test = ["coverage", "pytest"]
-dev = ["pre-commit", "tox", "tbump", "toml", "pyroma", "ruff", "pydoclint",
-       "debugpy", "jedi-language-server", "isort", "pyrefly"]
+dev = [
+    "pre-commit",
+    "tox",
+    "tbump",
+    "toml",
+    "pyroma",
+    "ruff",
+    "pydoclint",
+    "debugpy",
+    "isort",
+    "pyrefly",
+    "ty",
+]
 
 [tool.isort]
 profile = "black"
 
 [build-system]
-requires = ["poetry-core>=1.0.1"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build"]
+build-backend = "uv_build"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -64,7 +75,7 @@ commands =[
 github_url = "https://github.com/inpfess/isabelle-client/"
 
 [tool.tbump.version]
-current = "1.0.1"
+current = "1.0.2"
 regex = '''
   (?P<major>\d+)
   \.

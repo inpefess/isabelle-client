@@ -1,25 +1,16 @@
 FROM makarius/isabelle:Isabelle2025_X11_Latex
-ARG NB_USER=jovyan
-ARG NB_UID=1000
-ENV USER ${NB_USER}
-ENV NB_UID ${NB_UID}
 USER root
-RUN groupmod -g 9999 isabelle
-RUN usermod -u 9999 -g 9999 isabelle
-RUN adduser --disabled-password \
-    --gecos "Default user" \
-    --uid ${NB_UID} \
-    ${NB_USER}
 RUN apt-get update
-RUN apt-get install -y python3-pip
-ENV HOME /home/${NB_USER}
-ENV ISABELLE_BIN /home/isabelle/Isabelle/bin/
+RUN apt-get install -y python3-venv
+ENV HOME /home/isabelle
+ENV ISABELLE_BIN /home/isabelle/Isabelle/bin
 ENV PATH=${HOME}/.local/bin/:${ISABELLE_BIN}:${PATH}
 COPY examples/ ${HOME}/isabelle-client-examples/
-COPY src/ pyproject.toml poetry.lock README.rst ${HOME}
-RUN chown -R ${NB_USER}:${NB_USER} ${HOME}/isabelle-client-examples/
-RUN chown -R ${NB_USER}:${NB_USER} ${ISABELLE_BIN}
-USER ${NB_USER}
+COPY pyproject.toml uv.lock README.rst ${HOME}
+COPY src/ ${HOME}/src/
+RUN chown -R isabelle:isabelle ${HOME}/isabelle-client-examples/
+USER isabelle
 WORKDIR ${HOME}
-RUN python3 -m pip install --no-cache-dir notebook jupyterlab -e .
-ENTRYPOINT ["jupyter", "lab", "--ip", "0.0.0.0", "--NotebookApp.token=''"]
+RUN python3 -m venv .venv
+RUN .venv/bin/python3 -m pip install --no-cache-dir notebook jupyterlab .
+ENTRYPOINT [".venv/bin/jupyter", "lab", "--ip", "0.0.0.0", "--NotebookApp.token=''"]

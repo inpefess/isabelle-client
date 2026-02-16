@@ -46,9 +46,12 @@ How to use
    server_info, _ = start_isabelle_server()
    # create a client object
    isabelle = get_isabelle_client(server_info)
+   # start a new session
+   responses = isabelle.session_start()
+   session_id = responses[-1].response_body.session_id
    # send a theory file from the current directory to the server
-   response = isabelle.use_theories(
-       theories=["Example"], master_dir=".", watchdog_timeout=0
+   responses = isabelle.use_theories(
+       theories=["Example"], master_dir=".", session_id=session_id
    )
    # shut the server down
    isabelle.shutdown()
@@ -103,10 +106,8 @@ Similar Software
 There are Python clients to other interactive theorem provers, for
 example:
 
-* `for Lean
-  <https://github.com/leanprover-community/lean-client-python>`__
-* `for Coq <https://github.com/IBM/pycoq>`__
-* `another one for Coq <https://github.com/ejgallego/pycoq>`__
+* `for Lean <https://pypi.org/project/lean-interact/>`__
+* `for Rocq <https://github.com/LLM4Rocq/pytanque>`__
 
 Modules helping to interact with Isabelle server from Python are
 parts of the `Proving for Fun
