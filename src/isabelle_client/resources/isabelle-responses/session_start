@@ -1,5 +1,32 @@
-OK {"task":"6c77254a-3b05-47cc-bc49-093ec7ccc2b8"}
-108
-NOTE {"kind":"writeln","message":"Starting session Main ...","task":"6c77254a-3b05-47cc-bc49-093ec7ccc2b8"}
-170
-FINISHED {"session_id":"167dd6d8-1eeb-4315-8022-c8c527d9bd87","tmp_dir":"/tmp/isabelle/server_session10866100026207629259","task":"6c77254a-3b05-47cc-bc49-093ec7ccc2b8"}
+OK {"task":"f7c584bf-8f8c-43cc-b4c1-b26789d68719"}
+117
+NOTE {"kind":"writeln","message":"Session Pure/Pure","verbose":"true","task":"f7c584bf-8f8c-43cc-b4c1-b26789d68719"}
+118
+NOTE {"kind":"writeln","message":"Session Misc/Tools","verbose":"true","task":"f7c584bf-8f8c-43cc-b4c1-b26789d68719"}
+122
+NOTE {"kind":"writeln","message":"Session HOL/HOL (main)","verbose":"true","task":"f7c584bf-8f8c-43cc-b4c1-b26789d68719"}
+122
+NOTE {"kind":"writeln","message":"Session Doc/Main (doc)","verbose":"true","task":"f7c584bf-8f8c-43cc-b4c1-b26789d68719"}
+117
+NOTE {"kind":"writeln","message":"Session Pure/Pure","verbose":"true","task":"f7c584bf-8f8c-43cc-b4c1-b26789d68719"}
+118
+NOTE {"kind":"writeln","message":"Session Misc/Tools","verbose":"true","task":"f7c584bf-8f8c-43cc-b4c1-b26789d68719"}
+122
+NOTE {"kind":"writeln","message":"Session HOL/HOL (main)","verbose":"true","task":"f7c584bf-8f8c-43cc-b4c1-b26789d68719"}
+122
+NOTE {"kind":"writeln","message":"Session Doc/Main (doc)","verbose":"true","task":"f7c584bf-8f8c-43cc-b4c1-b26789d68719"}
+118
+NOTE {"kind":"writeln","message":"Building Main ...","verbose":"false","task":"f7c584bf-8f8c-43cc-b4c1-b26789d68719"}
+151
+NOTE {"task":"f7c584bf-8f8c-43cc-b4c1-b26789d68719","message":"Main: theory Main.Main_Doc","kind":"writeln","session":"Main","theory":"Main.Main_Doc"}
+270
+NOTE {"kind":"nodes_status","nodes_status":[{"node_name":"~~/src/Doc/Main/Main_Doc.thy","theory_name":"Main.Main_Doc","status":{"percentage":100,"unprocessed":1,"running":0,"finished":0,"failed":0,"total":1,"consolidated":false,"canceled":false,"ok":true,"warned":0}}]}
+NOTE {"kind":"nodes_status","nodes_status":[]}
+190
+NOTE {"kind":"writeln","message":"Timing Main (6 threads, 0.643s elapsed time, 0.733s cpu time, 0.020s GC time, factor 1.14)","verbose":"true","task":"f7c584bf-8f8c-43cc-b4c1-b26789d68719"}
+168
+NOTE {"kind":"writeln","message":"Finished Main (0:00:04 elapsed time, 0:00:06 cpu time, factor 1.39)","verbose":"false","task":"f7c584bf-8f8c-43cc-b4c1-b26789d68719"}
+126
+NOTE {"kind":"writeln","message":"Starting session Main ...","verbose":"false","task":"f7c584bf-8f8c-43cc-b4c1-b26789d68719"}
+171
+FINISHED {"session_id":"167dd6d8-1eeb-4315-8022-c8c527d9bd87","tmp_dir":"/tmp/isabelle-/server_session10102610028077391104","task":"f7c584bf-8f8c-43cc-b4c1-b26789d68719"}

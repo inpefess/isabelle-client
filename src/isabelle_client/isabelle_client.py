@@ -28,6 +28,7 @@ from isabelle_client.data_models import (
     HelpResult,
     IsabelleResponse,
     IsabelleResponseType,
+    NodesStatusResponse,
     NotificationResponse,
     PurgeTheoriesResponse,
     SessionBuildErrorResponse,
@@ -204,6 +205,7 @@ class IsabelleClient:
         | SessionStartRegularResponse
         | SessionStartErrorResponse
         | NotificationResponse
+        | NodesStatusResponse
     ]:
         r"""
         Start a new session.
@@ -253,7 +255,14 @@ class IsabelleClient:
                 else (
                     TaskOK(**raw_response.model_dump())
                     if raw_response.response_type == IsabelleResponseType.OK
-                    else NotificationResponse(**raw_response.model_dump())
+                    else (
+                        NodesStatusResponse(**raw_response.model_dump())
+                        if raw_response.model_dump()["response_body"].get(
+                            "kind"
+                        )
+                        == "nodes_status"
+                        else NotificationResponse(**raw_response.model_dump())
+                    )
                 )
             )
             for raw_response in raw_responses
@@ -309,7 +318,12 @@ class IsabelleClient:
         check_limit: int | None = None,
         watchdog_timeout: float = 600.0,
         nodes_status_delay: float = -1.0,
-    ) -> list[TaskOK | UseTheoriesResponse | UseTheoriesErrorResponse]:
+    ) -> list[
+        TaskOK
+        | UseTheoriesResponse
+        | UseTheoriesErrorResponse
+        | NodesStatusResponse
+    ]:
         r"""
         Run the engine on theory files.
 
@@ -364,7 +378,12 @@ class IsabelleClient:
             else (
                 UseTheoriesErrorResponse(**raw_response.model_dump())
                 if raw_response.response_type == IsabelleResponseType.FAILED
-                else TaskOK(**raw_response.model_dump())
+                else (
+                    NodesStatusResponse(**raw_response.model_dump())
+                    if raw_response.model_dump()["response_body"].get("kind")
+                    == "nodes_status"
+                    else TaskOK(**raw_response.model_dump())
+                )
             )
             for raw_response in raw_responses
         ]
