@@ -88,9 +88,12 @@ class IsabelleResponse(SimpleIsabelleResponse):
             + self.response_type.value
             + (" " if self.response_body else "")
             + (
-                self.response_body.model_dump_json()
+                json.dumps(
+                    json.loads(self.response_body.model_dump_json()),
+                    separators=(",", ":"),
+                )
                 if isinstance(self.response_body, BaseModel)
-                else json.dumps(self.response_body)
+                else json.dumps(self.response_body, separators=(",", ":"))
             )
         )
 
