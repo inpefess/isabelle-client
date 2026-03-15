@@ -1,8 +1,36 @@
-OK {"task":"e279a4da-51a0-412b-b15a-3d0d02b39287"}
-NOTE {"kind":"writeln","message":"Building Main ...","task":"e279a4da-51a0-412b-b15a-3d0d02b39287"}
-151
-NOTE {"task":"e279a4da-51a0-412b-b15a-3d0d02b39287","message":"Main: theory Main.Main_Doc","kind":"writeln","session":"Main","theory":"Main.Main_Doc"}
+OK {"task":"c1e202d5-679e-4561-8de0-c944b74c23fd"}
+117
+NOTE {"kind":"writeln","message":"Session Pure/Pure","verbose":"true","task":"c1e202d5-679e-4561-8de0-c944b74c23fd"}
+118
+NOTE {"kind":"writeln","message":"Session Misc/Tools","verbose":"true","task":"c1e202d5-679e-4561-8de0-c944b74c23fd"}
+122
+NOTE {"kind":"writeln","message":"Session HOL/HOL (main)","verbose":"true","task":"c1e202d5-679e-4561-8de0-c944b74c23fd"}
+125
+NOTE {"kind":"writeln","message":"Session Unsorted/examples","verbose":"true","task":"c1e202d5-679e-4561-8de0-c944b74c23fd"}
+117
+NOTE {"kind":"writeln","message":"Session Pure/Pure","verbose":"true","task":"c1e202d5-679e-4561-8de0-c944b74c23fd"}
+118
+NOTE {"kind":"writeln","message":"Session Misc/Tools","verbose":"true","task":"c1e202d5-679e-4561-8de0-c944b74c23fd"}
+122
+NOTE {"kind":"writeln","message":"Session HOL/HOL (main)","verbose":"true","task":"c1e202d5-679e-4561-8de0-c944b74c23fd"}
+125
+NOTE {"kind":"writeln","message":"Session Unsorted/examples","verbose":"true","task":"c1e202d5-679e-4561-8de0-c944b74c23fd"}
+122
+NOTE {"kind":"writeln","message":"Building examples ...","verbose":"false","task":"c1e202d5-679e-4561-8de0-c944b74c23fd"}
+165
+NOTE {"task":"c1e202d5-679e-4561-8de0-c944b74c23fd","message":"examples: theory examples.Example","kind":"writeln","session":"examples","theory":"examples.Example"}
+283
+NOTE {"kind":"nodes_status","nodes_status":[{"node_name":"~/isabelle-client-examples/Example.thy","theory_name":"examples.Example","status":{"percentage":100,"unprocessed":1,"running":0,"finished":0,"failed":0,"total":1,"consolidated":false,"canceled":false,"ok":true,"warned":0}}]}
+NOTE {"kind":"nodes_status","nodes_status":[]}
+132
+NOTE {"kind":"writeln","message":"Preparing examples/document ...","verbose":"false","task":"c1e202d5-679e-4561-8de0-c944b74c23fd"}
 150
-NOTE {"kind":"writeln","message":"Finished Main (0:00:06 elapsed time, 0:00:09 cpu time, factor 1.44)","task":"e279a4da-51a0-412b-b15a-3d0d02b39287"}
-400
-FINISHED {"ok":true,"return_code":0,"sessions":[{"session":"Pure","ok":true,"timeout":false,"timing":{"elapsed":0,"cpu":0,"gc":0},"return_code":0},{"session":"HOL","ok":true,"timeout":false,"timing":{"elapsed":0,"cpu":0,"gc":0},"return_code":0},{"session":"Main","ok":true,"timeout":false,"timing":{"elapsed":6.643,"cpu":9.561,"gc":0},"return_code":0}],"task":"e279a4da-51a0-412b-b15a-3d0d02b39287"}
+NOTE {"kind":"writeln","message":"Finished examples/document (0:00:01 elapsed time)","verbose":"false","task":"c1e202d5-679e-4561-8de0-c944b74c23fd"}
+176
+NOTE {"kind":"writeln","message":"Document at \"/home/isabelle/isabelle-client-examples/output/document.pdf\"","verbose":"false","task":"c1e202d5-679e-4561-8de0-c944b74c23fd"}
+194
+NOTE {"kind":"writeln","message":"Timing examples (6 threads, 0.111s elapsed time, 0.145s cpu time, 0.000s GC time, factor 1.31)","verbose":"true","task":"c1e202d5-679e-4561-8de0-c944b74c23fd"}
+172
+NOTE {"kind":"writeln","message":"Finished examples (0:00:03 elapsed time, 0:00:05 cpu time, factor 1.44)","verbose":"false","task":"c1e202d5-679e-4561-8de0-c944b74c23fd"}
+403
+FINISHED {"ok":true,"return_code":0,"sessions":[{"session":"Pure","ok":true,"timeout":false,"timing":{"elapsed":0,"cpu":0,"gc":0},"return_code":0},{"session":"HOL","ok":true,"timeout":false,"timing":{"elapsed":0,"cpu":0,"gc":0},"return_code":0},{"session":"examples","ok":true,"timeout":false,"timing":{"elapsed":3.748,"cpu":5.38,"gc":0},"return_code":0}],"task":"c1e202d5-679e-4561-8de0-c944b74c23fd"}

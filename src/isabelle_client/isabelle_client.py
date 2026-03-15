@@ -136,6 +136,7 @@ class IsabelleClient:
         | SessionBuildRegularResponse
         | SessionBuildErrorResponse
         | NotificationResponse
+        | NodesStatusResponse
     ]:
         r"""
         Build a session from ROOT file.
@@ -146,7 +147,7 @@ class IsabelleClient:
         >>> print(isabelle_client.session_build(
         ...     session="test_session", preferences=""
         ... )[-1])
-        400
+        403
         FINISHED {"ok":true,"return_code":0,"sessions":[{"session":"Pure",...}
 
         :param session: a name of the session from ROOT file
@@ -185,7 +186,14 @@ class IsabelleClient:
                 else (
                     TaskOK(**raw_response.model_dump())
                     if raw_response.response_type == IsabelleResponseType.OK
-                    else NotificationResponse(**raw_response.model_dump())
+                    else (
+                        NodesStatusResponse(**raw_response.model_dump())
+                        if raw_response.model_dump()["response_body"].get(
+                            "kind"
+                        )
+                        == "nodes_status"
+                        else NotificationResponse(**raw_response.model_dump())
+                    )
                 )
             )
             for raw_response in raw_responses
