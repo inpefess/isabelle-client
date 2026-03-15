@@ -44,6 +44,8 @@ dev = [
     "isort",
     "pyrefly",
     "ty",
+    "jedi-language-server",
+    "rassumfrassum",
 ]
 
 [tool.isort]
