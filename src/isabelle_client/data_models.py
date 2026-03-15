@@ -164,6 +164,25 @@ class NodeStatus(BaseModel):
     percentage: int
 
 
+class NodeStatusWithName(Node):
+    """Node status for `nodes_status` notes."""
+
+    status: NodeStatus
+
+
+class NodesStatus(BaseModel):
+    """Nodes status notification."""
+
+    kind: str = "nodes_status"
+    nodes_status: list[NodeStatusWithName]
+
+
+class NodesStatusResponse(IsabelleResponse):
+    """Response with `nodes_status` notification."""
+
+    response_body: NodesStatus
+
+
 class NodeResult(BaseModel):
     """Node result."""
 
