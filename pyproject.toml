@@ -34,14 +34,11 @@ doc = ["furo", "sphinx-autodoc-typehints"]
 test = ["coverage", "pytest"]
 dev = [
     "pre-commit",
-    "tox",
     "tbump",
     "toml",
     "pyroma",
     "ruff",
     "pydoclint",
-    "debugpy",
-    "isort",
     "ty",
     "jedi-language-server",
     "rassumfrassum",
