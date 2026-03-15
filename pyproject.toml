@@ -42,7 +42,6 @@ dev = [
     "pydoclint",
     "debugpy",
     "isort",
-    "pyrefly",
     "ty",
     "jedi-language-server",
     "rassumfrassum",
@@ -66,10 +65,10 @@ isolated_build_env = "true"
 env_list = ["py310", "py311", "py312", "py313", "py314"]
 
 [tool.tox.env_run_base]
-deps = ["pytest", "coverage", "pyrefly", "toml", "pyroma", "ruff", "pydoclint"]
+deps = ["pytest", "coverage", "ty", "toml", "pyroma", "ruff", "pydoclint"]
 commands =[
     ["ruff", "format"], ["ruff", "check"], ["pydoclint", "src"],
-    ["pyrefly", "check", "src"], ["pyroma", "-n", "10", "."],
+    ["ty", "check"], ["pyroma", "-n", "10", "."],
     ["coverage", "run"], ["coverage", "xml"], ["coverage", "report"]
 ]
 
