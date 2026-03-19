@@ -1,9 +1,9 @@
 repos:
 -   repo: local
     hooks:
-    -   id: pyrefly
-        name: pyrefly
-        entry: pyrefly check
+    -   id: ty
+        name: ty
+        entry: ty check
         language: system
         types: [python]
     -   id: ruff check

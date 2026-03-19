@@ -28,6 +28,7 @@ from isabelle_client.data_models import (
     HelpResult,
     IsabelleResponse,
     IsabelleResponseType,
+    NodesStatusResponse,
     NotificationResponse,
     PurgeTheoriesResponse,
     SessionBuildErrorResponse,
@@ -94,7 +95,7 @@ class IsabelleClient:
         None
         >>> print(logger.info.mock_calls)
         [call('test_password\nunknown command\n'),
-         call('OK {"isabelle_id": "mock", "isabelle_name": "Isabelle2024"}'),
+         call('OK {"isabelle_id":"mock","isabelle_name":"Isabelle2025-2"}'),
          call('ERROR "Bad command \'unknown\'"')]
 
         :param command: a full text of a command to Isabelle
@@ -135,6 +136,7 @@ class IsabelleClient:
         | SessionBuildRegularResponse
         | SessionBuildErrorResponse
         | NotificationResponse
+        | NodesStatusResponse
     ]:
         r"""
         Build a session from ROOT file.
@@ -145,7 +147,7 @@ class IsabelleClient:
         >>> print(isabelle_client.session_build(
         ...     session="test_session", preferences=""
         ... )[-1])
-        400
+        403
         FINISHED {"ok":true,"return_code":0,"sessions":[{"session":"Pure",...}
 
         :param session: a name of the session from ROOT file
@@ -184,7 +186,14 @@ class IsabelleClient:
                 else (
                     TaskOK(**raw_response.model_dump())
                     if raw_response.response_type == IsabelleResponseType.OK
-                    else NotificationResponse(**raw_response.model_dump())
+                    else (
+                        NodesStatusResponse(**raw_response.model_dump())
+                        if raw_response.model_dump()["response_body"].get(
+                            "kind"
+                        )
+                        == "nodes_status"
+                        else NotificationResponse(**raw_response.model_dump())
+                    )
                 )
             )
             for raw_response in raw_responses
@@ -204,6 +213,7 @@ class IsabelleClient:
         | SessionStartRegularResponse
         | SessionStartErrorResponse
         | NotificationResponse
+        | NodesStatusResponse
     ]:
         r"""
         Start a new session.
@@ -253,7 +263,14 @@ class IsabelleClient:
                 else (
                     TaskOK(**raw_response.model_dump())
                     if raw_response.response_type == IsabelleResponseType.OK
-                    else NotificationResponse(**raw_response.model_dump())
+                    else (
+                        NodesStatusResponse(**raw_response.model_dump())
+                        if raw_response.model_dump()["response_body"].get(
+                            "kind"
+                        )
+                        == "nodes_status"
+                        else NotificationResponse(**raw_response.model_dump())
+                    )
                 )
             )
             for raw_response in raw_responses
@@ -309,7 +326,12 @@ class IsabelleClient:
         check_limit: int | None = None,
         watchdog_timeout: float = 600.0,
         nodes_status_delay: float = -1.0,
-    ) -> list[TaskOK | UseTheoriesResponse | UseTheoriesErrorResponse]:
+    ) -> list[
+        TaskOK
+        | UseTheoriesResponse
+        | UseTheoriesErrorResponse
+        | NodesStatusResponse
+    ]:
         r"""
         Run the engine on theory files.
 
@@ -364,7 +386,12 @@ class IsabelleClient:
             else (
                 UseTheoriesErrorResponse(**raw_response.model_dump())
                 if raw_response.response_type == IsabelleResponseType.FAILED
-                else TaskOK(**raw_response.model_dump())
+                else (
+                    NodesStatusResponse(**raw_response.model_dump())
+                    if raw_response.model_dump()["response_body"].get("kind")
+                    == "nodes_status"
+                    else TaskOK(**raw_response.model_dump())
+                )
             )
             for raw_response in raw_responses
         ]

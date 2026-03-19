@@ -1,4 +1,4 @@
-FROM makarius/isabelle:Isabelle2025_X11_Latex
+FROM makarius/isabelle:Isabelle2025-2_X11_Latex
 USER root
 RUN apt-get update
 RUN apt-get install -y python3-venv

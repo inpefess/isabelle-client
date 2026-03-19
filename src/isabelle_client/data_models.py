@@ -88,9 +88,12 @@ class IsabelleResponse(SimpleIsabelleResponse):
             + self.response_type.value
             + (" " if self.response_body else "")
             + (
-                self.response_body.model_dump_json()
+                json.dumps(
+                    json.loads(self.response_body.model_dump_json()),
+                    separators=(",", ":"),
+                )
                 if isinstance(self.response_body, BaseModel)
-                else json.dumps(self.response_body)
+                else json.dumps(self.response_body, separators=(",", ":"))
             )
         )
 
@@ -159,6 +162,25 @@ class NodeStatus(BaseModel):
     canceled: bool
     consolidated: bool
     percentage: int
+
+
+class NodeStatusWithName(Node):
+    """Node status for `nodes_status` notes."""
+
+    status: NodeStatus
+
+
+class NodesStatus(BaseModel):
+    """Nodes status notification."""
+
+    kind: str = "nodes_status"
+    nodes_status: list[NodeStatusWithName]
+
+
+class NodesStatusResponse(IsabelleResponse):
+    """Response with `nodes_status` notification."""
+
+    response_body: NodesStatus
 
 
 class NodeResult(BaseModel):

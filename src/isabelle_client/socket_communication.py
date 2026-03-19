@@ -48,7 +48,7 @@ async def get_response_from_isabelle(
     ...     result += [str(await get_response_from_isabelle(test_reader))]
     ...     return result
     >>> print(asyncio.run(awaiter()))
-    ['OK {"isabelle_id": "mock", "isabelle_name": "Isabelle2024"}', '118\nO...]
+    ['OK {"isabelle_id":"mock","isabelle_name":"Isabelle2025-2"}', '118\nO...]
     >>> async def awaiter():
     ...     test_reader, test_writer = await asyncio.open_connection(
     ...     "localhost", 9998
@@ -109,9 +109,9 @@ async def get_final_message(
     >>> for response in asyncio.run(awaiter()):
     ...     print(response)
     118
-    OK ["cancel", "echo", "help", "purge_theories", "session_build", ...]
+    OK ["cancel","echo","help","purge_theories","session_build",...]
     >>> print(test_logger.info.mock_calls)
-    [call('118\nOK ["cancel", "echo", "help", "purge_theories", "session_...')]
+    [call('118\nOK ["cancel","echo","help","purge_theories","session...')]
 
     :param reader: a ``StreamReader`` connected to Isabelle server
     :param final_message: a set of possible final message types

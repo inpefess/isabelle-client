@@ -1,7 +1,9 @@
-OK {"task":"97504f00-3946-40fc-91a4-e9b1228df480"}
-158
-NOTE {"percentage":99,"task":"97504f00-3946-40fc-91a4-e9b1228df480","message":"theory Draft.Mock 99%","kind":"writeln","session":"","theory":"Draft.Example"}
-157
-NOTE {"percentage":100,"task":"97504f00-3946-40fc-91a4-e9b1228df480","message":"theory Draft.Mock 100%","kind":"writeln","session":"","theory":"Draft.Mock"}
-321
-FINISHED {"ok":true,"errors":[],"nodes":[{"messages":[],"exports":[],"status":{"percentage":100,"unprocessed":0,"running":0,"finished":7,"failed":0,"total":7,"consolidated":true,"canceled":false,"ok":true,"warned":0},"theory_name":"Draft.Mock","node_name":"/tmp/Mock.thy"}],"task":"97504f00-3946-40fc-91a4-e9b1228df480"}
+OK {"task":"18c8e507-96c8-4bc8-9cb0-db4558bda07f"}
+161
+NOTE {"percentage":42,"task":"18c8e507-96c8-4bc8-9cb0-db4558bda07f","message":"theory Draft.Example 42%","kind":"writeln","session":"","theory":"Draft.Example"}
+161
+NOTE {"percentage":99,"task":"18c8e507-96c8-4bc8-9cb0-db4558bda07f","message":"theory Draft.Example 99%","kind":"writeln","session":"","theory":"Draft.Example"}
+163
+NOTE {"percentage":100,"task":"18c8e507-96c8-4bc8-9cb0-db4558bda07f","message":"theory Draft.Example 100%","kind":"writeln","session":"","theory":"Draft.Example"}
+458
+FINISHED {"ok":true,"errors":[],"nodes":[{"messages":[{"kind":"writeln","message":"theorem \\<forall>x. \\<exists>y. x = y","pos":{"line":5,"offset":59,"end_offset":61,"file":"Example.thy"}}],"exports":[],"status":{"percentage":100,"unprocessed":0,"running":0,"finished":7,"failed":0,"total":7,"consolidated":true,"canceled":false,"ok":true,"warned":0},"theory_name":"Draft.Example","node_name":"Example.thy"}],"task":"18c8e507-96c8-4bc8-9cb0-db4558bda07f"}

@@ -6,7 +6,7 @@ Python client for Isabelle server
 ``isabelle-client`` is a TCP client for
 `Isabelle <https://isabelle.in.tum.de>`__ server. For more information
 about the server see Chapter 4 of `the Isabelle system
-manual <https://isabelle.in.tum.de/dist/Isabelle2025/doc/system.pdf#page=52>`__.
+manual <https://isabelle.in.tum.de/dist/Isabelle2025-2/doc/system.pdf#page=54>`__.
 
 How to Install
 ==============
@@ -123,6 +123,8 @@ Projects using the client
 `isabelle-client` helped to build some cool LLM stuff (in reversed
 chronological order):
 
+* `Decompose-and-Formalise: Recursively Verifiable Natural Language Inference (Quan et al.) <https://doi.org/10.48550/arXiv.2601.19605>`__
+* `Inferring Latent Intentions: Attributional Natural Language Inference in LLM Agents (Quan et al.) <https://doi.org/10.48550/arXiv.2601.08742>`__
 * `StepProof: Step-by-step verification of natural language
   mathematical proofs (Hu et al.)
   <https://doi.org/10.48550/arXiv.2506.10558>`__ with `code

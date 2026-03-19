@@ -1,6 +1,6 @@
 [project]
 name = "isabelle-client"
-version = "1.0.2"
+version = "1.1.0"
 description = "A client to Isabelle proof assistant server"
 authors = [{name = "Boris Shminke", email = "<boris@shminke.com"}]
 license = "Apache-2.0"
@@ -34,16 +34,14 @@ doc = ["furo", "sphinx-autodoc-typehints"]
 test = ["coverage", "pytest"]
 dev = [
     "pre-commit",
-    "tox",
     "tbump",
     "toml",
     "pyroma",
     "ruff",
     "pydoclint",
-    "debugpy",
-    "isort",
-    "pyrefly",
     "ty",
+    "jedi-language-server",
+    "rassumfrassum",
 ]
 
 [tool.isort]
@@ -64,10 +62,10 @@ isolated_build_env = "true"
 env_list = ["py310", "py311", "py312", "py313", "py314"]
 
 [tool.tox.env_run_base]
-deps = ["pytest", "coverage", "pyrefly", "toml", "pyroma", "ruff", "pydoclint"]
+deps = ["pytest", "coverage", "ty", "toml", "pyroma", "ruff", "pydoclint"]
 commands =[
     ["ruff", "format"], ["ruff", "check"], ["pydoclint", "src"],
-    ["pyrefly", "check", "src"], ["pyroma", "-n", "10", "."],
+    ["ty", "check"], ["pyroma", "-n", "10", "."],
     ["coverage", "run"], ["coverage", "xml"], ["coverage", "report"]
 ]
 
@@ -75,7 +73,7 @@ commands =[
 github_url = "https://github.com/inpfess/isabelle-client/"
 
 [tool.tbump.version]
-current = "1.0.2"
+current = "1.1.0"
 regex = '''
   (?P<major>\d+)
   \.

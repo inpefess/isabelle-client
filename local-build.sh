@@ -8,7 +8,7 @@ cd ..
 ruff format
 ruff check --fix
 pydoclint src
-pyrefly check src
+ty check
 pyroma -n 10 .
 coverage run
 coverage report
