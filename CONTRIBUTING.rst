@@ -65,43 +65,38 @@ development. Please note this documentation assumes you already have
 <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git>`__
 installed and ready to go.
 
-1. `Fork <https://github.com/inpefess/isabelle-client/fork>`__ the
+#. `Fork <https://github.com/inpefess/isabelle-client/fork>`__ the
    `isabelle-client` repo on GitHub.
-
-1. Clone your fork locally:
+#. Clone your fork locally:
 
    .. code:: sh
 
       cd path_for_the_repo
       git clone git@github.com:YOUR_NAME/isabelle-client.git
 
-1. Install `uv
-   <https://docs.astral.sh/uv/getting-started/installation/#standalone-installer>`__.
-      
-1. Create and activate a virtual environment in `.venv` subfolder:
+#. Install `uv
+   <https://docs.astral.sh/uv/getting-started/installation/#standalone-installer>`__.     
+#. Create and activate a virtual environment in `.venv` subfolder:
 
    .. code:: bash
 
       uv venv
       source .venv/bin/activate
-
-1. Now you can install all the things you need for development:
+#. Now you can install all the things you need for development:
 
    .. code:: bash
 
       uv sync --all-extras
       # recommended but not necessary
       pre-commit install
-
-1. Create a branch for local development:
+#. Create a branch for local development:
 
    .. code:: bash
 
       git checkout -b name-of-your-bugfix-or-feature
 
    Now you can make your changes locally.
-
-1. When you're done making changes, check that your changes pass code
+#. When you're done making changes, check that your changes pass code
    quality checks.
 
    .. code:: bash
@@ -110,28 +105,24 @@ installed and ready to go.
       ruff check
       pydoclint isabelle_client
       ty check
-
-1. The next step would be to run the test cases. `isabelle-client`
+#. The next step would be to run the test cases. `isabelle-client`
    uses pytest and all the existing tests are `doctests
    <https://docs.python.org/3/library/doctest.html>`__.
 
    .. code:: bash
 
       pytest
-
-7. If your contribution is a bug fix or new feature, you may want to
+#. If your contribution is a bug fix or new feature, you may want to
    add a test to the existing test suite. If possible, do it by
    doctest, not a dedicates test case file.
-
-1. Commit your changes and push your branch to GitHub:
+#. Commit your changes and push your branch to GitHub:
 
    .. code:: bash
 
       git add .
       git commit -m "Your detailed description of your changes."
       git push origin name-of-your-bugfix-or-feature
-
-1. Submit a pull request through the GitHub website.
+#. Submit a pull request through the GitHub website.
 
 
 Pull Request Guidelines
@@ -140,12 +131,10 @@ Pull Request Guidelines
 Before you submit a pull request, check that it meets these
 guidelines:
 
-1. The pull request should include tests.
-
-2. If the pull request adds functionality, the docs should be
-   updated. Put your new functionality into a function with a
-   docstring, and add the feature to the list in README.rst.
-
-3. The pull request should work for Python 3.10, 3.11, 3.12, 3.13 and
+#. The pull request should include tests.
+#. If the pull request adds functionality, the docs should be
+   updated. Put your new functionality into a function with a docstring,
+   and add the feature to the list in README.rst.
+#. The pull request should work for Python 3.10, 3.11, 3.12, 3.13 and
    3.14. Check https://github.com/inpefess/isabelle-client/pulls and
    make sure that the tests pass for all supported Python versions.
