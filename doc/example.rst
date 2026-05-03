@@ -1,7 +1,3 @@
-    :Author: boris
-
-.. contents::
-
 1 Basic usage example.
 ----------------------
 
