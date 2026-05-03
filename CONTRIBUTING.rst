@@ -75,8 +75,8 @@ installed and ready to go.
       cd path_for_the_repo
       git clone git@github.com:YOUR_NAME/isabelle-client.git
 
-1. Install
-   [uv](https://docs.astral.sh/uv/getting-started/installation/#standalone-installer).
+1. Install `uv
+   <https://docs.astral.sh/uv/getting-started/installation/#standalone-installer>`__.
       
 1. Create and activate a virtual environment in `.venv` subfolder:
 
