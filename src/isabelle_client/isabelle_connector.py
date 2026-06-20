@@ -121,5 +121,5 @@ class IsabelleConnector:
 
     @property
     def working_directory(self) -> str:
-        """Get working directory."""
+        """Working directory."""
         return str(self._working_directory)

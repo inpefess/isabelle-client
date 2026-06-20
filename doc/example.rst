@@ -1,9 +1,5 @@
-    :Author: boris
-
-.. contents::
-
-1 Basic usage example.
-----------------------
+Basic usage example
+-------------------
 
 1.1 In what case to use
 ~~~~~~~~~~~~~~~~~~~~~~~
