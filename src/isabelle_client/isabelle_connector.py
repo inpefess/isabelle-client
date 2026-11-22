@@ -16,7 +16,7 @@ Isabelle Connector
 ===================
 
 A connector to the Isabelle server, hiding server interactions.
-"""  # noqa: D205, D400
+"""  # ruff: ignore[missing-blank-line-after-summary, missing-trailing-period]
 
 import logging
 from collections.abc import Sequence
@@ -57,7 +57,7 @@ class IsabelleConnector:
      1. \<And>x y. x = y
     """
 
-    def __init__(self, working_directory: str | None = None) -> None:  # noqa: D107
+    def __init__(self, working_directory: str | None = None) -> None:  # ruff: ignore[undocumented-public-init]
         self._working_directory = get_or_create_working_directory(
             working_directory
         )
@@ -106,7 +106,7 @@ class IsabelleConnector:
             imports=imports,
             theory=theory,
         )
-        session_id = self._client.session_start()[-1].response_body.session_id  # ty:ignore[unresolved-attribute]
+        session_id = self._client.session_start()[-1].response_body.session_id  # ty:ignore[missing-attribute]
         validation_result = self._client.use_theories(
             session_id=session_id,
             theories=[theory_name],

@@ -16,7 +16,7 @@ Utilities
 ==========
 
 A collection of different useful functions.
-"""  # noqa: D205, D400
+"""  # ruff: ignore[missing-blank-line-after-summary, missing-trailing-period]
 
 import asyncio
 import json
@@ -128,7 +128,7 @@ def start_isabelle_server_win32(
     """
     # this line enables asyncio.create_subprocess_exec on Windows:
     # https://docs.python.org/3/library/asyncio-platforms.html#asyncio-windows-subprocess
-    asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())  # ty:ignore[unresolved-attribute]
+    asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())  # ty:ignore[deprecated,missing-attribute]
 
     async def async_call() -> tuple[str, asyncio.subprocess.Process]:
         """

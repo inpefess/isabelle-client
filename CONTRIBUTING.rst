@@ -135,6 +135,6 @@ guidelines:
 #. If the pull request adds functionality, the docs should be
    updated. Put your new functionality into a function with a docstring,
    and add the feature to the list in README.rst.
-#. The pull request should work for Python 3.10, 3.11, 3.12, 3.13 and
-   3.14. Check https://github.com/inpefess/isabelle-client/pulls and
+#. The pull request should work for Python 3.11, 3.12, 3.13, 3.14 and
+   3.15. Check https://github.com/inpefess/isabelle-client/pulls and
    make sure that the tests pass for all supported Python versions.

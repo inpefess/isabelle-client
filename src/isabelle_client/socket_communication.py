@@ -16,7 +16,7 @@ Socket Communication
 =====================
 
 A collection of functions for TCP communication.
-"""  # noqa: D205, D400
+"""  # ruff: ignore[missing-blank-line-after-summary, missing-trailing-period]
 
 import asyncio
 import json
