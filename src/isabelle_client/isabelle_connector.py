@@ -106,7 +106,7 @@ class IsabelleConnector:
             imports=imports,
             theory=theory,
         )
-        session_id = self._client.session_start()[-1].response_body.session_id  # ty:ignore[unresolved-attribute]
+        session_id = self._client.session_start()[-1].response_body.session_id  # ty:ignore[missing-attribute]
         validation_result = self._client.use_theories(
             session_id=session_id,
             theories=[theory_name],

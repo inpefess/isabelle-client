@@ -128,7 +128,7 @@ def start_isabelle_server_win32(
     """
     # this line enables asyncio.create_subprocess_exec on Windows:
     # https://docs.python.org/3/library/asyncio-platforms.html#asyncio-windows-subprocess
-    asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())  # ty:ignore[unresolved-attribute]
+    asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())  # ty:ignore[deprecated,missing-attribute]
 
     async def async_call() -> tuple[str, asyncio.subprocess.Process]:
         """
