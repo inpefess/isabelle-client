@@ -7,7 +7,8 @@ license = "Apache-2.0"
 license-files = ["LICENSE"]
 readme = "README.rst"
 classifiers=[
-	"Programming Language :: Python :: 3.14",
+	"Programming Language :: Python :: 3.15",
+        "Programming Language :: Python :: 3.14",
         "Programming Language :: Python :: 3.13",
 	"Programming Language :: Python :: 3.12",
 	"Programming Language :: Python :: 3.11",
@@ -21,7 +22,7 @@ classifiers=[
 ]
 keywords = ["TCP client", "Isabelle proof assistant", "interactive theorem prover"]
 include = ["src/isabelle_client/py.typed"]
-requires-python = ">= 3.11, < 3.15"
+requires-python = ">= 3.11, < 3.16"
 dependencies = ["pydantic"]
 
 [project.urls]
@@ -59,7 +60,7 @@ testpaths = ["src"]
 
 [tool.tox]
 isolated_build_env = "true"
-env_list = ["py311", "py312", "py313", "py314"]
+env_list = ["py311", "py312", "py313", "py314", "py315"]
 
 [tool.tox.env_run_base]
 deps = ["pytest", "coverage", "ty", "toml", "pyroma", "ruff", "pydoclint"]
