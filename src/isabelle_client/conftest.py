@@ -26,7 +26,7 @@ from isabelle_client.utils import (
 )
 
 
-@pytest.fixture(autouse=True, scope="session")  # noqa: RUF076
+@pytest.fixture(autouse=True, scope="session")
 def tcp_servers() -> Generator[
     tuple[ReusableDummyTCPServer, ReusableDummyTCPServer], None, None
 ]:

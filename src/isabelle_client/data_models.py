@@ -14,7 +14,7 @@
 """
 Data Models
 ===========
-"""  # noqa: D205, D400
+"""  # ruff: ignore[missing-blank-line-after-summary, missing-trailing-period]
 
 import json
 from enum import Enum

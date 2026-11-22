@@ -16,7 +16,7 @@ Isabelle Client
 ================
 
 A Python client to `Isabelle <https://isabelle.in.tum.de>`__ server
-"""  # noqa: D205, D400
+"""  # ruff: ignore[missing-blank-line-after-summary, missing-trailing-period]
 
 import asyncio
 import json
@@ -59,7 +59,7 @@ class IsabelleClient:
         and replies from the server
     """
 
-    def __init__(  # noqa: D107
+    def __init__(  # ruff: ignore[undocumented-public-init]
         self,
         address: str,
         port: int,
@@ -123,7 +123,7 @@ class IsabelleClient:
             )
         ]
 
-    def session_build(  # noqa: PLR0913, PLR0917
+    def session_build(  # ruff: ignore[too-many-arguments, too-many-positional-arguments]
         self,
         session: str,
         preferences: str | None = None,
@@ -199,7 +199,7 @@ class IsabelleClient:
             for raw_response in raw_responses
         ]
 
-    def session_start(  # noqa: PLR0913, PLR0917
+    def session_start(  # ruff: ignore[too-many-arguments, too-many-positional-arguments]
         self,
         session: str = "Main",
         preferences: str | None = None,
@@ -314,7 +314,7 @@ class IsabelleClient:
             for raw_response in raw_responses
         ]
 
-    def use_theories(  # noqa: PLR0913, PLR0917
+    def use_theories(  # ruff: ignore[too-many-arguments, too-many-positional-arguments]
         self,
         session_id: str,
         theories: list[str],
