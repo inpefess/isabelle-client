@@ -2,14 +2,14 @@ version: 2.1
 jobs:
   build-and-test:
     docker:
-      - image: inpefess/multipython:3.14
+      - image: inpefess/multipython:3.15
     steps:
       - checkout
       - run:
           name: use tox
           command: |
             pip install tox
-            pyenv local 3.11.13 3.12.11 3.13.8 3.14.0
+            pyenv local 3.11.18 3.12.16 3.13.18 3.14.10
             tox run
       - run:
           name: upload data to codecov
