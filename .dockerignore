@@ -1,7 +1,6 @@
 Dockerfile
 CONTRIBUTING.rst
 CODE_OF_CONDUCT.rst
-LICENSE
 test-results/
 .venv/
 dist/
@@ -20,7 +19,6 @@ local-build.sh
 ./**/.yml
 ./**/.toml
 cicm2021paper/
-LICENSE
 tests/
 coverage.xml
 cicm2022paper/
