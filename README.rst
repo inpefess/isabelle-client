@@ -3,10 +3,10 @@
 Python client for Isabelle server
 =================================
 
-``isabelle-client`` is a TCP client for
-`Isabelle <https://isabelle.in.tum.de>`__ server. For more information
-about the server see Chapter 4 of `the Isabelle system
-manual <https://isabelle.in.tum.de/dist/Isabelle2025-2/doc/system.pdf#page=54>`__.
+``isabelle-client`` is a TCP client for `Isabelle
+<https://isabelle.in.tum.de>`__ server. For more information about
+the server see Chapter 4 of `the Isabelle system manual
+<https://dists.isabelle.cit.tum.de/dist/Isabelle2026/doc/system.pdf?token=Isabelle#page=54>`__.
 
 How to Install
 ==============
