@@ -23,5 +23,9 @@ project = distribution_metadata["Name"]
 version = distribution_metadata["Version"]
 author = distribution_metadata["Author"]
 copyright = f"2021-2026, {author}"  # ruff: ignore[builtin-variable-shadowing]
-extensions = ["sphinx.ext.autodoc", "sphinx.ext.coverage"]
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.coverage",
+    "sphinx.ext.napoleon",
+]
 html_theme = "furo"

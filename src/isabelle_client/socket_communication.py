@@ -30,41 +30,46 @@ from isabelle_client.data_models import IsabelleResponse, IsabelleResponseType
 async def get_response_from_isabelle(
     reader: asyncio.StreamReader,
 ) -> IsabelleResponse:
-    r"""
-    Get a response from Isabelle server.
+    r"""Get a response from Isabelle server.
 
     Format:
 
     * a carriage-return delimited message or
-    * a fixed length message after a carriage-return delimited message with
-      only one integer number denoting length
+    * a fixed length message after a carriage-return delimited
+      message with only one integer number denoting length
 
-    >>> async def awaiter():
-    ...     test_reader, test_writer = await asyncio.open_connection(
-    ...     "localhost", 9999
-    ... )
-    ...     test_writer.write(b"test_password\nhelp\n")
-    ...     result = [str(await get_response_from_isabelle(test_reader))]
-    ...     result += [str(await get_response_from_isabelle(test_reader))]
-    ...     return result
-    >>> print(asyncio.run(awaiter()))
-    ['OK {"isabelle_id":"mock","isabelle_name":"Isabelle2025-2"}', '118\nO...]
-    >>> async def awaiter():
-    ...     test_reader, test_writer = await asyncio.open_connection(
-    ...     "localhost", 9998
-    ... )
-    ...     test_writer.write(b"test_password\nhelp\n")
-    ...     result = [str(await get_response_from_isabelle(test_reader))]
-    ...     result += [str(await get_response_from_isabelle(test_reader))]
-    ...     return result
-    >>> print(asyncio.run(awaiter()))
-    Traceback (most recent call last):
-      ...
-    ValueError: Unexpected response from Isabelle: # !!!
+    Args:
+        reader: A StreamReader connected to a server.
 
-    :param reader: a StreamReader connected to a server
-    :returns: a response from Isabelle
-    :raises ValueError: if the server response is malformed
+    Returns:
+        A response from Isabelle.
+
+    Raises:
+        ValueError: If the server response is malformed.
+
+    Examples:
+        >>> async def awaiter():
+        ...     test_reader, test_writer = await asyncio.open_connection(
+        ...     "localhost", 9999
+        ... )
+        ...     test_writer.write(b"test_password\nhelp\n")
+        ...     result = [str(await get_response_from_isabelle(test_reader))]
+        ...     result += [str(await get_response_from_isabelle(test_reader))]
+        ...     return result
+        >>> print(asyncio.run(awaiter()))
+        ['OK {"isabelle_id":"mock","isabelle_name":"Isabelle2026"}', '118...']
+        >>> async def awaiter():
+        ...     test_reader, test_writer = await asyncio.open_connection(
+        ...     "localhost", 9998
+        ... )
+        ...     test_writer.write(b"test_password\nhelp\n")
+        ...     result = [str(await get_response_from_isabelle(test_reader))]
+        ...     result += [str(await get_response_from_isabelle(test_reader))]
+        ...     return result
+        >>> print(asyncio.run(awaiter()))
+        Traceback (most recent call last):
+          ...
+        ValueError: Unexpected response from Isabelle: # !!!
     """
     response = (await reader.readline()).decode("utf-8")
     match = re.compile(r"(\d+)\n").match(response)
@@ -88,35 +93,38 @@ async def get_final_message(
     final_message: set[IsabelleResponseType],
     logger: Logger | None = None,
 ) -> AsyncGenerator[IsabelleResponse]:
-    r"""
-    Get responses from Isabelle server.
+    r"""Get responses from Isabelle server.
 
     (until a message of specified 'final' type arrives)
 
-    >>> test_logger = getfixture("mock_logger")
-    >>> async def awaiter():
-    ...     test_reader, test_writer = await asyncio.open_connection(
-    ...     "localhost", 9999
-    ... )
-    ...     test_writer.write(b"test_password\nhelp\n")
-    ...     await get_response_from_isabelle(test_reader)
-    ...     result = []
-    ...     async for message in get_final_message(
-    ...         test_reader, {IsabelleResponseType.OK}, test_logger
-    ...     ):
-    ...         result.append(message)
-    ...     return result
-    >>> for response in asyncio.run(awaiter()):
-    ...     print(response)
-    118
-    OK ["cancel","echo","help","purge_theories","session_build",...]
-    >>> print(test_logger.info.mock_calls)
-    [call('118\nOK ["cancel","echo","help","purge_theories","session...')]
+    Args:
+        reader: A ``StreamReader`` connected to Isabelle server.
+        final_message: A set of possible final message types.
+        logger: A logger where to send all server replies.
 
-    :param reader: a ``StreamReader`` connected to Isabelle server
-    :param final_message: a set of possible final message types
-    :param logger: a logger where to send all server replies
-    :yields: the final response from Isabelle server
+    Yields:
+        The final response from Isabelle server.
+
+    Examples:
+        >>> test_logger = getfixture("mock_logger")
+        >>> async def awaiter():
+        ...     test_reader, test_writer = await asyncio.open_connection(
+        ...     "localhost", 9999
+        ... )
+        ...     test_writer.write(b"test_password\nhelp\n")
+        ...     await get_response_from_isabelle(test_reader)
+        ...     result = []
+        ...     async for message in get_final_message(
+        ...         test_reader, {IsabelleResponseType.OK}, test_logger
+        ...     ):
+        ...         result.append(message)
+        ...     return result
+        >>> for response in asyncio.run(awaiter()):
+        ...     print(response)
+        118
+        OK ["cancel","echo","help","purge_theories","session_build",...]
+        >>> print(test_logger.info.mock_calls)
+        [call('118\nOK ["cancel","echo","help","purge_theories","session...')]
     """
     response = None
     while response is None or response.response_type not in final_message:

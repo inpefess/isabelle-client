@@ -33,7 +33,8 @@ def tcp_servers() -> Generator[
     """
     Get a simplistic TCP server mocking Isabelle server behaviour.
 
-    :yields: an instance of a mock working server and a mock buggy server
+    Yields:
+        An instance of a mock working server and a mock buggy server.
     """
     with (
         ReusableDummyTCPServer(("localhost", 9999), DummyTCPHandler) as server,
@@ -53,9 +54,10 @@ def tcp_servers() -> Generator[
 @pytest.fixture
 def mock_logger() -> Mock:
     """
-    Get a mock for logger to spy on ``info`` calls.
+    Get a mock for logger to spy on `info` calls.
 
-    :returns: mock logger
+    Returns:
+        mock logger
     """
     logger = Mock()
     logger.info = Mock()

@@ -45,39 +45,31 @@ SYNCHRONOUS_FINAL_MESSAGES = {
 
 
 class SimpleIsabelleResponse(BaseModel):
-    """
-    Isabelle response with no body.
+    """Isabelle response with no body.
 
-    .. attribute :: response_type
-
-    an all capitals word like ``FINISHED`` or ``ERROR``
-
+    Attributes:
+        response_type: An all capitals word like `FINISHED` or `ERROR`.
     """
 
     response_type: IsabelleResponseType
 
 
 class IsabelleResponse(SimpleIsabelleResponse):
-    """
-    A response from an Isabelle server.
+    """A response from an Isabelle server.
 
-    .. attribute :: response_body
-
-         a JSON-formatted response
-
-    .. attribute :: response_length
-
-        a length of JSON response
+    Attributes:
+        response_body: A JSON-formatted response.
+        response_length: A length of JSON response.
     """
 
     response_body: Any
     response_length: int | None = None
 
     def __str__(self) -> str:
-        """
-        Pretty print Isabelle server response.
+        """Pretty print Isabelle server response.
 
-        :returns: a string representation of Isabelle server response
+        Returns:
+            A string representation of Isabelle server response.
         """
         return (
             (
@@ -99,7 +91,7 @@ class IsabelleResponse(SimpleIsabelleResponse):
 
 
 class HelpResult(IsabelleResponse):
-    """Result of the ``help`` command."""
+    """Result of the `help` command."""
 
     response_body: list[str]
 
@@ -194,7 +186,7 @@ class NodeResult(BaseModel):
 
 
 class UseTheoriesResults(BaseModel):
-    """Regular result of ``use_theories`` command."""
+    """Regular result of `use_theories` command."""
 
     ok: bool
     errors: list[Message]
@@ -202,20 +194,20 @@ class UseTheoriesResults(BaseModel):
 
 
 class UseTheoriesResponse(IsabelleResponse):
-    """Final response of ``use_theories`` command."""
+    """Final response of `use_theories` command."""
 
     response_body: UseTheoriesResults
 
 
 class PurgeTheoriesResult(BaseModel):
-    """Result of ``purge_theories`` command."""
+    """Result of `purge_theories` command."""
 
     purged: list[Node]
     retained: list[Node]
 
 
 class PurgeTheoriesResponse(IsabelleResponse):
-    """Response of ``purge_theories`` command."""
+    """Response of `purge_theories` command."""
 
     response_body: PurgeTheoriesResult
 
@@ -266,7 +258,7 @@ class SessionStartErrorResult(Task, ErrorMessage):
 
 
 class UseTheoriesErrorResult(SessionStartErrorResult):
-    """Error result of ``use_theories`` command."""
+    """Error result of `use_theories` command."""
 
 
 class SessionBuildErrorResult(SessionStartErrorResult, SessionBuildResults):
@@ -274,38 +266,38 @@ class SessionBuildErrorResult(SessionStartErrorResult, SessionBuildResults):
 
 
 class SessionBuildRegularResponse(IsabelleResponse):
-    """Regular response of ``session_build`` command."""
+    """Regular response of `session_build` command."""
 
     response_body: SessionBuildRegularResult
 
 
 class SessionStartRegularResult(Task):
-    """Regular result of ``session_start`` command."""
+    """Regular result of `session_start` command."""
 
     session_id: str
     tmp_dir: str
 
 
 class SessionStartRegularResponse(IsabelleResponse):
-    """Regular response of ``session_start`` command."""
+    """Regular response of `session_start` command."""
 
     response_body: SessionStartRegularResult
 
 
 class SessionBuildErrorResponse(IsabelleResponse):
-    """Error response of ``session_build`` command."""
+    """Error response of `session_build` command."""
 
     response_body: SessionBuildErrorResult
 
 
 class SessionStartErrorResponse(IsabelleResponse):
-    """Error response of ``session_start`` command."""
+    """Error response of `session_start` command."""
 
     response_body: SessionStartErrorResult
 
 
 class UseTheoriesErrorResponse(IsabelleResponse):
-    """Error response of ``use_theories`` command."""
+    """Error response of `use_theories` command."""
 
     response_body: UseTheoriesErrorResult
 
@@ -354,12 +346,12 @@ class SessionStopErrorResult(Task, ErrorMessage, SessionStopResult):
 
 
 class SessionStopErrorResponse(IsabelleResponse):
-    """Error response of ``session_stop`` command."""
+    """Error response of `session_stop` command."""
 
     response_body: SessionStopErrorResult
 
 
 class SessionStopRegularResponse(IsabelleResponse):
-    """Regular response of ``session_stop`` command."""
+    """Regular response of `session_stop` command."""
 
     response_body: SessionStopRegularResult

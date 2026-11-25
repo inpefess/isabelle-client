@@ -11,8 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""
-Isabelle Client
+"""Isabelle Client
 ================
 
 A Python client to `Isabelle <https://isabelle.in.tum.de>`__ server
@@ -49,14 +48,14 @@ from isabelle_client.socket_communication import (
 
 
 class IsabelleClient:
-    """
-    A TCP client for an Isabelle server.
+    """A TCP client for an Isabelle server.
 
-    :param address: IP or a domain name
-    :param port: a port number on which the server listens
-    :param password: a password to access the server through TCP
-    :param logger: a Python logger to store all requests to
-        and replies from the server
+    Args:
+        address: IP or a domain name.
+        port: A port number on which the server listens.
+        password: A password to access the server through TCP.
+        logger: A Python logger to store all requests to and replies from
+            the server.
     """
 
     def __init__(  # ruff: ignore[undocumented-public-init]
@@ -76,32 +75,35 @@ class IsabelleClient:
         command: str,
         asynchronous: bool = True,
     ) -> list[IsabelleResponse]:
-        r"""
-        Execute a command and waits for results.
+        r"""Execute a command and waits for results.
 
-        >>> logger = getfixture("mock_logger")
-        >>> isabelle_client = IsabelleClient(
-        ...     "localhost", 9999, "test_password", logger
-        ... )
-        >>> test_response = asyncio.run(
-        ...     isabelle_client.execute_command("unknown command")
-        ... )
-        >>> print(test_response[-1].response_type.value)
-        ERROR
-        >>> print(test_response[-1].response_body)
-        Bad command 'unknown'
-        >>> # error messages don't return the response length
-        >>> print(test_response[-1].response_length)
-        None
-        >>> print(logger.info.mock_calls)
-        [call('test_password\nunknown command\n'),
-         call('OK {"isabelle_id":"mock","isabelle_name":"Isabelle2025-2"}'),
-         call('ERROR "Bad command \'unknown\'"')]
+        Args:
+            command: A full text of a command to Isabelle.
+            asynchronous: If ``False``, waits for ``OK``; else waits for
+                ``FINISHED``.
 
-        :param command: a full text of a command to Isabelle
-        :param asynchronous: if ``False``, waits for ``OK``; else waits for
-            ``FINISHED``
-        :returns: a list of Isabelle server responses
+        Returns:
+            A list of Isabelle server responses.
+
+        Examples:
+            >>> logger = getfixture("mock_logger")
+            >>> isabelle_client = IsabelleClient(
+            ...     "localhost", 9999, "test_password", logger
+            ... )
+            >>> test_response = asyncio.run(
+            ...     isabelle_client.execute_command("unknown command")
+            ... )
+            >>> print(test_response[-1].response_type.value)
+            ERROR
+            >>> print(test_response[-1].response_body)
+            Bad command 'unknown'
+            >>> # error messages don't return the response length
+            >>> print(test_response[-1].response_length)
+            None
+            >>> print(logger.info.mock_calls)
+            [call('test_password\nunknown command\n'),
+             call('OK {"isabelle_id":"mock","isabelle_name":"Isabelle2026"}'),
+             call('ERROR "Bad command \'unknown\'"')]
         """
         final_message = (
             ASYNCHRONOUS_FINAL_MESSAGES
@@ -138,30 +140,33 @@ class IsabelleClient:
         | NotificationResponse
         | NodesStatusResponse
     ]:
-        r"""
-        Build a session from ROOT file.
+        """Build a session from ROOT file.
 
-        >>> isabelle_client = IsabelleClient(
-        ...     "localhost", 9999, "test_password"
-        ... )
-        >>> print(isabelle_client.session_build(
-        ...     session="test_session", preferences=""
-        ... )[-1])
-        403
-        FINISHED {"ok":true,"return_code":0,"sessions":[{"session":"Pure",...}
+        Args:
+            session: A name of the session from ROOT file.
+            preferences: References are loaded from the file
+                ``$ISABELLE_HOME_USER/etc/preferences`` by default.
+            options: Individual updates to ``preferences`` of the form
+                `name=value` or `name` (the latter abbreviates `name=true`);
+                see also command-line option -o for isabelle build.
+            dirs: Additional directories for session ROOT and ROOTS files.
+            include_sessions: Field specifies sessions whose theories should
+                be included in the overall name space of
+                session-qualified theory names.
+            verbose: Set to ``True`` for extra verbosity.
 
-        :param session: a name of the session from ROOT file
-        :param preferences: references are loaded from the file
-            ``$ISABELLE_HOME_USER/etc/preferences`` by default
-        :param options: individual updates to ``preferences`` of the
-            form the name=value or name (the latter abbreviates name=true);
-            see also command-line option -o for isabelle build.
-        :param dirs: additional directories for session ROOT and ROOTS files
-        :param include_sessions: field specifies sessions whose theories should
-            be included in the overall name space of session-qualified theory
-            names.
-        :param verbose: set to ``True`` for extra verbosity
-        :returns: an Isabelle response
+        Returns:
+            An Isabelle response.
+
+        Examples:
+            >>> isabelle_client = IsabelleClient(
+            ...     "localhost", 9999, "test_password"
+            ... )
+            >>> print(isabelle_client.session_build(
+            ...     session="test_session", preferences=""
+            ... )[-1])
+            403
+            FINISHED {"ok":true,"return_code":0,"sessions":[{"session":"Pur...}
         """
         arguments: dict[str, str | list[str] | bool] = {
             "session": session,
@@ -215,29 +220,32 @@ class IsabelleClient:
         | NotificationResponse
         | NodesStatusResponse
     ]:
-        r"""
-        Start a new session.
+        """Start a new session.
 
-        >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
-        >>> print(
-        ...    isabelle_client.session_start(
-        ...        preferences=[])[-1].response_body.session_id)
-        167dd6d8-1eeb-4315-8022-c8c527d9bd87
+        Args:
+            session: A name of a session to start.
+            preferences: References are loaded from the file
+                ``$ISABELLE_HOME_USER/etc/preferences`` by default.
+            options: Individual updates to ``preferences`` of the form
+                `name=value` or `name` (the latter abbreviates `name=true`);
+                see also command-line option -o for isabelle build.
+            dirs: Additional directories for session ROOT and ROOTS files.
+            include_sessions: Field specifies sessions whose theories should
+                be included in the overall name space of
+                session-qualified theory names.
+            verbose: Set to ``True`` for extra verbosity.
+            print_mode: Identifiers of print modes to be made active for
+                this session.
 
-        :param session: a name of a session to start
-        :param preferences: references are loaded from the file
-            ``$ISABELLE_HOME_USER/etc/preferences`` by default
-        :param options: individual updates to ``preferences`` of the
-            form the name=value or name (the latter abbreviates name=true);
-            see also command-line option -o for isabelle build.
-        :param dirs: additional directories for session ROOT and ROOTS files
-        :param include_sessions: field specifies sessions whose theories should
-            be included in the overall name space of session-qualified theory
-            names.
-        :param verbose: set to ``True`` for extra verbosity
-        :param print_mode: identifiers of print modes to be made active for
-            this session
-        :returns: Isabelle server response
+        Returns:
+            Isabelle server response.
+
+        Examples:
+            >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
+            >>> print(
+            ...    isabelle_client.session_start(
+            ...        preferences=[])[-1].response_body.session_id)
+            167dd6d8-1eeb-4315-8022-c8c527d9bd87
         """
         arguments: dict[str, str | list[str] | bool] = {
             "session": session,
@@ -284,16 +292,19 @@ class IsabelleClient:
         | SessionStopRegularResponse
         | NotificationResponse
     ]:
-        """
-        Stop session with given ID.
+        """Stop session with given ID.
 
-        >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
-        >>> test_response = isabelle_client.session_stop("test")
-        >>> print(test_response[-1].response_type.value)
-        FINISHED
+        Args:
+            session_id: A string ID of a session.
 
-        :param session_id: a string ID of a session
-        :returns: Isabelle server response
+        Returns:
+            Isabelle server response.
+
+        Examples:
+            >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
+            >>> test_response = isabelle_client.session_stop("test")
+            >>> print(test_response[-1].response_type.value)
+            FINISHED
         """
         arguments = json.dumps({"session_id": session_id})
         raw_responses = asyncio.run(
@@ -332,34 +343,37 @@ class IsabelleClient:
         | UseTheoriesErrorResponse
         | NodesStatusResponse
     ]:
-        r"""
-        Run the engine on theory files.
+        """Run the engine on theory files.
 
-        >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
-        >>> test_response = isabelle_client.use_theories(
-        ...     session_id="test", theories=["Mock"], master_dir="test"
-        ... )
-        >>> print(test_response[-1].response_type.value)
-        FINISHED
+        Args:
+            session_id: An ID of a session; if ``None``, a new session is
+                created and then destroyed after trying to process theories.
+            theories: Names of theory files (without extensions!).
+            master_dir: Where to look for theory files; if ``None``, uses a
+                temp folder of the session.
+            pretty_margin: Pretty formatting of emitted messages.
+            unicode_symbols: Use Unicode symbols in emitted messages.
+            export_pattern: See the Isabelle server manual for details.
+            check_delay: Status of PIDE processing is checked every
+                ``check_delay`` seconds.
+            check_limit: Bound on PIDE processing check attempts, ``0`` for
+                unbounded.
+            watchdog_timeout: The timespan (in seconds) after the last
+                command status change of Isabelle/PIDE, before finishing
+                with a potentially non-terminating or deadlocked execution.
+            nodes_status_delay: Enables continuous notifications if positive
+                (in seconds).
 
-        :param session_id: an ID of a session; if ``None``, a new session is
-            created and then destroyed after trying to process theories
-        :param theories: names of theory files (without extensions!)
-        :param master_dir: where to look for theory files; if ``None``, uses a
-            temp folder of the session
-        :param pretty_margin: pretty formatting of emitted messages
-        :param unicode_symbols: use Unicode symbols in emitted messages
-        :param export_pattern: see the Isabelle server manual for details
-        :param check_delay: status of PIDE processing is checked every
-            ``check_delay`` seconds
-        :param check_limit: bound on PIDE processing check attempts, ``0`` for
-            unbounded
-        :param watchdog_timeout: the timespan (in seconds) after the last
-            command status change of Isabelle/PIDE, before finishing with a
-            potentially non-terminating or deadlocked execution
-        :param nodes_status_delay: enables continuous notifications if positive
-            (in seconds)
-        :returns: Isabelle server response
+        Returns:
+            Isabelle server response.
+
+        Examples:
+            >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
+            >>> test_response = isabelle_client.use_theories(
+            ...     session_id="test", theories=["Mock"], master_dir="test"
+            ... )
+            >>> print(test_response[-1].response_type.value)
+            FINISHED
         """
         arguments = {
             key: value
@@ -397,16 +411,19 @@ class IsabelleClient:
         ]
 
     def echo(self, message: str | list | dict) -> list[IsabelleResponse]:
-        """
-        Ask a server to echo a message.
+        """Ask a server to echo a message.
 
-        >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
-        >>> test_response = isabelle_client.echo("test_message")
-        >>> print(test_response[-1].response_body)
-        test_message
+        Args:
+            message: Any text.
 
-        :param message: any text
-        :returns: Isabelle server response
+        Returns:
+            Isabelle server response.
+
+        Examples:
+            >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
+            >>> test_response = isabelle_client.echo("test_message")
+            >>> print(test_response[-1].response_body)
+            test_message
         """
         return asyncio.run(
             self.execute_command(
@@ -415,15 +432,16 @@ class IsabelleClient:
         )
 
     def help(self) -> list[HelpResult]:
-        """
-        Ask a server to display the list of available commands.
+        """Ask a server to display the list of available commands.
 
-        >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
-        >>> test_response = isabelle_client.help()
-        >>> print(test_response[-1].response_body)
-        ['cancel', 'echo', 'help', 'purge_theories', 'session_build', ...]
+        Returns:
+            Isabelle server response.
 
-        :returns: Isabelle server response
+        Examples:
+            >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
+            >>> test_response = isabelle_client.help()
+            >>> print(test_response[-1].response_body)
+            ['cancel', 'echo', 'help', 'purge_theories', 'session_build', ...]
         """
         raw_results = asyncio.run(
             self.execute_command("help", asynchronous=False)
@@ -439,22 +457,25 @@ class IsabelleClient:
         master_dir: str | None = None,
         purge_all: bool | None = None,
     ) -> list[PurgeTheoriesResponse]:
-        """
-        Ask a server to purge listed theories from it.
+        """Ask a server to purge listed theories from it.
 
-        >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
-        >>> test_response = isabelle_client.purge_theories(
-        ...     "test", [], "dir", True
-        ... )
-        >>> print(test_response[-1].response_body.model_dump())
-        {'purged': [{'node_name': '/tmp/Mock.thy', ...}], 'retained': []}
+        Args:
+            session_id: An ID of the session from which to purge theories.
+            theories: A list of theory names to purge from the server.
+            master_dir: The master directory as in ``use_theories``.
+            purge_all: Set to ``True`` attempts to purge all presently
+                loaded theories.
 
-        :param session_id: an ID of the session from which to purge theories
-        :param theories: a list of theory names to purge from the server
-        :param master_dir:  the master directory as in ``use_theories``
-        :param purge_all: set to ``True`` attempts to purge all presently
-            loaded theories
-        :returns: Isabelle server response
+        Returns:
+            Isabelle server response.
+
+        Examples:
+            >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
+            >>> test_response = isabelle_client.purge_theories(
+            ...     "test", [], "dir", True
+            ... )
+            >>> print(test_response[-1].response_body.model_dump())
+            {'purged': [{'node_name': '/tmp/Mock.thy', ...}], 'retained': []}
         """
         arguments: dict[str, str | list[str] | bool] = {
             "session_id": session_id,
@@ -475,16 +496,19 @@ class IsabelleClient:
         ]
 
     def cancel(self, task: str) -> SimpleIsabelleResponse:
-        """
-        Ask a server to try to cancel a task with a given ID.
+        """Ask a server to try to cancel a task with a given ID.
 
-        >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
-        >>> test_response = isabelle_client.cancel("test_task")
-        >>> print(test_response)
-        response_type=<IsabelleResponseType.OK: 'OK'>
+        Args:
+            task: A task ID.
 
-        :param task: a task ID
-        :returns: Isabelle server response
+        Returns:
+            Isabelle server response.
+
+        Examples:
+            >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
+            >>> test_response = isabelle_client.cancel("test_task")
+            >>> print(test_response)
+            response_type=<IsabelleResponseType.OK: 'OK'>
         """
         arguments = {"task": task}
         return SimpleIsabelleResponse(
@@ -496,15 +520,16 @@ class IsabelleClient:
         )
 
     def shutdown(self) -> SimpleIsabelleResponse:
-        """
-        Ask a server to shutdown immediately.
+        """Ask a server to shutdown immediately.
 
-        >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
-        >>> test_response = isabelle_client.shutdown()
-        >>> print(test_response)
-        response_type=<IsabelleResponseType.OK: 'OK'>
+        Returns:
+            Isabelle server response.
 
-        :returns: Isabelle server response
+        Examples:
+            >>> isabelle_client = IsabelleClient("localhost", 9999, "test")
+            >>> test_response = isabelle_client.shutdown()
+            >>> print(test_response)
+            response_type=<IsabelleResponseType.OK: 'OK'>
         """
         return SimpleIsabelleResponse(
             response_type=asyncio.run(

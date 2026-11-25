@@ -119,7 +119,8 @@ convention = "pep257"
 max-statements = 10
 
 [tool.pydoclint]
-style = "sphinx"
+style = "google"
+check-style-mismatch = true
 arg-type-hints-in-docstring = false
 check-return-types = false
 check-yield-types = false

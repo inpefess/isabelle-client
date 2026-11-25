@@ -43,20 +43,25 @@ class IsabelleServerCommands(Enum):
 
 
 def get_isabelle_client(server_info: str) -> IsabelleClient:
-    """
-    Get an instance of ``IsabelleClient`` from server info.
+    """Get an instance of IsabelleClient from server info.
 
-    >>> server_inf = 'server "test" = 127.0.0.1:10000 (password "pass")'
-    >>> print(get_isabelle_client(server_inf).port)
-    10000
-    >>> get_isabelle_client("wrong")
-    Traceback (most recent call last):
-        ...
-    ValueError: Unexpected server info: wrong
+    Args:
+        server_info: A line returned by a server on start.
 
-    :param server_info: a line returned by a server on start
-    :returns: an Isabelle client
-    :raises ValueError: if the server response is malformed
+    Returns:
+        An Isabelle client.
+
+    Raises:
+        ValueError: If the server response is malformed.
+
+    Examples:
+        >>> server_inf = 'server "test" = 127.0.0.1:10000 (password "pass")'
+        >>> print(get_isabelle_client(server_inf).port)
+        10000
+        >>> get_isabelle_client("wrong")
+        Traceback (most recent call last):
+            ...
+        ValueError: Unexpected server info: wrong
     """
     match = re.compile(
         r"server \".*\" = (.*):(.*) \(password \"(.*)\"\)"
@@ -73,20 +78,23 @@ def start_isabelle_server(
     name: str | None = None,
     port: int | None = None,
 ) -> tuple[str, asyncio.subprocess.Process]:
-    """
-    Start Isabelle server.
+    """Start Isabelle server.
 
-    >>> import os
-    >>> os.environ["PATH"] = "src/isabelle_client/resources:$PATH"
-    >>> print(start_isabelle_server()[0])
-    server "isabelle" = 127.0.0.1:9999 (password "test_password")
-    <BLANKLINE>
+    Args:
+        log_file: A log file for exceptional output of internal server and
+            session operations.
+        name: Explicit server name (default: isabelle).
+        port: Explicit server port.
 
-    :param log_file: a log file for exceptional output of internal server and
-        session operations
-    :param name: explicit server name (default: isabelle)
-    :param port: explicit server port
-    :returns: a line of server info and server process
+    Returns:
+        A line of server info and server process.
+
+    Examples:
+        >>> import os
+        >>> os.environ["PATH"] = "src/isabelle_client/resources:$PATH"
+        >>> print(start_isabelle_server()[0])
+        server "isabelle" = 127.0.0.1:9999 (password "test_password")
+        <BLANKLINE>
     """
     args = (
         "server"
@@ -98,11 +106,13 @@ def start_isabelle_server(
         return start_isabelle_server_win32(args)  # pragma: no cover
 
     async def async_call() -> tuple[str, asyncio.subprocess.Process]:
-        """
-        Start Isabelle server asynchronously.
+        """Start Isabelle server asynchronously.
 
-        :returns: a line of server info and server process
-        :raises ValueError: if no stdout seen after starting the server
+        Returns:
+            A line of server info and server process.
+
+        Raises:
+            ValueError: If no stdout seen after starting the server.
         """
         isabelle_server = await asyncio.create_subprocess_exec(
             "isabelle", *(args.split(" ")), stdout=asyncio.subprocess.PIPE
@@ -120,22 +130,28 @@ def start_isabelle_server(
 def start_isabelle_server_win32(
     args: str,
 ) -> tuple[str, asyncio.subprocess.Process]:  # pragma: no cover
-    """
-    Start Isabelle server on Windows.
+    """Start Isabelle server on Windows.
 
-    :param args: Isabelle server arguments string
-    :returns: a line of server info and server process
+    Args:
+        args: Isabelle server arguments string.
+
+    Returns:
+        A line of server info and server process.
     """
     # this line enables asyncio.create_subprocess_exec on Windows:
     # https://docs.python.org/3/library/asyncio-platforms.html#asyncio-windows-subprocess
-    asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())  # ty:ignore[deprecated,missing-attribute]
+    asyncio.set_event_loop_policy(  # ty:ignore[deprecated]
+        asyncio.WindowsProactorEventLoopPolicy()  # ty:ignore[missing-attribute]
+    )
 
     async def async_call() -> tuple[str, asyncio.subprocess.Process]:
-        """
-        Start Isabelle server in Cygwin asynchronously.
+        """Start Isabelle server in Cygwin asynchronously.
 
-        :returns: a line of server info and server process
-        :raises ValueError: if no stdout seen after starting the server
+        Returns:
+            A line of server info and server process.
+
+        Raises:
+            ValueError: If no stdout seen after starting the server.
         """
         isabelle_server = await asyncio.create_subprocess_exec(
             str(
@@ -193,7 +209,7 @@ class DummyTCPHandler(socketserver.BaseRequestHandler):
         command = request.split(" ")[0]
         arguments = request[len(command) :]
         self.request.sendall(
-            b'OK {"isabelle_id":"mock","isabelle_name":"Isabelle2025-2"}\n'
+            b'OK {"isabelle_id":"mock","isabelle_name":"Isabelle2026"}\n'
         )
         if command == IsabelleServerCommands.ECHO.value:
             self.request.sendall(f"OK {arguments[1:]}\n".encode())
@@ -208,11 +224,13 @@ class ReusableDummyTCPServer(socketserver.TCPServer):
 
 
 def get_or_create_working_directory(working_directory: str | None) -> Path:
-    """
-    Get existing or create a randomly named directory.
+    """Get existing or create a randomly named directory.
 
-    :param working_directory: directory name
-    :returns: (possibly new) directory name
+    Args:
+        working_directory: Directory name.
+
+    Returns:
+        A (possibly new) directory name.
     """
     new_working_directory = (
         Path(working_directory)
