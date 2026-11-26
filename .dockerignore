@@ -4,7 +4,7 @@ CODE_OF_CONDUCT.rst
 test-results/
 .venv/
 dist/
-doc/
+docs/
 ./**/.*
 ./**/__pycache__/
 ./**/*.gif
@@ -24,3 +24,4 @@ coverage.xml
 cicm2022paper/
 cicm2022talk/
 unpublished-pre-print/
+site/

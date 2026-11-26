@@ -5,7 +5,6 @@ test-results/
 __pycache__/
 .*~
 *~
-doc/_build/
 .idea/
 *.bbl
 *.blg
@@ -26,3 +25,4 @@ _minted-*/
 \#*.*\#
 *.pickle
 *.md5
+site/

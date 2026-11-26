@@ -5,7 +5,7 @@ description = "A client to Isabelle proof assistant server"
 authors = [{name = "Boris Shminke", email = "boris@shminke.com"}]
 license = "Apache-2.0"
 license-files = ["LICENSE"]
-readme = "README.rst"
+readme = "README.md"
 classifiers=[
 	"Programming Language :: Python :: 3.15",
         "Programming Language :: Python :: 3.14",
@@ -31,7 +31,7 @@ Repository = "https://github.com/inpefess/isabelle-client.git"
 Issues = "https://github.com/inpefess/isabelle-client/issues"
 
 [project.optional-dependencies]
-doc = ["furo", "sphinx-autodoc-typehints"]
+doc = ["zensical", "mkdocstrings-python"]
 test = ["coverage", "pytest"]
 dev = [
     "pre-commit",
