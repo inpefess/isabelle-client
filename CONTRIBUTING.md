@@ -79,7 +79,7 @@ installed and ready to go.
 5.  Now you can install all the things you need for development:
 
     ``` bash
-    uv sync --all-extras
+    uv sync --all-groups
     # recommended but not necessary
     pre-commit install
     ```

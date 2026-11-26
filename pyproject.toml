@@ -30,8 +30,8 @@ Homepage = "https://github.com/inpefess/isabelle-client"
 Repository = "https://github.com/inpefess/isabelle-client.git"
 Issues = "https://github.com/inpefess/isabelle-client/issues"
 
-[project.optional-dependencies]
-doc = ["zensical", "mkdocstrings-python"]
+[dependency-groups]
+docs = ["zensical", "mkdocstrings-python"]
 test = ["coverage", "pytest"]
 dev = [
     "pre-commit",
