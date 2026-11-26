@@ -11,12 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""
-Isabelle Connector
-===================
+"""Isabelle Connector
 
 A connector to the Isabelle server, hiding server interactions.
-"""  # ruff: ignore[missing-blank-line-after-summary, missing-trailing-period]
+"""  # ruff: ignore[missing-trailing-period]
 
 import logging
 from collections.abc import Sequence
@@ -35,26 +33,29 @@ class IsabelleTheoryError(RuntimeError):
 
 
 class IsabelleConnector:
-    r"""
-    A connector to the Isabelle server, hiding server interactions.
+    r"""A connector to the Isabelle server, hiding server interactions.
 
-    :param working_directory: a directory for storing the server logs,
-            temporary theory files etc.
+    Args:
+        working_directory: A directory for storing the server logs,
+            temporary theory files, etc.
 
-    >>> import os
-    >>> os.environ["PATH"] = "src/isabelle_client/resources:$PATH"
-    >>> connector = IsabelleConnector()
-    >>> print(connector.working_directory)
-    /...
-    >>> connector.build_theory(
-    ...     'lemma "\<forall> x. \<exists> y. x = y" by auto', theory="Mock")
-    >>> connector.build_theory(
-    ...     'lemma "\<forall> x. \<forall> y. x = y" by auto', theory="Fail")
-    Traceback (most recent call last):
-     ...
-    isabelle...Error: Failed to finish proof\<^here>:
-    goal (1 subgoal):
-     1. \<And>x y. x = y
+    Examples:
+        >>> import os
+        >>> os.environ["PATH"] = "src/isabelle_client/resources:$PATH"
+        >>> connector = IsabelleConnector()
+        >>> print(connector.working_directory)
+        /...
+        >>> connector.build_theory(
+        ...     'lemma "\<forall> x. \<exists> y. x = y" by auto',
+        ...     theory="Mock")
+        >>> connector.build_theory(
+        ...     'lemma "\<forall> x. \<forall> y. x = y" by auto',
+        ...     theory="Fail")
+        Traceback (most recent call last):
+         ...
+        isabelle...Error: Failed to finish proof\<^here>:
+        goal (1 subgoal):
+         1. \<And>x y. x = y
     """
 
     def __init__(self, working_directory: str | None = None) -> None:  # ruff: ignore[undocumented-public-init]
@@ -93,13 +94,16 @@ class IsabelleConnector:
         imports: Sequence[str] = ("Main",),
         theory: str | None = None,
     ) -> None:
-        """
-        Build a theory using the Isabelle server.
+        """Build a theory using the Isabelle server.
 
-        :param theory_body: theory body (goes between begin and end keywords)
-        :param imports: which theories to import
-        :param theory: (for tests) fixed named for theory file
-        :raises IsabelleTheoryError: if validation failed
+        Args:
+            theory_body: The theory body (goes between begin and end
+                keywords).
+            imports: Which theories to import.
+            theory: A fixed name for the theory file (used for tests).
+
+        Raises:
+            IsabelleTheoryError: If validation failed.
         """
         theory_name = self._write_temp_theory_file(
             theory_body=theory_body,

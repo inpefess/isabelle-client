@@ -1,10 +1,7 @@
 #!/bin/sh
 
 set -e
-cd doc
-make clean html coverage
-cat _build/coverage/python.txt
-cd ..
+zensical build --clean
 ruff format
 ruff check --fix
 pydoclint src

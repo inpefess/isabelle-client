@@ -1,0 +1,63 @@
+[project]
+site_name = "Isabelle client"
+site_description = "Python client for Isabelle proof assistant server."
+site_author = "Boris Shminke"
+site_url = "https://isabelle-client.readthedocs.io/"
+repo_url = "https://github.com/inpefess/isabelle-client"
+repo_name = "inpefess/isabelle-client"
+copyright = "Copyright &copy; 2021-2026 Boris Shminke"
+nav = [
+  { "Home" = [
+    { "Overview" = "index.md" },
+    { "License" = "license.md" },
+  ] },
+  { "Usage" = "example.md" },
+  { "API reference" = "reference/api.md" },
+  { "Development" = [
+    { "Contributing" = "contributing.md" },
+    { "Code of Conduct" = "code_of_conduct.md" },
+  ] },
+]
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme)"
+toggle.icon = "material/brightness-auto"
+toggle.name = "Switch to light mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+primary = "teal"
+accent = "purple"
+toggle.icon = "material/weather-sunny"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+primary = "black"
+accent = "lime"
+toggle.icon = "material/weather-night"
+toggle.name = "Switch to system preference"
+
+[project.plugins.mkdocstrings]
+enabled = true
+
+[project.plugins.include-markdown]
+enabled = true
+
+[project.plugins.mkdocstrings.handlers.python]
+paths = ["src"]
+inventories = [
+  "https://docs.python.org/3/objects.inv",
+  "https://pydantic.dev/docs/validation/latest/objects.inv",
+]
+
+[project.theme]
+features = [
+    "content.code.copy",
+]
+
+[project.plugins.mkdocstrings.handlers.python.options]
+show_root_heading = true
+show_symbol_type_toc = true
